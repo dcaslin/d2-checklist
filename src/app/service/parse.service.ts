@@ -501,8 +501,16 @@ export class ParseService {
                     }
                 } else if (ms.activities != null && ms.activities.length > 0) {
                     const act = ms.activities[0];
+                    let challenge: any;
                     if (act.challenges != null && act.challenges.length > 0) {
-                        const challenge = act.challenges[0];
+                        // use the second challenge for IB
+                        // TODO accurately display the 8 total pinnacles you can get
+                        // TODO accurately display the 3 total pinnacles you can get from ritual pathfinder
+                        if (key == '3427325023' && act.challenges.length>1)  {
+                            challenge = act.challenges[1];
+                        } else {
+                            challenge = act.challenges[0];
+                        }
                         if (challenge.objective != null) {
                             const obj = challenge.objective;
                             const oDesc = await this.destinyCacheService.getObjective(obj.objectiveHash);
@@ -1007,7 +1015,11 @@ export class ParseService {
             accumulatedRewards.push({itemHash: 3114385607, quantity: 0, hasConditionalVisibility: false});
           } else if (hash === 4196566271) { 
             // Savation's Edge is a pinnacle
-            accumulatedRewards.push({itemHash: 73143230, quantity: 0, hasConditionalVisibility: false});
+            accumulatedRewards.push({itemHash: 73143230, quantity: 5, hasConditionalVisibility: false});
+          } else if (hash === 3427325023) {
+            // IB is 9 pinnacle rewards
+            accumulatedRewards.push({itemHash: 73143230, quantity: 8, hasConditionalVisibility: false});
+
           }
 
 
@@ -1054,9 +1066,8 @@ export class ParseService {
 
             }
         } else if (desc.activities && desc.activities.length>0) {
-            
             for (const act of desc.activities) {
-                
+            
                 const aDesc: any = await this.destinyCacheService.getActivity(act.activityHash);
                 if (!aDesc) { continue; }
                 if (aDesc.rewards) {
@@ -1110,7 +1121,12 @@ export class ParseService {
                 const boost = this.parseMilestonePl(rewDesc.displayProperties.name);
                 if (boost.sortVal > bestBoost.sortVal) {
                     bestBoost = boost;
-                    rewards = `${rewDesc.displayProperties.name}`;
+                    if (re.quantity > 1) {
+
+                        rewards = `${rewDesc.displayProperties.name} (${re.quantity} total)`;
+                    } else {
+                        rewards = `${rewDesc.displayProperties.name}`;
+                    }
                 }
             }
         }
@@ -1918,7 +1934,7 @@ export class ParseService {
             for (const milestone of milestoneList) {
                 milestonesByKey[milestone.key] = milestone;
             }
-            this.addDisappearingMileStones(milestonesByKey, milestoneList);
+            await this.addDisappearingMileStones(milestonesByKey, milestoneList);
 
             milestoneList.sort((a, b) => {
                 if (a.boost.sortVal < b.boost.sortVal) { return 1; }
@@ -2478,27 +2494,20 @@ export class ParseService {
     // these are items that are not in the public milestones and also disappear on completion
     // we'll explicitly add them if they're not already present
     // do this all in one place for sanity sake
-    private addDisappearingMileStones(milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[]) {
+    private async addDisappearingMileStones(milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[]) {
         // if we don't have a hawthorne It's in the Cards, e we probably don't have any milestones, nm
         if (milestonesByKey['3603098564'] == null) {
             return;
         }
     
-        // breach executuble - enterprising explorer, 1 pinnacle, then 2 powerfuls 
-            // 1 is 373284215
-            // 2 is 373284212
-            // 3 is 373284213
-
-        // GoA
-        this.addPseudoMilestone('973171461', milestonesByKey, milestoneList);
         // Salvation's Edge 4196566271
-        this.addPseudoMilestone('2136320298', milestonesByKey, milestoneList);
+        await this.addPseudoMilestone('2136320298', milestonesByKey, milestoneList);
         // breach executuble 1 is 373284215
-        this.addPseudoMilestone('373284215', milestonesByKey, milestoneList);
+        await this.addPseudoMilestone('373284215', milestonesByKey, milestoneList);
         // breach executuble 2 is 373284212
-        this.addPseudoMilestone('373284212', milestonesByKey, milestoneList);
+        await this.addPseudoMilestone('373284212', milestonesByKey, milestoneList);
         // breach executuble 3 is 373284213
-        this.addPseudoMilestone('373284213', milestonesByKey, milestoneList);
+        await this.addPseudoMilestone('373284213', milestonesByKey, milestoneList);
     }
 
 
