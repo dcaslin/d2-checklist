@@ -226,8 +226,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
               uri: path,
               disabled_ads: this.disableads
             };
-            console.dir(event);
-
             (<any>window).dataLayer.push(event);
           } catch (err) {
             console.dir(err);
