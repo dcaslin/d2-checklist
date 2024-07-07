@@ -1333,8 +1333,6 @@ export class Const {
     public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', faGoogle);
     public static readonly EPIC_PLATFORM = new Platform(6, 'EPIC', 'Epic', faWindows);
 
-
-
     public static readonly HIDE_MILESTONES: string[] = [
         '1960571846', '2092845811', '2441610527', '3044632693', // daily focus for Guardian Games
         '3581618338', // Master class - guardian games
@@ -1343,18 +1341,6 @@ export class Const {
         '3129232757', // ranked pvp 
         '3161426499', // ranked pvp
     ];
-
-    // map string:string
-    public static readonly MILESTONE_REWARD_OVERRIDES: { [key: string]: string } = {
-        '541780856': 'Legendary Gear', // Deepstone Crypt
-        '540415767': 'Legendary Gear', // Crota's End
-        '1888320892': 'Legendary Gear', // Vault of Glass
-        '292102995': 'Legendary Gear', // King's Fall
-        '3181387331': 'Legendary Gear', // Last Wish
-        '3699252268': 'Legendary Gear', // Root of nightmares
-        '2136320298': 'Legendary Gear', // Vow
-        '2712317338': 'Legendary Gear', // Garden of Salvation
-    };
 
 
     public static readonly PLATFORMS_ARRAY = [
