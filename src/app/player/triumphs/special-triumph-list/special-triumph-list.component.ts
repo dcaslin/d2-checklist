@@ -54,12 +54,12 @@ export class SpecialTriumphListComponent extends ChildComponent {
   public craftedWildCardFilter = '';
   public craftedWildCardFilterChoice = [
     {
-      name: 'current seasonal',
-      value: 'LOST SIGNAL,ILL OMEN,FAITH-KEEPER,TIMEWORN WAYFARER,VEILED THREAT,SIGHTLINE SURVEY',
+      name: 'Current Season',
+      value: 'Lost Signal,Ill Omen,Faith-Keeper,Timeworn Wayfarer,Veiled Threat,Sightline Survey',
     },
     {
-      name: 'ghost',
-      value: 'THE CALL,NO HESITATION,SOMEDAY,EMBRACED IDENTITY,PRO MEMORIA,FALSE IDOLS,BOLD ENDINGS,AXIAL LACUNA',
+      name: 'Ghost',
+      value: 'The Call,No Hesitation,Someday,Embraced Identity,Pro Memoria,False Idols,Bold Endings,Axial Lacuna',
     }
   ]
   public craftedFilterChoices = [
