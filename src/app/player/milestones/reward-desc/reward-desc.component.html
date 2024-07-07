@@ -20,7 +20,7 @@
   <!-- Don't show bonus if empty, like legendary gear after hard cap -->
   <ng-container *ngIf="bonus!=null">
     <ng-container *ngIf="(bonus.min==null || (bonus.min  == bonus.max)) else diff">
-      <ng-container *ngIf="bonus.bonus>0">+</ng-container>{{bonus.bonus}}
+      <ng-container *ngIf="bonus.bonus>0">+{{bonus.bonus}}</ng-container>
     </ng-container>
     <ng-template #diff>
       <ng-container *ngIf="bonus.min>0">+</ng-container>{{bonus.min}} to

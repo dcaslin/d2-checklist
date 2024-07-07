@@ -68,6 +68,7 @@ import {
     TriumphRecordNode, Vault, WeaponShapeLevelObjective
 } from './model';
 import { SimpleParseService } from './simple-parse.service';
+import { DestinyItemQuantity } from 'bungie-api-ts/destiny2';
 
 const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 
@@ -371,33 +372,39 @@ export class ParseService {
     }
 
 
-    private async addPseudoMilestone(key: string, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[], dependsOn?: string[]) {
+    private async addPseudoMilestone(key: string, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[], dependsOn?: string[], ms?: any) {
         if (milestonesByKey[key] == null ) {
             const skipDesc = await this.destinyCacheService.getMilestone(key);
-            if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                let descRewards = await this.parseMilestoneRewards(skipDesc);
-                if (descRewards == null || descRewards.trim().length == 0) {
-                    descRewards = 'Unknown';
+            
+            if (skipDesc!= null) {
+                // Ignore tuturials (1) and one time milestone (2). This may change over time so check here
+                // Right now IB is now 5 = "Special"
+                // https://bungie-net.github.io/multi/schema_Destiny-Definitions-Milestones-DestinyMilestoneType.html#schema_Destiny-Definitions-Milestones-DestinyMilestoneType
+                if (skipDesc.milestoneType > 2) {
+                    let descRewards = await this.parseMilestoneRewards(skipDesc, null, ms);
+                    if (descRewards == null || descRewards.trim().length == 0) {
+                        descRewards = 'Unknown';
+                    }
+                    const ms2: MileStoneName = {
+                        key: skipDesc.hash + '',
+                        resets: milestonesByKey['3603098564'].resets, // use "It's in the Cards"
+                        rewards: descRewards,
+                        boost: this.parseMilestonePl(descRewards),
+                        name: skipDesc.displayProperties.name,
+                        desc: skipDesc.displayProperties.description,
+                        hasPartial: false,
+                        dependsOn: dependsOn==null ? []: dependsOn
+                    };
+                    milestoneList.push(ms2);
+                    milestonesByKey[ms2.key] = ms2;
+                } else {
+                    // console.log(`Skipping known milestone ${skipDesc.displayProperties.name} (${skipDesc.hash}) type = ${skipDesc.milestoneType}`);
+                    return;
                 }
-                const ms2: MileStoneName = {
-                    key: skipDesc.hash + '',
-                    resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
-                    rewards: descRewards,
-                    boost: this.parseMilestonePl(descRewards),
-                    name: skipDesc.displayProperties.name,
-                    desc: skipDesc.displayProperties.description,
-                    hasPartial: false,
-                    dependsOn: dependsOn==null ? []: dependsOn
-                };
-                milestoneList.push(ms2);
-                milestonesByKey[ms2.key] = ms2;
-            } 
-            // else if (skipDesc != null) {
-            //     // do nothing
-            //     console.log(`Skipping known milestone ${skipDesc.displayProperties.name} (${skipDesc.hash}) type = ${skipDesc.milestoneType}`);
-            // } else {
-            //     console.log('Skipping unknown milestone: ' + key);
-            // }
+            } else {
+                // console.log('Skipping unknown milestone: ' + key);
+                return;
+            }
         }
     }
 
@@ -420,27 +427,8 @@ export class ParseService {
                 const ms: PrivMilestone = _prog.milestones[key];
                 // hide non-weekly dungeons
                 const desc = await this.destinyCacheService.getMilestone(key);
-                // warlord's ruin shows up on the list even if it's not a weekly dungeon
-                // if this is a weekly dungeon rotator, it must have a challenge for the weekly dungeon otherwise we'll hide it
-                // that's object 2039792527
-                if (desc != null && (desc?.friendlyName?.indexOf('_WEEKLY_DUNGEON_')>=0)) {
-                    // ms.activities[...].challenges[...]..objective.objectiveHash == 2039792527
-                    let found = false;
-                    for (const act of ms.activities) {
-                        for (const ch of act.challenges) {
-                            if (ch.objective.objectiveHash == 2039792527) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found) {
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        continue;
-                    }
-                }
+                // warlord's ruin is available every week as a pinnnacel
+                // then we have one and only one rotator on top
 
                 // special case for clan rewards
                 if (key === '4253138191') {
@@ -472,7 +460,7 @@ export class ParseService {
                     c.clanMilestones = clanMilestones;
                 } else {
                     // add this milestone if not already there
-                    await this.addPseudoMilestone(key, milestonesByKey, milestoneList);
+                    await this.addPseudoMilestone(key, milestonesByKey, milestoneList, [], _prog.milestones[key]);
                 }
 
                 let total = 0;
@@ -995,35 +983,136 @@ export class ParseService {
         return returnMe;
     }
     
-    private async parseMilestoneRewards(desc: any): Promise<string> {
+    private async parseMilestoneRewards(desc: any, publicMs: any, charMs: any): Promise<string> {
+        
         if (desc == null) { return ''; }
-        let rewards = '';
-        let rewCnt = 0;
-        if (desc.rewards != null) {
+        const hash = desc.hash;
+        const name = desc.displayProperties.name;
+        // list of potential rewards 
+        const accumulatedRewards: DestinyItemQuantity[] = [];
+        // weekly rituals span almost 200 activities and don't even report the active challenge on public milestones, we know it's a powerful reward, so just use that
+        if (hash == 1049998279 ||  hash == 1049998276 || hash == 1049998277) {
+            accumulatedRewards.push({itemHash: 2643364263, quantity: 0, hasConditionalVisibility: false});
+        } else if (hash === 3603098564) {
+            // It's in the cards is a pinnacle, not a powerful
+            accumulatedRewards.push({itemHash: 73143230, quantity: 0, hasConditionalVisibility: false});
+          } else if (hash === 3243997895) {
+            // Captain's Log is a powerful level 2 even though it's listed as a pinnacle.
+            accumulatedRewards.push({itemHash: 3114385606, quantity: 0, hasConditionalVisibility: false});
+          } else if (hash === 373284212) {
+            // Enterprising Explorer II is powerful level 2
+            accumulatedRewards.push({itemHash: 3114385606, quantity: 0, hasConditionalVisibility: false});
+          } else if (hash === 373284213) {
+            // Enterprising Explorer III is powerful level 3
+            accumulatedRewards.push({itemHash: 3114385607, quantity: 0, hasConditionalVisibility: false});
+          } else if (hash === 4196566271) { 
+            // Savation's Edge is a pinnacle
+            accumulatedRewards.push({itemHash: 73143230, quantity: 0, hasConditionalVisibility: false});
+          }
+
+
+
+        // built directly into the milestone like this https://data.destinysets.com/i/InventoryItem:214619924/Milestone:2029743966
+        else if (desc.rewards != null && Object.keys(desc.rewards).length>0) {
             for (const entryKey of Object.keys(desc.rewards)) {
                 const entry = desc.rewards[entryKey];
                 if (entry.rewardEntries != null) {
                     for (const rewEntKey of Object.keys(entry.rewardEntries)) {
                         const rewEnt = entry.rewardEntries[rewEntKey];
                         if (rewEnt.items != null) {
-                            for (const reI of rewEnt.items) {
-                                rewCnt++;
-                                const iDesc: any = await this.destinyCacheService.getInventoryItem(reI.itemHash);
-                                if (iDesc != null) {
-                                    rewCnt++;
-                                    rewards += iDesc.displayProperties.name;
-                                    if (reI.quantity > 1) {
-                                        rewards += reI.quantity + ' ';
-                                    }
-                                }
+                            for (const i of rewEnt.items) {
+                                accumulatedRewards.push(i);
                             }
                         }
                     }
                 }
             }
+        } else if (desc.quests && Object.keys(desc.quests).length>0) { // quests is an associative array
+            // for it's in the cards 3603098564 we have a milestone def https://data.destinysets.com/i/Milestone:3603098564 with a quest attached to it
+            // which has questRewards.items[].legendary engram (which is actually wrong since it's a pinnacle =/ )
+            const filteredEntries = Object.values(desc.quests).filter((value: any) => 
+                value.questRewards && value.questRewards.items && value.questRewards.items.length > 0
+            ).map((value: any) => value.questRewards.items);
+            if (filteredEntries.length > 0) {
+                for (const entry of filteredEntries) {
+                    for (const rewEnt of entry) {
+                        // console.log(`${name} has direct quest rewards`)
+                        accumulatedRewards.push(rewEnt);
+                    }
+                }
+            }
+
+            const questItemEntries = Object.values(desc.quests).filter((x:any) => x.questItemHash).map((x:any) => x.questItemHash);
+            if (questItemEntries.length > 0) {
+                for (const questHash of questItemEntries) {
+                    const iDesc: any = await this.destinyCacheService.getInventoryItem(questHash);
+                    iDesc?.value?.itemValue?.map((value: any) => {
+                        // console.log(`${name} has quest item rewards`)
+                        accumulatedRewards.push(value);
+                    });
+                }
+
+            }
+        } else if (desc.activities && desc.activities.length>0) {
+            
+            for (const act of desc.activities) {
+                
+                const aDesc: any = await this.destinyCacheService.getActivity(act.activityHash);
+                if (!aDesc) { continue; }
+                if (aDesc.rewards) {
+                    aDesc.rewards.map((value: any) => { 
+                        value.rewardItems.map((value: any) => {
+                            // console.log(`${name} has direct activity rewards ${value.itemHash}`);
+                            accumulatedRewards.push(value);
+                        })
+                    });
+
+                }
+                if (act.challenges && aDesc.challenges) {                    
+                    const manifestChallengeHashes = act.challenges?.map((value: any) => value.challengeObjectiveHash);
+                    let challengeHashes: string[] = [];
+                    if (publicMs && charMs) {
+                        throw new Error('Both public and char milestones are not expected');
+                    } else if (publicMs) {
+                        challengeHashes = publicMs.activities.map(x => x.challengeObjectiveHashes).flat().filter(x => manifestChallengeHashes.includes(x))
+                      
+                    } else if (charMs) {
+                        challengeHashes = charMs.activities.flatMap(x => x.challenges).map(x=>x.objective?.objectiveHash).filter(x => manifestChallengeHashes.includes(x))
+                    }
+
+                    aDesc.challenges.filter(x =>  challengeHashes.includes(x.objectiveHash) && x.dummyRewards).map((x)=>{
+                        x.dummyRewards.map((value: any) => {
+                            // console.log(`${name} has activity challenge rewards`)
+                            accumulatedRewards.push(value);
+                        })
+                    })
+
+                }
+            }
+
         }
-        if (rewCnt > 4) {
-            rewards = '';
+        // referenced via the activities dummy rewards like this legendary Iconoclasm https://data.destinysets.com/i/Milestone:3940691952
+        // to https://data.destinysets.com/i/Milestone:3940691952/Activity:1475344277
+        // this one is tough, it's a milestone pointing to an activity. The activity has both rewards directly
+        // plus challenges that have their own dummy rewards. The challenge hashes map back to the challnge from the milestone, so we should pick the right one
+        // in this case iconoclasm 3940691952 + challenge objective 1702821073 -> activity 1475344277 with challenge objective 1702821073 -> dummyrewards that includes a pinnacle
+
+        // for iron banner it's even nastier, we have to look at the character's milestone progression to see which challenges are active, 
+        // and it may vary by char, since one might be on match 0/3 and another 15/18 the rewards are the same though so it doesn't really matter
+
+
+        // repeat for all accumatedRewards 
+        let rewards = 'Legendary Gear (below PL)';
+        let bestBoost = Const.BOOST_DROP_TABLE[Const.BOOST_UNKNOWN];
+        for (const re of accumulatedRewards) {
+            const rewDesc = await this.destinyCacheService.getInventoryItem(re.itemHash);
+            if (rewDesc != null) {
+                const boost = this.parseMilestonePl(rewDesc.displayProperties.name);
+                if (boost.sortVal > bestBoost.sortVal) {
+                    bestBoost = boost;
+                    rewards = `${rewDesc.displayProperties.name}`;
+                }
+            }
         }
         return rewards;
     }
@@ -1195,18 +1284,6 @@ export class ParseService {
                     }
                 }
             }
-            if (desc.displayProperties.name.toLowerCase().indexOf('iron banner challenge')>=0 && desc.activities) {
-                for (const act of desc.activities) {
-                    for (const c of act.challenges) {
-                        if (c.challengeObjectiveHash) {
-                            const oDesc = await this.destinyCacheService.getObjective(c.challengeObjectiveHash);
-                            if (oDesc.completionValue) {
-                                specialName = `Iron Banner: ${oDesc.completionValue} matches`;
-                            }
-                        }
-                    }
-                }
-            }
             const dAct = {};
             for (const a of activities) {
                 const key = a.name + ' ' + a.modifiers.length;
@@ -1220,32 +1297,8 @@ export class ParseService {
                     dAct[key].lls.push(a.ll);
                 }
             }
-            const descRewards = await this.parseMilestoneRewards(desc);
-            let rewards = '';
-            if (descRewards && descRewards.trim().length > 0) {
-                rewards = descRewards;
-            } else if (activityRewards && activityRewards.trim().length > 0) {
-                rewards = activityRewards;
-            } else {
-                if (Const.MILESTONE_REWARD_OVERRIDES[ms.milestoneHash]) {
-                    rewards = Const.MILESTONE_REWARD_OVERRIDES[ms.milestoneHash];
-                } else {
-                    console.log(desc.displayProperties.name + ' - ' + desc.hash + ' is missing rewards');
-                    rewards = '???';
-                }
-            }
-            
-            
-            if (ms.milestoneHash == 3603098564) { // override clan weekly
-                rewards = 'Pinnacle Gear';            
-            } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // VoG
-                rewards = 'Powerful Gear (Tier 3)';
-            }
-            // if VoG is weekly raid it'll set T3 Powerful above and then replace w/ Pinnacle here
-            if ((specialDungeonWeekly || specialRaidWeekly) && (rewards!='Pinnacle Gear')) {
-                console.log(`Fixing rewards for special weekly activity ${specialName}`)
-                rewards = 'Pinnacle Gear';
-            }
+            const rewards = await this.parseMilestoneRewards(desc, ms, null);
+        
             const boost = this.parseMilestonePl(rewards);
             const pushMe: PublicMilestone = {
                 hash: ms.milestoneHash + '',
@@ -1273,20 +1326,14 @@ export class ParseService {
                 pushMe.dependsOn = ['1049998279'];
             } else if (pushMe.hash == '1049998277') { // Ritual 3
                 pushMe.dependsOn = ['1049998279', '1049998276'];
-            } else if (pushMe.hash == '4111516206') { // IB 7
-                pushMe.dependsOn = ['4111516205'];
-            }  else if (pushMe.hash == '4111516207') { // IB 12
-                pushMe.dependsOn = ['4111516205', '4111516206'];
-            }  else if (pushMe.hash == '4111516200') { // IB 18
-                pushMe.dependsOn = ['4111516205', '4111516206', '4111516207'];
-            }
+           
             // breach executuble - enterprising explorer, 1 pinnacle, then 2 powerfuls 
             // 1 is 373284215
             // 2 is 373284212
             // 3 is 373284213
-            else if (pushMe.hash == '373284213') { // 3
+            } else if (pushMe.hash == '373284213') { // 3 depends on 1 and 2
                 pushMe.dependsOn = ['373284215', '373284212'];
-            } else if (pushMe.hash == '373284212') { // 3
+            } else if (pushMe.hash == '373284212') { // 2 depends on 1
                 pushMe.dependsOn = ['373284215'];
             }
             returnMe.push(pushMe);
@@ -2432,7 +2479,7 @@ export class ParseService {
     // we'll explicitly add them if they're not already present
     // do this all in one place for sanity sake
     private addDisappearingMileStones(milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[]) {
-        // if we don't have a clan milestone we probably don't have any milestones, nm
+        // if we don't have a hawthorne It's in the Cards, e we probably don't have any milestones, nm
         if (milestonesByKey['3603098564'] == null) {
             return;
         }
@@ -2471,18 +2518,6 @@ export class ParseService {
         if (rootOfNightmares?.name?.indexOf('###') > -1) {
             rootOfNightmares.name = 'Root of Nightmares Raid';
         }
-        // if (rootOfNightmares) {
-        //     rootOfNightmares.rewards = 'Pinnacle';
-        //     rootOfNightmares.boost = this.parseMilestonePl(rootOfNightmares.rewards);
-        // }
-        const salvationEdge = milestoneList.find(x => x.key == '4196566271');
-        if (salvationEdge?.name?.indexOf('###') > -1) {
-            salvationEdge.name = 'Salvation\'s Edge Raid';
-        }
-        if (salvationEdge) {
-            salvationEdge.rewards = 'Pinnacle';
-            salvationEdge.boost = this.parseMilestonePl(salvationEdge.rewards);
-        }
         // weekly ritual
         milestoneList.filter(x => x.key == '1049998276' || x.key == '1049998277' || x.key == '1049998279').map((x) => {
             
@@ -2496,32 +2531,7 @@ export class ParseService {
             } else if (x.key == '1049998277') {
                 x.name += ' 3';
             }
-            x.rewards = 'Powerful';
-            x.boost = this.parseMilestonePl(x.rewards);
-
         });
-        // enterprising explorer 1
-        milestoneList.filter(x => x.key == '118566180').map((x) => {
-            x.rewards = 'Pinnacle';
-            x.boost = this.parseMilestonePl(x.rewards);
-        })
-        // enterprising explorer 2 and 3
-        milestoneList.filter(x => (x.key == '373284212'|| x.key == '373284213')).map((x) => {
-            x.rewards = 'Powerful';
-            x.boost = this.parseMilestonePl(x.rewards);
-        })
-        // enterprising explorer 1
-        milestoneList.filter(x => x.key == '118566180').map((x) => {
-            x.rewards = 'Pinnacle';
-            x.boost = this.parseMilestonePl(x.rewards);
-        })
-        // 3940691952 iconoclasm
-        // 1952013998 ascent
-        // 3353906074 dissent
-        milestoneList.filter(x => (x.key == '3940691952'|| x.key == '1952013998' || x.key == '3353906074')).map((x) => {
-            x.rewards = 'Pinnacle';
-            x.boost = this.parseMilestonePl(x.rewards);
-        })
         for (const m of milestoneList) {
             m.desc = ParseService.dynamicStringReplace(m.desc, null, dynamicStrings);
         }
@@ -2567,7 +2577,7 @@ export class ParseService {
         if (!curr) {
             const desc = await this.destinyCacheService.getInventoryItem(hash);
             if (!desc) {
-                console.log('Missing desc for ' + hash);
+                // console.log('Missing desc for ' + hash);
                 return;
             }
             let maxStackSize = 99999;
@@ -2620,7 +2630,6 @@ export class ParseService {
                     prestige = ap;
                 } else if (ap.hash == '2755675426') {
                     returnMe.trialsRank = ap;
-                    console.log(`Trials rank ${ap.level}`);
                 }
             }
             if (prestige != null && returnMe.seasonRank != null) {
