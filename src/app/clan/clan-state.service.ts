@@ -1238,7 +1238,6 @@ export class ClanStateService {
       if (x != null && x.characters != null) {
         // in case this is a retry
         target.errorMsg = null;
-        // this.bungieService.loadActivityPseudoMilestones(target.player$);
       } else {
         target.errorMsg = 'Unable to load player data';
       }
