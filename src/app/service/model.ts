@@ -1001,7 +1001,7 @@ export class MilestoneStatus {
     readonly pct: number;
     info: string;
     suppInfo: string[];
-    readonly phases: boolean[];
+    phases: boolean[];
     readonly locked: boolean;
     readonly tooLowPower: boolean;
     readonly readyToCollect: boolean;
