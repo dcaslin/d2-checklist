@@ -2539,7 +2539,7 @@ export class ParseService {
     // since we gather up milestones from all sorts of places
     private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings, resp: any, weeklyRitualPathfinderHash: string, chars: Character[]) {
         const ritualPathFinder = milestoneList.find(x => x.key == '3480513797');
-        if (weeklyRitualPathfinderHash) {
+        if (ritualPathFinder && weeklyRitualPathfinderHash) {
             ritualPathFinder.rewards = 'Pinnacle Gear (3 total)';
             ritualPathFinder.boost = this.parseMilestonePl(ritualPathFinder.rewards);
 
