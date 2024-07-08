@@ -504,8 +504,7 @@ export class ParseService {
                     const act = ms.activities[0];
                     let challenge: any;
                     if (act.challenges != null && act.challenges.length > 0) {
-                        // use the second challenge for IB
-                        // TODO accurately display the 3 total pinnacles you can get from ritual pathfinder
+                        // use the second challenge for IB, it's the pinnacle, the first is just XP Boost
                         if (key == '3427325023' && act.challenges.length>1)  {
                             challenge = act.challenges[1];
                             const charStrings = dynamicStrings?.character[c.characterId];
@@ -1120,6 +1119,7 @@ export class ParseService {
 
         // for iron banner it's even nastier, we have to look at the character's milestone progression to see which challenges are active, 
         // and it may vary by char, since one might be on match 0/3 and another 15/18 the rewards are the same though so it doesn't really matter
+        // we'll just cheat and show a single reward
 
 
         // repeat for all accumatedRewards 
@@ -1894,6 +1894,7 @@ export class ParseService {
         const charsDict: { [key: string]: Character } = {};
         const accountProgressions: Progression[] = [];
         const milestoneList: MileStoneName[] = [];
+        let weeklyRitualPathfinderHash = null;
         let currentActivity: CurrentActivity = null;
         const chars: Character[] = [];
         let hasWellRested = false;
@@ -2298,6 +2299,15 @@ export class ParseService {
                         seals.push(seal);
                     }
                 }
+                const ritualPathFinderRoot: TriumphPresentationNode = await this.handleRecPresNode([], 622609416 + '', nodes, records, triumphLeaves, true, false);
+                const visiblePathfinder = ritualPathFinderRoot.children.find(x =>  this.getBestPres(nodes, x.hash)?.state == 0 );
+                if (visiblePathfinder) {
+                    const finalStep = visiblePathfinder.children.find(x => x.name == 'Path Completion Reward');
+                    if (finalStep) {
+                        weeklyRitualPathfinderHash = finalStep.hash;
+                    }
+                }
+
                 // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
                 // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
@@ -2478,7 +2488,7 @@ export class ParseService {
         if (resp.profileInventory?.data) {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
         }
-        this.cookMileStones(milestoneList, dynamicStrings);
+        this.cookMileStones(milestoneList, dynamicStrings, resp, weeklyRitualPathfinderHash, chars);
         for (const t of searchableTriumphs) {
             t.desc = ParseService.dynamicStringReplace(t.desc, null, dynamicStrings);
         }
@@ -2518,28 +2528,53 @@ export class ParseService {
         await this.addPseudoMilestone('373284212', milestonesByKey, milestoneList);
         // breach executuble 3 is 373284213
         await this.addPseudoMilestone('373284213', milestonesByKey, milestoneList);
+
+        // Ritual pathfinder
+        await this.addPseudoMilestone('3480513797', milestonesByKey, milestoneList);
     }
 
 
 
     // do this all in one place at the last minute
     // since we gather up milestones from all sorts of places
-    private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings) {
-       
+    private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings, resp: any, weeklyRitualPathfinderHash: string, chars: Character[]) {
+        const ritualPathFinder = milestoneList.find(x => x.key == '3480513797');
+        if (weeklyRitualPathfinderHash) {
+            ritualPathFinder.rewards = 'Pinnacle Gear (3 total)';
+            ritualPathFinder.boost = this.parseMilestonePl(ritualPathFinder.rewards);
+
+            const finalRitualPresNode = resp.profileRecords.data.records[weeklyRitualPathfinderHash];
+            let pinnaclesTaken = 0;
+            if (finalRitualPresNode) {
+                const firstTrue = finalRitualPresNode.rewardVisibilty.findIndex(x => x == true);
+                // https://data.destinysets.com/i/Record:3234374170
+                // at this moment the first 3 sets of rewards are a prime/bright/enhancement prism/challenger xp
+                // after that it's enhancement prism/bright dust/xp only
+                // so we can deduce the number of pulls by the index of the rewards
+                pinnaclesTaken = Math.min(Math.floor(firstTrue / 4), 3);
+            }
+            for (const char of chars) {
+                const ms = char.milestones['3480513797'];
+                ms.phases = [];
+                if (ms) {
+                    for (let i = 1; i <= 3; i++) {
+                        ms.phases.push(i<=pinnaclesTaken);
+                    }
+                }
+           }
+        }
+ 
         const nfScore = milestoneList.find(x => x.key == '2029743966');
         if (nfScore) {
             nfScore.name = 'Nightfall 200K';
             nfScore.desc = 'Complete Nightfalls until your total score reaches 200K';
         }
-        
-       
         const rootOfNightmares = milestoneList.find(x => x.key == '3699252268');
         if (rootOfNightmares?.name?.indexOf('###') > -1) {
             rootOfNightmares.name = 'Root of Nightmares Raid';
         }
         // weekly ritual
         milestoneList.filter(x => x.key == '1049998276' || x.key == '1049998277' || x.key == '1049998279').map((x) => {
-            
             // weekly ritual 3 1049998279 is 1
             // weekly ritual 6 1049998276 is 2
             // Weekly ritual 9 1049998277 is 3
