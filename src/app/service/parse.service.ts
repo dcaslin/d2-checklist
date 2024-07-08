@@ -409,7 +409,8 @@ export class ParseService {
     }
 
 
-    private async populateProgressions(c: Character, _prog: any, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[], accountProgressions: Progression[]): Promise<void> {
+    private async populateProgressions(c: Character, _prog: any, milestonesByKey: { [id: string]: MileStoneName }, 
+        milestoneList: MileStoneName[], accountProgressions: Progression[], dynamicStrings: DynamicStrings): Promise<void> {
         c.milestones = {};
         c.notReady = false;
 
@@ -427,7 +428,7 @@ export class ParseService {
                 const ms: PrivMilestone = _prog.milestones[key];
                 // hide non-weekly dungeons
                 const desc = await this.destinyCacheService.getMilestone(key);
-                // warlord's ruin is available every week as a pinnnacel
+                // warlord's ruin is available every week as a pinnacle
                 // then we have one and only one rotator on top
 
                 // special case for clan rewards
@@ -504,16 +505,25 @@ export class ParseService {
                     let challenge: any;
                     if (act.challenges != null && act.challenges.length > 0) {
                         // use the second challenge for IB
-                        // TODO accurately display the 8 total pinnacles you can get
                         // TODO accurately display the 3 total pinnacles you can get from ritual pathfinder
                         if (key == '3427325023' && act.challenges.length>1)  {
                             challenge = act.challenges[1];
+                            const charStrings = dynamicStrings?.character[c.characterId];
+                            if (charStrings && charStrings[4161792462]) {
+                                let number = charStrings[4161792462];
+                                if (number == null) {
+                                    number = 0;
+                                }
+                                for (let i = 1; i < 9; i++) {
+                                    phases.push(i<number);
+                                }
+                            }
                         } else {
                             challenge = act.challenges[0];
                         }
                         if (challenge.objective != null) {
                             const obj = challenge.objective;
-                            const oDesc = await this.destinyCacheService.getObjective(obj.objectiveHash);
+                            let oDesc = await this.destinyCacheService.getObjective(obj.objectiveHash);
                             if (oDesc != null) {
                                 if (!oDesc.redacted) {
                                     if (obj.complete === true) {
@@ -1959,7 +1969,7 @@ export class ParseService {
                     // load progs for chars
                     for (const key of Object.keys(oProgs)) {
                         const curChar: Character = charsDict[key];
-                        await this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList, accountProgressions);
+                        await this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList, accountProgressions, dynamicStrings);
                         hasWellRested = curChar.wellRested || hasWellRested;
                     }
 
