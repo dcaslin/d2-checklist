@@ -505,8 +505,10 @@ export class ParseService {
                     let challenge: any;
                     if (act.challenges != null && act.challenges.length > 0) {
                         // use the second challenge for IB, it's the pinnacle, the first is just XP Boost
-                        if (key == '3427325023' && act.challenges.length>1)  {
-                            challenge = act.challenges[1];
+                        if (key == '3427325023' && act.challenges.length>0)  {
+                            // we want the last challenge. It'll either be 2, with the rank one first
+                            // or just 1 with the pinnacle
+                            challenge = act.challenges[act.challenges.length-1];
                             const charStrings = dynamicStrings?.character[c.characterId];
                             if (charStrings && charStrings[4161792462]) {
                                 let number = charStrings[4161792462];
