@@ -1,7 +1,7 @@
 {
   "name": "d2-checklist",
-  "version": "24.5.1",
-  "manifest": "226893.24.07.17.1731-2-bnet.56363",
+  "version": "24.5.2",
+  "manifest": "227047.24.07.25.1730-3-bnet.564783",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -16,7 +16,8 @@
     "clean": "rm -rf ./dist/",
     "server": "cd dist && http-server -S -p 4200 -C ../dev-certs/localhost.crt -K ../dev-certs/localhost.key",
     "prod": "npm run clean && npm run build:prod && npm run server",
-    "postinstall": "ngcc"
+    "postinstall": "ngcc",
+    "manifest": "manifest.bat"
   },
   "private": true,
   "dependencies": {
