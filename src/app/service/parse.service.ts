@@ -82,7 +82,7 @@ export class ParseService {
     MAX_LEVEL = 50;
 
 
-    HIDE_PROGRESSIONS = [
+    HIDE_FACTIONS = [
         '3468066401', // The Nine
         '1714509342', // Future War Cult
         '2105209711', // New Monarchy
@@ -95,10 +95,10 @@ export class ParseService {
 
 
     ACCOUNT_LEVEL = [
-        // '4203877294', // Fynch #UPDATEME
-        '527867935', // Xur
-        '1471185389', // Gunsmith
-        '784742260', // Cryptarchs
+        '1800684758', // Failsafe
+        // '527867935', // Xur // there is a progression that's better used
+        // '1471185389', // Gunsmith // there is a progression that's better used
+        '784742260', // Cryptarchs - this is worth promoting to account wide
         // '1983115403', // House of light 
         // '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
@@ -279,6 +279,10 @@ export class ParseService {
                 info = 'Shaxx';
             } else if (name === 'Gunsmith') {
                 info = 'Banshee';
+            } else if (name === 'AI Research Assistant') {
+                info = 'AI Research Assistant';
+                name = 'Failsafe';
+
             } else if (name === 'Cryptarchs') {
                 info = 'Rahool';
             } else if (name === 'Conscientious Objector')  {
@@ -287,6 +291,9 @@ export class ParseService {
             } else if (name === 'Purveyor of Strange Goods')  {
                 name = 'Xur';
                 info = 'Purveyor of Strange Goods';
+            } else if (name === 'Strange Favor')  {
+                name = 'Xur';
+                info = 'Strange Favor';
             } else if (name === 'Hero of Six Fronts')  {
                 name = 'Saint-14';
                 info = 'Trials';
@@ -578,31 +585,13 @@ export class ParseService {
             }
         }
 
-        const factions: Progression[] = [];
-        if (_prog.factions != null) {
-            for (const key2 of Object.keys(_prog.factions)) {
-                const p: PrivProgression = _prog.factions[key2];
-                const fDesc = await this.destinyCacheService.getFaction(p.factionHash);
-                const prog: Progression = ParseService.parseProgression(p, fDesc);
-                if (prog != null) {
-                    if (this.HIDE_PROGRESSIONS.indexOf(prog.hash) >= 0) {
-                        continue;
-                    }
-                    if (this.ACCOUNT_LEVEL.indexOf(prog.hash) < 0) {
-                        factions.push(prog);
-                    } else {
-                        const found = accountProgressions.find(x => x.hash == prog.hash);
-                        if (!found) {
-                            ParseService.cookAccountProgression(prog);
-                            accountProgressions.push(prog);
-                        }
-                    }
-                }
-            }
-        }
-        c.maxLevel = this.MAX_LEVEL;
+        // factions and progressions are confusingly mixed together
+        // progressions are account wide, factions are sometimes per character
+        // progressions are better, since they offer more information, like season resets 
 
-        // only progression we care about right now are Legend, Glory, Crucible, and Season Pass
+        const perCharProgressions: Progression[] = [];
+
+
         if (_prog.progressions) {
             const sp = await this.getSeasonProgression();
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cacheLite.destiny2CoreSettings.currentRankProgressionHashes;
@@ -647,7 +636,8 @@ export class ParseService {
                             accountProgressions.push(prog);
                         }
                     }
-                } else if (key === '540048094') {
+                } else if (key === '540048094') { 
+                    // just to make things more confusing, this is the one progression that is still per character
                     const p: PrivProgression = _prog.progressions[key];
                     const pDesc = await this.destinyCacheService.getProgression(p.progressionHash);
                     const prog: Progression = ParseService.parseProgression(p, pDesc);
@@ -655,17 +645,44 @@ export class ParseService {
                     prog.currentProgress = prog.weeklyProgress;
                     prog.percentToNextLevel = prog.currentProgress / 5000;
                     if (prog != null) {
-                        factions.push(prog);
+                        perCharProgressions.push(prog);
                     }
                 }
             }
-
         }
 
-        factions.sort(function (a, b) {
+        if (_prog.factions != null) {
+            for (const key2 of Object.keys(_prog.factions)) {
+                const p: PrivProgression = _prog.factions[key2];
+                const fDesc = await this.destinyCacheService.getFaction(p.factionHash);
+                const prog: Progression = ParseService.parseProgression(p, fDesc);
+                if (prog == null) {
+                    continue;
+                }
+                 // progressions are more valuable than factions
+                // so ignore any factions where we already found a progression for the hash
+                if (accountProgressions.find(x => x.hash == prog.hash)) {
+                    continue;
+                }
+                if (this.HIDE_FACTIONS.indexOf(prog.hash) >= 0) {
+                    continue;
+                }
+                if (this.ACCOUNT_LEVEL.indexOf(prog.hash) < 0) {
+                    perCharProgressions.push(prog);
+                } else {
+                    ParseService.cookAccountProgression(prog);
+                    accountProgressions.push(prog);
+                }
+            }
+        }
+        c.maxLevel = this.MAX_LEVEL;
+
+        
+
+        perCharProgressions.sort(function (a, b) {
             return b.percentToNextLevel - a.percentToNextLevel;
         });
-        c.factions = factions;
+        c.factions = perCharProgressions;
     }
 
     private static cookAccountProgression(prog: Progression) {
