@@ -98,6 +98,7 @@ export class ParseService {
         // '4203877294', // Fynch #UPDATEME
         '527867935', // Xur
         '1471185389', // Gunsmith
+        '784742260', // Cryptarchs
         // '1983115403', // House of light 
         // '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
@@ -277,8 +278,9 @@ export class ParseService {
                 name = 'Crucible';
                 info = 'Shaxx';
             } else if (name === 'Gunsmith') {
-                name = 'Gunsmith';
                 info = 'Banshee';
+            } else if (name === 'Cryptarchs') {
+                info = 'Rahool';
             } else if (name === 'Conscientious Objector')  {
                 name = 'Fynch';
                 info = 'Conscientious Objector';
