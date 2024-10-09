@@ -2321,14 +2321,16 @@ export class ParseService {
                     }
                 }
                 const ritualPathFinderRoot: TriumphPresentationNode = await this.handleRecPresNode([], 622609416 + '', nodes, records, triumphLeaves, true, false);
-                const visiblePathfinder = ritualPathFinderRoot.children.find(x =>  this.getBestPres(nodes, x.hash)?.state == 0 );
-                if (visiblePathfinder) {
-                    const finalStep = visiblePathfinder.children.find(x => x.name == 'Path Completion Reward');
-                    if (finalStep) {
-                        weeklyRitualPathfinderHash = finalStep.hash;
+                if (ritualPathFinderRoot)   {
+                    const visiblePathfinder = ritualPathFinderRoot.children.find(x =>  this.getBestPres(nodes, x.hash)?.state == 0 );
+                    if (visiblePathfinder) {
+                        const finalStep = visiblePathfinder.children.find(x => x.name == 'Path Completion Reward');
+                        if (finalStep) {
+                            weeklyRitualPathfinderHash = finalStep.hash;
+                        }
                     }
                 }
-
+                
                 // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
                 // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
