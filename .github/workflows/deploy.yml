@@ -9,6 +9,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Git LFS
+      run: |
+        sudo apt-get update
+        sudo apt-get install git-lfs
+        git lfs install
+    - run: git lfs pull
     - uses: actions/setup-node@v1 #this installs node and npm for us
       with:
         node-version: '18.x'
