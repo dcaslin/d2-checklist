@@ -820,15 +820,15 @@ const LS_BROKEN_DEEP: LostSectorMeta = {
   directorLocation: 'Pale Heart',
   legend: {
     hash: '2875391872',
-    shields: ['?(?)', '?(?)'],
+    shields: ['Arc', '?(?)'],
     champions: [
       {
-        name: '???',
-        count: 1
+        name: 'Unstoppable',
+        count: 3
       },
       {
-        name: '???',
-        count: 2
+        name: 'Overload',
+        count: 3
       }
     ]
   },
@@ -837,12 +837,12 @@ const LS_BROKEN_DEEP: LostSectorMeta = {
     shields: ['?(?)', '?(?)'],
     champions: [
       {
-        name: '???',
-        count: 3
+        name: 'Unstoppable',
+        count: 5
       },
       {
-        name: '???',
-        count: 2
+        name: 'Overload',
+        count: 5
       }
     ]
   }
@@ -916,24 +916,18 @@ const LS_FORGOTTEN_DEEP: LostSectorMeta = {
   }
 }
 
-
-// export const  LS_LOOT = [
-//   'Chest',
-//   'Head',
-//   'Legs',
-//   'Arms',
-// ];
-
 export const LS_ROTATION = [
-  LS_THRILLADROME,
-  LS_HYDROPONICS,
-  LS_VELES_LABYRINTH,
-  LS_EXODUS_GARDEN,
-  LS_BROKEN_DEEP,
-  LS_BLOOMING_DEEP,
+
   LS_FORGOTTEN_DEEP,
-  LS_PERDITION,
-  LS_BUNKER_E15,
-  LS_CONCEALED_VOID,
-  LS_CONFLUX,
+  LS_EXTRACTION,
+  LS_SEPULCHER,
+  LS_METAMORPHOSIS,
+  LS_K1_REVELATION,
+  LS_BAY_OF_DROWNED_WISHES,
+  LS_CHAMBER_OF_STARLIGHT,
+  LS_QUARRY,
+  LS_EXCAVATION_SITE,
+  LS_BROKEN_DEEP,
+
+  LS_BLOOMING_DEEP,
 ];
