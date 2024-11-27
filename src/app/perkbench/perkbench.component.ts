@@ -84,6 +84,7 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/d5a3f4d7d20fefc781fea3c60bde9434.png': 23,
   '/common/destiny2_content/icons/0337ec21962f67c7c493fedb447c4a9b.png': 24,
   '/common/destiny2_content/icons/e3ea0bd2e889b605614276876667759c.png': 24,
+  '/common/destiny2_content/icons/5586f6a4193e34acc035209b5e9204d8.png': 25,
 
 
   // events
@@ -129,6 +130,7 @@ const SEASON_TO_DESC = {
   22: 'Season of the Witch',
   23: 'Season of the Wish',
   24: 'Episode: Echoes',
+  25: 'Episode: Revenant',
   // #UPDATEME
   101: 'Dawning',
   102: 'Crimson Days',
