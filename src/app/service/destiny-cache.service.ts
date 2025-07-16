@@ -397,12 +397,22 @@ export interface Season {
   redacted: boolean;
   sealPresentationNodeHash: number;
   seasonNumber: number;
-  seasonPassHash: string;
+  // seasonPassHash: string;
+  seasonPassList: SeasonPassListItem[]
   seasonPassProgressionHash: string;
   seasonPassUnlockHash: string;
   startDate: string;
   startTimeInSeconds: string;
 }
+
+export interface SeasonPassListItem {
+  seasonPassHash: number
+  ownershipUnlockFlagHash: number
+  seasonPassStartTime: string
+  seasonPassStartDate: string
+  seasonPassEndDate: string
+}
+
 
 export interface SeasonPass {
   blacklisted: boolean;
