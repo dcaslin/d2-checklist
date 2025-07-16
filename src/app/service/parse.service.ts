@@ -597,14 +597,14 @@ export class ParseService {
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cacheLite.destiny2CoreSettings.currentRankProgressionHashes;
             for (const key of Object.keys(_prog.progressions)) {
                 const iKey: number = parseInt(key, 10);
-                if ((currentRankProgressionHashes.indexOf(iKey) >= 0) // crucible/gambit/glory
-                    || key == sp.rewardProgressionHash
-                    || key == sp.prestigeProgressionHash) {
+                if ((currentRankProgressionHashes.indexOf(iKey) >= 0) 
+                    || (sp!=null && (key == sp?.rewardProgressionHash || key == sp?.prestigeProgressionHash)) )
+                {
                     const p: PrivProgression = _prog.progressions[key];
                     const suppProg: PrivProgression = p;
                     let progDesc = await this.destinyCacheService.getProgression(p.progressionHash);
                     // SEE SEASON PASS TABLE FOR THESE
-                    if (key == sp.rewardProgressionHash) { // Season of dawn
+                    if (sp!=null && key == sp?.rewardProgressionHash) { // Season of dawn
                         progDesc = {
                             'displayProperties': {
                                 'description': 'Current Season Progress',
@@ -615,7 +615,7 @@ export class ParseService {
                             }
                         };
                     }
-                    if (key == sp.prestigeProgressionHash) { // Season of Dawn prestige
+                    if (key == sp?.prestigeProgressionHash) { // Season of Dawn prestige
                         progDesc = {
                             'displayProperties': {
                                 'description': 'Season Prestige Progress',
@@ -700,8 +700,17 @@ export class ParseService {
     private async getSeasonProgression(): Promise<SeasonPass> {
         const hash = this.destinyCacheService.cacheLite.destiny2CoreSettings.currentSeasonHash;
         const s: Season = await this.destinyCacheService.getSeason(hash);
-        const sp: SeasonPass = await this.destinyCacheService.getSeasonPass(s.seasonPassHash);
-        return sp;
+        for (const seasonPassItem of s.seasonPassList) {
+            const startTime = new Date(seasonPassItem.seasonPassStartDate).getTime();
+            const endTime = new Date(seasonPassItem.seasonPassEndDate).getTime();
+            const now = new Date().getTime();
+            if (now>=startTime && now <= endTime) {
+                
+                const sp: SeasonPass = await this.destinyCacheService.getSeasonPass(seasonPassItem.seasonPassHash);
+                return sp;
+            }
+        }
+        return null;
     }
 
 
@@ -2701,9 +2710,9 @@ export class ParseService {
 
                 } else if (isSpecialRankProgression && ap.hash == '457612306') {
                     returnMe.vanguardRank = ap;
-                } else if (ap.hash == sp.rewardProgressionHash) {
+                } else if (sp!=null && ap.hash == sp?.rewardProgressionHash) {
                     returnMe.seasonRank = ap;
-                } else if (ap.hash == sp.prestigeProgressionHash) {
+                } else if (ap.hash == sp?.prestigeProgressionHash) {
                     prestige = ap;
                 } else if (ap.hash == '2755675426') {
                     returnMe.trialsRank = ap;
