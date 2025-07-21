@@ -396,7 +396,7 @@ export class ParseService {
                     }
                     const ms2: MileStoneName = {
                         key: skipDesc.hash + '',
-                        resets: milestonesByKey['3603098564'].resets, // use "It's in the Cards"
+                        resets: milestonesByKey['4196566271']?.resets, // use "Salvation's Edge"
                         rewards: descRewards,
                         boost: this.parseMilestonePl(descRewards),
                         name: skipDesc.displayProperties.name,
