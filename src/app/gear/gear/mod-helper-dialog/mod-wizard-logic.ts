@@ -58,12 +58,12 @@ export function getEnergyApproachArray(): EnergyApproach[] {
 
 export enum PreferredStat {
     LeaveAlone = 0,
-    Mobility = 1,
-    Resilience = 2,
-    Recovery = 3,
-    Discipline = 4,
-    Intellect = 5,
-    Strength = 6,
+    Weapons = 1,
+    Health = 2,
+    Class = 3,
+    Grenade = 4,
+    Super = 5,
+    Melee = 6,
 }
 
 export const PreferredStats = [
@@ -72,28 +72,28 @@ export const PreferredStats = [
         value: PreferredStat.LeaveAlone
     },
     {
-        name: 'Mobility',
-        value: PreferredStat.Mobility
+        name: 'Weapons',
+        value: PreferredStat.Weapons
     },
     {
-        name: 'Resilience',
-        value: PreferredStat.Resilience
+        name: 'Health',
+        value: PreferredStat.Health
     },
     {
-        name: 'Recovery',
-        value: PreferredStat.Recovery
+        name: 'Class',
+        value: PreferredStat.Class
     },
     {
-        name: 'Discipline',
-        value: PreferredStat.Discipline
+        name: 'Grenade',
+        value: PreferredStat.Grenade
     },
     {
-        name: 'Intellect',
-        value: PreferredStat.Intellect
+        name: 'Super',
+        value: PreferredStat.Super
     },
     {
-        name: 'Strength',
-        value: PreferredStat.Strength
+        name: 'Melee',
+        value: PreferredStat.Melee
     }
 ];
 
