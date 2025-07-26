@@ -15,19 +15,28 @@ export class PreferredStatService {
   constructor(
   ) {
     const choices = [];
-    choices.push('Mobility');
-    choices.push('Resilience');
-    choices.push('Recovery');
+    choices.push('Weapons');
+    choices.push('Health');
+    choices.push('Class');
 
-    choices.push('Discipline');
-    choices.push('Intellect');
-    choices.push('Strength');
+    choices.push('Grenade');
+    choices.push('Super');
+    choices.push('Melee');
     this.choices = choices;
     const s = localStorage.getItem(PREF_STATS_KEY);
     let pref = this.buildDefault();
     try {
       if (s != null) {
-        pref = JSON.parse(s);
+        const rawPref = JSON.parse(s);
+        if (rawPref) {
+          pref.showAllStats = rawPref.showAllStats;
+          pref = rawPref;
+          if (rawPref.stats) {
+            this.mapStats(rawPref.stats.Hunter, pref.stats.Hunter)
+            this.mapStats(rawPref.stats.Warlock, pref.stats.Warlock)
+            this.mapStats(rawPref.stats.Titan, pref.stats.Titan)
+          }
+        }
       }
     } catch (exc) {
       localStorage.removeItem(PREF_STATS_KEY);
@@ -35,31 +44,55 @@ export class PreferredStatService {
     this.stats$ = new BehaviorSubject<DetailedPreferredStats>(pref);
   }
 
+  private mapStats(rawClassStats: any, targetStats: ClassStatPref) {
+    if (!rawClassStats) {
+      return
+    }
+    targetStats.Weapons = this.getNormalizedValue(rawClassStats.Weapons, rawClassStats.Mobility)
+    targetStats.Health = this.getNormalizedValue(rawClassStats.Health, rawClassStats.Resilience)
+    targetStats.Class = this.getNormalizedValue(rawClassStats.Class, rawClassStats.Recovery)
+    targetStats.Grenade = this.getNormalizedValue(rawClassStats.Grenade, rawClassStats.Grenade)
+    targetStats.Super = this.getNormalizedValue(rawClassStats.Super, rawClassStats.Intellect)
+    targetStats.Melee = this.getNormalizedValue(rawClassStats.Melee, rawClassStats.Strength)
+
+  }
+  
+  private getNormalizedValue(proper: any, legacy: any): number {
+    if (proper!=null) {
+      return +proper;
+    }
+    if (legacy!=null) {
+      return +legacy;
+    }
+    return 0;
+  }
+
+
   private buildDefault(empty?: boolean): DetailedPreferredStats {
     const defaultStats: ClassStatPrefs = {
       Hunter: {
-        Mobility: 100,
-        Resilience: 100,
-        Recovery: 50,
-        Discipline: 0,
-        Intellect: 0,
-        Strength: 0
+        Weapons: 100,
+        Health: 100,
+        Class: 50,
+        Grenade: 0,
+        Super: 0,
+        Melee: 0
       },
       Titan: {
-        Mobility: 0,
-        Resilience: 100,
-        Recovery: 100,
-        Discipline: 50,
-        Intellect: 0,
-        Strength: 0
+        Weapons: 0,
+        Health: 100,
+        Class: 100,
+        Grenade: 50,
+        Super: 0,
+        Melee: 0
       },
       Warlock: {
-        Mobility: 0,
-        Resilience: 100,
-        Recovery: 100,
-        Discipline: 50,
-        Intellect: 0,
-        Strength: 0
+        Weapons: 0,
+        Health: 100,
+        Class: 100,
+        Grenade: 50,
+        Super: 0,
+        Melee: 0
       },
     };
     return {
@@ -150,11 +183,11 @@ interface ClassStatPrefs {
 }
 
 interface ClassStatPref {
-  Mobility: number;
-      Resilience: number;
-      Recovery: number;
-      Discipline: number;
-      Intellect: number;
-      Strength: number;
+      Weapons: number;
+      Health: number;
+      Class: number;
+      Grenade: number;
+      Super: number;
+      Melee: number;
 }
 

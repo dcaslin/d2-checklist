@@ -4076,23 +4076,6 @@ export class ParseService {
                         if (m.inventoryStats) {
                             const modStat = m.inventoryStats.find(x => (x.hash == s.hash));
                             if (modStat) {
-
-                                // Charge Harvester needs to be filtered by class to stat
-                                if (m.hash == '2263321587') {
-                                    if (ClassAllowed.Hunter == desc.classType) {
-                                        if (modStat.hash != StatHashes.Mobility) {
-                                            continue;
-                                        }
-                                    } else if (ClassAllowed.Titan == desc.classType) {
-                                        if (modStat.hash != StatHashes.Resilience) {
-                                            continue;
-                                        }
-                                    } else if (ClassAllowed.Warlock == desc.classType) {
-                                        if (modStat.hash != StatHashes.Recovery) {
-                                            continue;
-                                        }
-                                    }
-                                }
                                 if (s.enhancement == null) {
                                     s.enhancement = 0;
                                 }
