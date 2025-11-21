@@ -2126,6 +2126,7 @@ export class ParseService {
         const bounties: InventoryItem[] = [];
         const quests: InventoryItem[] = [];
         const gear: InventoryItem[] = [];
+        const unparseableGearIds: { [id: string]: boolean } = {};
         const itemCompObjectivesData = resp.itemComponents?.objectives?.data;
         const privateGear = itemCompObjectivesData==null || Object.keys(itemCompObjectivesData).length==0;
         let checklists: Checklist[] = [];
@@ -2190,14 +2191,11 @@ export class ParseService {
 
                             }
                             else {
-                                // if (parsed.objectives && parsed.objectives.length > 0) {
-                                //     quests.push(parsed);
-                                //     console.log(`Non quest pushed ${parsed.name}`);
-
-
-                                // }
                                 gear.push(parsed);
                             }
+                        } else {
+                            // could not parse, ignore
+                            // this path does not load for the gear mgr
                         }
                     }
                 }
@@ -2213,6 +2211,9 @@ export class ParseService {
                             const parsed: InventoryItem = await this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, null, resp);
                             if (parsed != null) {
                                 gear.push(parsed);
+                            } else {
+                                // could not parse, ignore
+                                // this path does not load for the gear mgr
                             }
                         }
                     }
@@ -2241,6 +2242,12 @@ export class ParseService {
 
                             }
                             gear.push(parsed);
+                        } else {
+                            // capture this instance id to ignore for de-marking
+                            // for example, there are FoTL masks that D2Checklist ignores
+                            // if someone tags that in DIM, we don't want D2C to mistakenly think this is 
+                            // sharded gear and de-mark it
+                            unparseableGearIds[itm.itemInstanceId] = true;
                         }
                     }
                 }
@@ -2540,7 +2547,8 @@ export class ParseService {
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs, privateGear, resp.responseMintedTimestamp, resp.secondaryComponentsMintedTimestamp);
+            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs, privateGear, resp.responseMintedTimestamp, resp.secondaryComponentsMintedTimestamp,
+        unparseableGearIds);
     }
 
     // these are items that are not in the public milestones and also disappear on completion
@@ -3453,7 +3461,7 @@ export class ParseService {
                             BUCKETS_ARMOR.includes(bucketHash)) {
                             type = ItemType.Armor;
                         } else {
-                            // console.log('Skipping no type: ' + itm.itemHash);
+                            console.log('Skipping no type: ' + itm.itemHash);
                             return null;
                         }
 
