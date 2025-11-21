@@ -261,7 +261,8 @@ export class MarkService implements OnDestroy {
 
     private static processMarks(
         m: { [key: string]: string },
-        items: InventoryItem[]
+        items: InventoryItem[],
+        unparseableGearIds: { [id: string]: boolean }
     ): boolean {
         let unusedDelete = false;
         const usedKeys: any = {};
@@ -302,7 +303,7 @@ export class MarkService implements OnDestroy {
             }
         }
         for (const key of Object.keys(usedKeys)) {
-            if (usedKeys[key] === false) {
+            if (usedKeys[key] === false && !unparseableGearIds[key]) {
                 console.log('%c   Deleting unused key (tag) : ' + key, LOG_CSS);
                 delete m[key];
                 unusedDelete = true;
@@ -320,7 +321,8 @@ export class MarkService implements OnDestroy {
 
     private processNotes(
         m: { [key: string]: string },
-        items: InventoryItem[]
+        items: InventoryItem[],
+        unparseableGearIds: { [id: string]: boolean }
     ): boolean {
         let unusedDelete = false;
         const usedKeys: any = {};
@@ -344,7 +346,7 @@ export class MarkService implements OnDestroy {
             }
         }
         for (const key of Object.keys(usedKeys)) {
-            if (usedKeys[key] === false) {
+            if (usedKeys[key] === false && !unparseableGearIds[key]) {
                 console.log('%c   Deleting unused key (note): ' + key, LOG_CSS);
                 delete m[key];
                 unusedDelete = true;
@@ -365,7 +367,7 @@ export class MarkService implements OnDestroy {
         return false;
     }
 
-    public processItems(items: InventoryItem[]): void {
+    public processItems(items: InventoryItem[], unparseableGearIds: { [id: string]: boolean }): void {
         // if we don't have both, don't do anything
         const currentMarks = this.currentMarks$.getValue();
         if (currentMarks == null || items.length == 0) {
@@ -382,11 +384,13 @@ export class MarkService implements OnDestroy {
         this.badState = false;
         const updatedMarks: boolean = MarkService.processMarks(
             currentMarks.marked,
-            items
+            items,
+            unparseableGearIds
         );
         const updatedNotes: boolean = this.processNotes(
             currentMarks.notes,
-            items
+            items,
+            unparseableGearIds
         );
         // if we changed anything here, push the new marks and mark things as dirty
         if (updatedMarks || updatedNotes) {

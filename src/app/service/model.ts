@@ -665,6 +665,8 @@ export class Player {
     readonly exoticCatalystTriumphs: TriumphRecordNode[];
     readonly searchableCollection: TriumphCollectibleNode[];
     readonly gear: InventoryItem[];
+    // any item ids we can't parse, we'll remember to avoid de-marking
+    readonly unparseableGearIds: { [id: string]: boolean } = {};
     readonly vault: Target;
     readonly shared: Target;
     readonly raidChecked = false;
@@ -703,7 +705,9 @@ export class Player {
         title: string, seasonChallengeEntries: SeasonalChallengeEntry[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
         specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData, patternTriumphs: TriumphRecordNode[], exoticCatalystTriumphs: TriumphRecordNode[],
-        privateGear: boolean, responseMintedTimestamp: string, secondaryComponentsMintedTimestamp: string ) {
+        privateGear: boolean, responseMintedTimestamp: string, secondaryComponentsMintedTimestamp: string,
+        unparseableGearIds: { [id: string]: boolean }
+    ) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -720,6 +724,7 @@ export class Player {
         this.records = records;
         this.collections = collections;
         this.gear = gear;
+        this.unparseableGearIds = unparseableGearIds;
         let minsPlayed = 0;
         if (characters != null && characters.length > 0) {
             for (const char of characters) {
