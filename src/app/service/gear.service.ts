@@ -269,7 +269,7 @@ export class GearService {
                 }
             }
             this.bucketService.init(player.characters, player.vault, player.shared, player.gear);
-            this.markService.processItems(player.gear);
+            this.markService.processItems(player.gear, player.unparseableGearIds);
             for (const key of Object.keys(gearById)) {
                 const items = gearById[key];
                 for (const item of items) {

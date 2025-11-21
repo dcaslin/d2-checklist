@@ -503,7 +503,8 @@ export class GearComponent extends ChildComponent implements OnInit {
         this.showUtilities();
       }
       if (this.player$.getValue() != null) {
-        this.markService.processItems(this.player$.getValue().gear);
+        const player = this.player$.getValue();
+        this.markService.processItems(player.gear, player.unparseableGearIds);
       }
     }
   }
