@@ -373,6 +373,11 @@
                     (click)="showPossibleRolls(i)">
                     <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show recommended rolls
                   </button>
+                  <button mat-menu-item
+                    *ngIf="option.type==ItemType.Weapon"
+                    (click)="editInPerkBench(i)">
+                    <fa-icon [icon]="iconService.falScrewdriverWrench"></fa-icon> Edit in PerkBench
+                  </button>
 
                 </mat-menu>
                 <span *ngIf="debugmode|async">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>

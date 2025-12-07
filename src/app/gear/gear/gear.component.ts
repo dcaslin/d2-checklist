@@ -105,6 +105,10 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.notificationService.success('Copied ' + i.name + ' to clipboard');
   }
 
+  editInPerkBench(i: InventoryItem) {
+      this.router.navigate(['perkbench', i.hash]);
+  }
+
   copyAllVisibleToClipboard() {
     let markdown = '';
     let cntr = 0;

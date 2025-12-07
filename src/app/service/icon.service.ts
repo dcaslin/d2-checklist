@@ -11,7 +11,7 @@ import {
   faCrosshairs as falCrosshairs,
   faBowArrow as falBowArrow,
   faShoppingCart as falShoppingCart,
-
+  faScrewdriverWrench as falScrewdriverWrench,
   faCalendarAlt as farCalendar,
   faBolt as falBolt,
   faWheat as falWheat,
@@ -264,6 +264,7 @@ export class IconService {
   public readonly falExchange = falExchange;
   public readonly falClone = falClone;
   public readonly falCopy = falCopy;
+  public readonly falScrewdriverWrench = falScrewdriverWrench;
   public readonly falDiceD20 = falDiceD20;
 
   public readonly fadVault = fadVault;

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {
   DestinyCacheService,
@@ -24,6 +24,7 @@ import { del, set } from 'idb-keyval';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 // TODO show guns with unrollable perks
 // x offer option to apply god rolls to local storage
@@ -102,7 +103,7 @@ const WATERMARK_TO_SEASON = {
   // '/common/destiny2_content/icons/8b0d9b848bfb49077fe018e6f80a2939.png': 105,
   '/common/destiny2_content/icons/64e07aa12c7c9956ee607ccb5b3c6718.png': 106, // Guardian Games
   '/common/destiny2_content/icons/97c65a76255ef764a9a98f24e50b859d.png': 106,
-  '/common/destiny2_content/icons/efdb35540cd169fa6e334995c2ce87b6.png': 106, 
+  '/common/destiny2_content/icons/efdb35540cd169fa6e334995c2ce87b6.png': 106,
 };
 
 const SEASON_TO_DESC = {
@@ -177,11 +178,12 @@ function isIncomplete(isController: boolean, roll: MappedRoll): boolean {
   templateUrl: './perkbench.component.html',
   styleUrls: ['./perkbench.component.scss'],
 })
-export class PerkbenchComponent extends ChildComponent {
+export class PerkbenchComponent extends ChildComponent implements OnInit {
   public isController = true;
   public sortBy = 'season';
   public sortDesc = true;
   public filterText = '';
+  public preloadedHash = '';
   public currentTitle = 'asdf';
   public showMissingOnly = false;
   public showIncompleteOnly = false;
@@ -207,7 +209,9 @@ export class PerkbenchComponent extends ChildComponent {
     public pandaGodrollsService: PandaGodrollsService,
     private destinyCacheService: DestinyCacheService,
     private notificationService: NotificationService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private route: ActivatedRoute,
+    public router: Router
   ) {
     super(storageService);
     this.init();
@@ -270,7 +274,44 @@ export class PerkbenchComponent extends ChildComponent {
           }
         });
         this.filteredRolls$.next(showMe);
+        if (showMe.length > 0 && this.preloadedHash != '') {
+          // find the gun roll with the hash
+          const match = showMe.find(x => x.info.desc.hash.toString() === this.preloadedHash);
+          if (match) {
+            console.log('Found match for preloaded hash', match);
+            this.showRolls(match);
+          } else {
+            // async try to look up by name
+            this.preloadGunByName(this.preloadedHash, showMe);
+          }
+          this.preloadedHash = '';
+        }
       });
+  }
+
+  async preloadGunByName(hash: string, showMe: MappedRoll[]) {
+    console.log('No match for preloaded hash, trying by name');
+    // look up gun by hash to get name
+    const weaponDesc: any = await this.destinyCacheService.getInventoryItem(this.preloadedHash);
+    // see if we have a roll whose name matches, even if its hash doesn't
+    if (weaponDesc) {
+      const name = weaponDesc.displayProperties.name;
+      const cookedName = PerkbenchComponent.cookNameForRolls(name);
+      const matchByName = showMe.find(x => PerkbenchComponent.cookNameForRolls(x.info.desc.displayProperties.name) === cookedName);
+      if (matchByName) {
+        console.log('Found match by name for preloaded hash', matchByName);
+        this.showRolls(matchByName);
+      }
+    }
+  }
+
+  ngOnInit() {
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      const hash = params['hash'];
+      if (hash != null) {
+        this.preloadedHash = hash;
+      }
+    });
   }
 
   changeConsole() {

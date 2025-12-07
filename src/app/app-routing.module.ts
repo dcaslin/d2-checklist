@@ -146,6 +146,12 @@ export class MyInfoGuard implements CanActivate {
       canActivate: [ManifestLoadedGuard],
       component: PerkbenchComponent
     },
+     {
+      path: 'perkbench/:hash',
+      pathMatch: 'full',
+      canActivate: [ManifestLoadedGuard],
+      component: PerkbenchComponent
+    },
     {
       path: 'about',
       pathMatch: 'full',
