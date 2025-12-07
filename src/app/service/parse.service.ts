@@ -1659,13 +1659,17 @@ export class ParseService {
         if (parsedProg != null) {
             accountProgressions.push(parsedProg);
         }
-        const powerProgDesc = await this.destinyCacheService.getProgression(powerProg.progressionHash);
-        parsedProg = ParseService.parseProgression(powerProg, powerProgDesc, powerProg);
-        if (parsedProg != null) {
-            accountProgressions.push(parsedProg);
+        // as of 2025-12-07 powerProg is null, so we'll just guard against that I suppose
+        if (powerProg != null) {
+            const powerProgDesc = await this.destinyCacheService.getProgression(powerProg.progressionHash);
+            parsedProg = ParseService.parseProgression(powerProg, powerProgDesc, powerProg);
+            if (parsedProg != null) {
+                accountProgressions.push(parsedProg);
+            }
         }
-        // return _art.powerBonus;
-        return powerProg.level;
+
+        // return powerProg.level;
+        return _art.powerBonus;
 
     }
 
