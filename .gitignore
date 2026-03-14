@@ -47,3 +47,7 @@ Thumbs.db
 src/environments/secrets.ts
 src/environments/keys.ts
 src/environments/keys-prod.ts
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db
