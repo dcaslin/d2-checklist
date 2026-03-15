@@ -33,3 +33,4 @@ Pull requests welcome. This application uses FontAwesome Pro, so running your ow
 - Production deployments via GitHub Actions on push to master
 - NPM (not Yarn) is the package manager
 - JSON files in `src/assets/` are tracked with git LFS
+- Bump `version` in `package.json` with each release to force the service worker to pick up changes
