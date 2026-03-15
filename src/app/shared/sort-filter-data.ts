@@ -64,10 +64,7 @@ export class SortFilterDataSource extends DataSource<any> {
         data = data.sort((a, b) => {
           let propertyA: number | string;
           let propertyB: number | string;
-          // eslint-disable-next-line prefer-const
           [propertyA, propertyB] = [a[this._sort.active], b[this._sort.active]];
-          // const valueA = propertyA==null||isNaN(+propertyA) ? propertyA : +propertyA;
-          // const valueB = propertyB!=null&&isNaN(+propertyB) ? propertyB : +propertyB;
           let returnMe = 0;
           if (propertyA == null && propertyB != null) {
             returnMe = -1;
@@ -79,7 +76,6 @@ export class SortFilterDataSource extends DataSource<any> {
             returnMe = 1;
           }
           if (this._sort.direction === 'asc') { returnMe = -1 * returnMe; }
-          // const returnMe =  (valueA < valueB ? -1 : 1) * (this._sort.direction === 'desc' ? 1 : -1);
           return returnMe;
         });
       }
