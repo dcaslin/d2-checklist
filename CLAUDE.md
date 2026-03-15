@@ -38,6 +38,10 @@ npm run lint         # eslint
 
 `src/assets/*.json` files are tracked with git LFS. The `prepare` script in package.json runs `git lfs install` automatically on `npm install`.
 
+## FontAwesome Pro
+
+FontAwesome Pro icon packages are vendored as tarballs in `vendor-packages/` so no private registry auth is needed. The free FA packages are installed normally from npm. All FA packages should be kept at the same major version.
+
 ## Deployment
 
 Production deploys are triggered by pushes to `master` via GitHub Actions. Bump `version` in `package.json` with each release to force the service worker to pick up changes.
