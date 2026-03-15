@@ -40,4 +40,4 @@ npm run lint         # eslint
 
 ## Deployment
 
-Production deploys are triggered by pushes to `master` via GitHub Actions.
+Production deploys are triggered by pushes to `master` via GitHub Actions. Bump `version` in `package.json` with each release to force the service worker to pick up changes.
