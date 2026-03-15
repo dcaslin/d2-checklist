@@ -55,13 +55,13 @@ import { DealsComponent } from './deals/deals/deals.component';
 import { CollectionDealsComponent } from './deals/collection-deals/collection-deals.component';
 import { ArmorDealsComponent } from './deals/armor-deals/armor-deals.component';
 import { ArmorCompareDialogComponent } from './deals/armor-compare-dialog/armor-compare-dialog.component';
+import { WeaponDealsComponent } from './deals/weapon-deals/weapon-deals.component';
+import { WeaponCompareDialogComponent } from './deals/weapon-compare-dialog/weapon-compare-dialog.component';
 import { PlayerCurrenciesComponent } from './player-currencies/player-currencies.component';
 import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { AppStatusComponent } from './app-status/app-status.component';
 import { UberPursuitCheckComponent } from './uber-list/uber-pursuit-check/uber-pursuit-check.component';
 import { PwaService } from './service/pwa.service';
-import { WeaponDealsComponent } from './deals/weapon-deals/weapon-deals.component';
-import { WeaponCompareDialogComponent } from './deals/weapon-compare-dialog/weapon-compare-dialog.component';
 import { PerkbenchComponent } from './perkbench/perkbench.component';
 import { PerkBenchDialogComponent } from './perkbench/perk-bench-dialog/perk-bench-dialog.component';
 import { UberListToggleComponent } from './uber-list/uber-list-toggle/uber-list-toggle.component';
@@ -107,7 +107,8 @@ import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dia
     SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     HomeComponent, BurnDialogComponent,
     DealsContainerComponent, DealsComponent, CollectionDealsComponent, ArmorDealsComponent,
-    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
+    ArmorCompareDialogComponent, WeaponDealsComponent, WeaponCompareDialogComponent,
+    PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
   ],
   providers: [
     AuthService,

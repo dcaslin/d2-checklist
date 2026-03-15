@@ -44,11 +44,6 @@ export class GearUtilitiesDialogComponent {
       description: 'Do not send data to DIM-sync',
       value: 'disabled'
     }
-    // {
-    //   text: 'Enabled - DIM preferred',
-    //   description: 'Sync tags and notes with DIM. In the event of a conflict, assume DIM is right',
-    //   value: 'dim-first'
-    // }
   ];
   public dimSyncChoice: DimSyncChoice = null;
   public dimSyncOption = this.dimSyncChoices[0];
@@ -85,8 +80,6 @@ export class GearUtilitiesDialogComponent {
   async dimSyncChosen(event: MatSelectChange) {
     this.dimSyncOption = this.getOptionFromValue();
     if (this.dimSyncChoice == 'enabled') {
-      // if they're switching to enable DIM sync, auto download a backup of their tags
-      // this.exportTagsToFile();
       const success = await this.markService.doInitialDimSync();
       console.log(`Initial sync success: ${success}`);
       // refresh marks

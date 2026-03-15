@@ -173,11 +173,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   private static getFinalComponent(r: ActivatedRoute): string {
-    // TODO port to gtag
-    // grab platform while we're here
-    // if (r.snapshot.params.platform != null) {
-    //   (window as any).ga('set', 'platform', r.snapshot.params.platform);
-    // }
     if (r.children != null && r.children.length > 0) {
       if (r.routeConfig != null) {
         return r.routeConfig.path + '/' + AppComponent.getFinalComponent(r.children[0]);
@@ -273,8 +268,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-success-snack',
-  templateUrl: 'snackbars/success.html',
-  styleUrls: ['snackbars/success.css']
+  templateUrl: 'snackbars/success.html'
 })
 export class SuccessSnackbarComponent {
   message: string;
@@ -286,8 +280,7 @@ export class SuccessSnackbarComponent {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-info-snack',
-  templateUrl: 'snackbars/info.html',
-  styleUrls: ['snackbars/info.css'],
+  templateUrl: 'snackbars/info.html'
 })
 export class InfoSnackbarComponent {
   message: string;
@@ -299,8 +292,7 @@ export class InfoSnackbarComponent {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-warn-snack',
-  templateUrl: 'snackbars/warn.html',
-  styleUrls: ['snackbars/warn.css']
+  templateUrl: 'snackbars/warn.html'
 })
 export class WarnSnackbarComponent {
   message: string;
