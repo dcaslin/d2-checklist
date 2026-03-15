@@ -1,4 +1,4 @@
-import { NgOptimizedImage, IMAGE_LOADER, ImageLoaderConfig } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
@@ -99,13 +99,11 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
   declarations: [
     SortIndicatorComponent,
     SeasonIndicatorComponent,
-    SortIndicatorComponent,
     ItemEnergyIndicatorComponent,
     ItemIconComponent,
     GodRollItemComponent,
     GodRollMwComponent,
     HorizontalSortComponent,
-    FriendStarComponent,
     FriendStarComponent,
     TriumphNameComponent,
     AdSlotComponent,
