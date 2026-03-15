@@ -17,6 +17,7 @@
     "server": "cd dist && http-server -S -p 4200 -C ../dev-certs/localhost.crt -K ../dev-certs/localhost.key",
     "prod": "npm run clean && npm run build:prod && npm run server",
     "postinstall": "ngcc",
+    "prepare": "git lfs install",
     "manifest": "manifest.bat"
   },
   "private": true,
