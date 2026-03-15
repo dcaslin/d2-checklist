@@ -276,36 +276,12 @@ export class BungieService implements OnDestroy {
             new ActivityMode(82, 'Dungeon', 'Dungeon'),
             new ActivityMode(46, 'Nightfall', 'Scored Nightfall'),
             new ActivityMode(69, 'Competitive - PvP', 'Competitive PvP'),
-            // new ActivityMode(66, 'Forge', 'Forge'),
             new ActivityMode(64, 'Gambit', 'All Gambit'),
             new ActivityMode(19, 'Iron Banner', 'Iron Banner'),
-            // new ActivityMode(77, 'Menagerie', 'Menagerie'),
             new ActivityMode(6, 'Patrol', 'Patrol'),
-            // new ActivityMode(76, 'Reckoning', 'Reckoning'),
             new ActivityMode(84, 'Trials', 'Trials'),
             new ActivityMode(2, 'Story', 'Story'),
-            // new ActivityMode(18, 'All Strikes', 'All Strikes'),
-            // new ActivityMode(69, 'PvP Competitive', 'PvP Competitive'),
-            // new ActivityMode(70, 'PvP Quickplay', 'PvP Quickplay'),
-            // new ActivityMode(32, 'Private Matches', 'Private Matches'),
-            // new ActivityMode(39, 'Trials', 'Trials'),
-            // new ActivityMode(15, 'Crimson Doubles', 'Crimson Doubles'),
-            // new ActivityMode(10, 'Control', 'Control'),
-            // new ActivityMode(43, 'Iron Banner Control', 'Iron Banner Control'),
-            // new ActivityMode(12, 'Clash', 'Clash'),
-            // new ActivityMode(44, 'Iron Banner Clash', 'Iron Banner Clash'),
-            // new ActivityMode(31, 'Supremacy', 'Supremacy'),
-            // new ActivityMode(45, 'Iron Banner Supremacy', 'Iron Banner Supremacy'),
-            // new ActivityMode(25, 'All Mayhem', 'All Mayhem'),
-            // new ActivityMode(16, 'Nightfall (old)', 'Nightfall (old)'),
-            // new ActivityMode(17, 'Heroic Nightfall (old)', 'Heroic Nightfall (old)'),
-            // new ActivityMode(3, 'Strike', 'Strike'),
-            // new ActivityMode(37, 'Survival', 'Survival'),
-            // new ActivityMode(38, 'Countdown', 'Countdown'),
-            // new ActivityMode(40, 'Social', 'Social'),
-            new ActivityMode(48, 'Rumble', 'Rumble'),
-            // new ActivityMode(49, 'All Doubles', 'All Doubles'),
-            // new ActivityMode(50, 'Doubles', 'Doubles')
+            new ActivityMode(48, 'Rumble', 'Rumble')
         ];
     }
 
@@ -389,80 +365,6 @@ export class BungieService implements OnDestroy {
         return j.Response;
     }
 
-    // private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
-    //     const powerfulBounties: SaleItem[] = [];
-    //     let vendorFound = false;
-    //     for (const i of vendorData) {
-    //         if (i.vendor.hash == targetVendorHash) {
-    //             vendorFound = true;
-    //             if (i.values != null && i.type == ItemType.Bounty) {
-    //                 if (i.itemTypeDisplayName.indexOf('Weekly Bounty') >= 0  ) {
-    //                     powerfulBounties.push(i);
-    //                 }
-    //                 // for (const v of i.values) {
-    //                 //     // is powerful gear
-    //                 //     if (v.hash == '4039143015') {
-    //                 //         powerfulBounties.push(i);
-    //                 //     } else if (v.hash == '3586070587') {
-    //                 //         powerfulBounties.push(i);
-    //                 //     } // is Firewalll Data Fragment
-    //                 // }
-    //             }
-    //         }
-    //     }
-    //     // no powerful bounties avail
-    //     if (powerfulBounties.length == 0) {
-    //         return new MilestoneStatus(key, false, 0, null, ['Not available'], null, true, false);
-    //     } else if (powerfulBounties.length == 1) {
-    //         const i = powerfulBounties[0];
-    //         const complete = i.status == 'Already completed';
-    //         const held = i.status == 'Already held';
-    //         let progress = complete ? 1 : 0;
-    //         if (held) {
-    //             const bounties: InventoryItem[] = p.bounties[c.characterId];
-    //             let bounty: InventoryItem = null;
-    //             if (bounties) {
-    //                 for (const b of bounties) {
-    //                     if (b.hash == i.hash) {
-    //                         bounty = b;
-    //                     }
-    //                 }
-    //             }
-
-    //             if (bounty != null) {
-    //                 progress = bounty.aggProgress / 100;
-    //             }
-    //         }
-    //         const pseudoMs = new MilestoneStatus(key, complete, progress, null,
-    //             complete ? null : held ? ['Held'] : ['Not Held'], null, false, false);
-    //         return pseudoMs;
-    //     } else {
-    //         if (!vendorFound) {
-    //             // const pseudoMs = new MilestoneStatus(key, false, 0, null,
-    //             //     'Vendor not found', null);
-    //             return null;
-    //         }
-    //         let complete = 0;
-    //         let held = 0;
-    //         for (const b of powerfulBounties) {
-    //             if (b.status == 'Already completed') {
-    //                 complete++;
-    //             }
-    //             if (b.status == 'Already held') {
-    //                 held++;
-    //             }
-    //         }
-    //         let info = complete + '/' + powerfulBounties.length;
-    //         if (held > 0) {
-    //             info += ', ' + held + ' held';
-    //         }
-    //         const allDone = complete === powerfulBounties.length;
-    //         const pseudoMs = new MilestoneStatus(key, allDone,
-    //             complete / powerfulBounties.length, null, allDone ? null : [info], null, false, false);
-    //         return pseudoMs;
-    //     }
-    // }
-
     private async fetchFailSafePublicMilestone(): Promise<any> {
         try {
             return await this.makeReq('Destiny2/Milestones/');
@@ -471,13 +373,6 @@ export class BungieService implements OnDestroy {
             return await this.makeFakeReq('/assets/fake-milestones.json');
         }
 
-        // try {
-        // } catch (err) {
-        //     console.log('!!!Returning canned reply ');
-        //     this.notificationService.info('Bungie Public milestone endpoint failed. Using canned response from 2/12');
-        //     console.dir(err);
-        //     return JSON.parse('asdf').Response;
-        // }
     }
 
     public async getPublicMilestones(): Promise<PublicMilestonesAndActivities> {
@@ -486,7 +381,6 @@ export class BungieService implements OnDestroy {
         }
         try {
             const resp = await this.fetchFailSafePublicMilestone();
-            // const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities,CharacterProgressions');
             const reply = await this.parseService.parsePublicMilestones(resp);
             this.publicMilestonesAndActivities = reply;
             return reply;
@@ -717,24 +611,6 @@ export class BungieService implements OnDestroy {
             throw new Error('Failed to transfer ' + item.name);
         }
     }
-
-    // use this once it works on enough things to be worthwhile
-
-    // public async setTrackedState(membershipType: number, item: InventoryItem, tracked: boolean): Promise<boolean> {
-    //     try {
-    //         await this.postReq('Destiny2/Actions/Items/SetTrackedState/', {
-    //             state: tracked,
-    //             itemId: item.id,
-    //             characterId: item.owner.getValue().id,
-    //             membershipType: membershipType
-    //         });
-    //         item.tracked = tracked;
-    //         return true;
-    //     } catch (err) {
-    //         this.handleError(err);
-    //         return false;
-    //     }
-    // }
 
     public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
         try {

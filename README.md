@@ -1,42 +1,36 @@
-# README #
+# d2-checklist
 
-### What is this repository for? ###
+Front end for [d2checklist.com](https://www.d2checklist.com), built with Angular 14 and Angular Material.
 
-* This is the front end for www.d2checklist.com, it's written in Angular and Angular Material.
+## Getting set up
 
-### How do I get set up? ###
+### Register a Bungie app
 
-#### Register a new app with Bungie #### 
+Create an application at the [Bungie Application Portal](https://www.bungie.net/en/Application):
 
-In order to run the server, you will need to create an application using the [Bungie Application Portal](https://www.bungie.net/en/Application). When creating the application, do the following:
+* Application Name: whatever you want
+* Application Status: Private
+* OAuth Client type: `Confidential`
+* Redirect URL: `https://localhost:4200/auth`
+* Scope: check all boxes (except "Administrate groups and clans", which is optional)
 
-* Application Name can be whatever you want
-* Website can be left blank
-* Application Status can be Private
-* OAuth Client type should be `Confidential`
-* Redirect URL should be `https://localhost:4200/auth` (for running in Development mode).
-* Check all the boxes for scope except "Administrate groups and clans..." (that's not needed, checking it won't hurt though)
+### Install and run
 
-#### Setup the Angular app ####
+1. Install Node.js and npm
+2. Clone this repository
+3. Copy `src/environments/keys.example.ts` to `src/environments/keys.ts` and fill in your Bungie API credentials
+4. `npm install` (this also sets up git LFS automatically)
+5. `npm start`
+6. Visit https://localhost:4200 (ignore the self-signed cert warning)
 
-* Install node and npm and the Angular CLI (cli.angular.io)
-* Clone this repository
-* Setup a keys.ts file to match keys.example.ts (Visit https://www.bungie.net/en/Application and setup a )
+## Contributing
 
-* npm install
-* run ./serve.bat (Windows) or ./serve.sh (Mac or *nix)
-* Visit https://localhost:4200 (ignore the cert error)
+Pull requests welcome. This application uses FontAwesome Pro, so running your own dev environment requires stubbing those out.
 
-### Contribution guidelines ###
+## Notes
 
-* If you want to contribute, let me know (or submit a pull request)
-* This application uses FontAwesome Pro's private repo, so running your own development environment requires stubbing those out. This can be a pain. 
-
-#### Notes ####
-
-As of 07/24/2020: 
-
-- Local development can be done on https://localhost:4200 using included pre-gen certs (no web server or hacked domain required)
-- Production build and deployments are done via GitHub Actions triggered on pushes to master
-- NPM (not Yarn) is the expected package manager
-- We're upgraded to Angular 9.1
+- Local development uses included self-signed certs on https://localhost:4200
+- Production deployments via GitHub Actions on push to master
+- NPM (not Yarn) is the package manager
+- JSON files in `src/assets/` are tracked with git LFS
+- Bump `version` in `package.json` with each release to force the service worker to pick up changes
