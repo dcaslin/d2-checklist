@@ -25,7 +25,7 @@ Create an application at the [Bungie Application Portal](https://www.bungie.net/
 
 ## Contributing
 
-Pull requests welcome. This application uses FontAwesome Pro, so running your own dev environment requires stubbing those out.
+Pull requests welcome. FontAwesome Pro icon packages are vendored as tarballs in `vendor-packages/` — no private registry auth needed.
 
 ## Notes
 
