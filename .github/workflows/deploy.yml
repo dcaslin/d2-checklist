@@ -23,12 +23,13 @@ jobs:
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }}
     - run: npx ng build --configuration production
     - name: Deploy via SCP
-      uses: appleboy/scp-action@v0.1.7
+      uses: appleboy/scp-action@v0.1.3
+      env:
+        HOST: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.UID }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSH }}
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.UID }}
-        port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSH }}
         source: "./dist/"
         target: "/home/${{ secrets.UID }}/d2checklist/"
         strip_components: 2 # this is important
