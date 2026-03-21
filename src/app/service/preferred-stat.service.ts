@@ -177,12 +177,14 @@ export interface DetailedPreferredStats {
 }
 
 interface ClassStatPrefs {
+  [key: string]: ClassStatPref;
   Hunter: ClassStatPref;
   Warlock: ClassStatPref;
   Titan: ClassStatPref;
 }
 
 interface ClassStatPref {
+      [key: string]: number;
       Weapons: number;
       Health: number;
       Class: number;

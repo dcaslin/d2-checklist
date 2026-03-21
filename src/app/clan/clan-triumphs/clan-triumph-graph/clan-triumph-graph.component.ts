@@ -37,7 +37,7 @@ export class ClanTriumphGraphComponent {
   @Input()
   set data(all: PlayerTriumph[]) {
     this.chartData.labels = [];
-    const dataDict = {};
+    const dataDict: Record<number, number> = {};
     const data = [];
     for (const pt of all) {
       const val = Math.ceil(pt.data.percent / 10) * 10;

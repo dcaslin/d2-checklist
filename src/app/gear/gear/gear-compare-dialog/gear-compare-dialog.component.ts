@@ -81,7 +81,7 @@ export class GearCompareDialogComponent extends ChildComponent {
   }
 
   public static getAllStatsStatic(items: InventoryItem[]) {
-    const names = {};
+    const names: Record<string, boolean> = {};
     const stats = items[0].stats.slice(0);
     for (const s of stats) {
       names[s.name] = true;

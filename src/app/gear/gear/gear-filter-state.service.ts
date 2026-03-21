@@ -52,7 +52,7 @@ const OPERATORS = [
 // tagVal might be stat:handling>=42
 function _processStats(tagVal: string, stats: InventoryStat[], statChoiceMap: Map<string, number>): boolean {
   // get the part after > or < or = sign
-  const statName = null;
+  const statName: string = null;
   let prefix = null;
   for (const op of OPERATORS) {
     const index = tagVal.indexOf(op);
@@ -277,7 +277,7 @@ export class GearFilterStateService implements OnDestroy {
   public filtersDirty$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public filterUpdated$: Subject<void> = new Subject<void>();
-  public visibleFilterText = null;
+  public visibleFilterText: string = null;
   private orMode = false;
 
   private weaponStatChoices: AutoCompleteOption[] = [];
@@ -356,7 +356,7 @@ export class GearFilterStateService implements OnDestroy {
               if (!t.getValue().choices) {
                 continue;
               }
-              const deselectedVals: string[] = t.getValue().choices.filter(c => !c.value).map(c => c.matchValue);
+              const deselectedVals: string[] = t.getValue().choices.filter((c: any) => !c.value).map((c: any) => c.matchValue);
               if (deselectedVals.length > 0) {
                 filterSettings.deselectedChoices[key] = deselectedVals;
               }
@@ -369,8 +369,8 @@ export class GearFilterStateService implements OnDestroy {
 
   public init(visibleItemType: TabOption) {
     this.toggleData = this.initToggles(this.iconService, visibleItemType);
-    const a = [];
-    const thingsToListenTo$ = [this.filterTags$];
+    const a: any[] = [];
+    const thingsToListenTo$: any[] = [this.filterTags$];
     for (const key of Object.keys(this.toggleData)) {
       a.push(this.toggleData[key]);
       thingsToListenTo$.push(this.toggleData[key]);
@@ -688,7 +688,7 @@ export class GearFilterStateService implements OnDestroy {
     aPowerCaps.reverse();
     const aPowerCapChoices = [];
     for (const pc of aPowerCaps) {
-      if (pc == 9999) {
+      if (pc as any == 9999) {
         aPowerCapChoices.push(new Choice(pc, 'None'));
       } else {
         aPowerCapChoices.push(new Choice(pc, `${pc}`));
@@ -1035,6 +1035,7 @@ export interface TabOption {
 }
 
 export interface ToggleData {
+  [key: string]: BehaviorSubject<ToggleState>;
   tags$: BehaviorSubject<ToggleState>;
   weaponBuckets$: BehaviorSubject<ToggleState>;
   godRolls$: BehaviorSubject<ToggleState>;

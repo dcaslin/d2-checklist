@@ -76,8 +76,8 @@ export class GearService {
                     aV = a.masterwork != null ? a.masterwork.name : '';
                     bV = b.masterwork != null ? b.masterwork.name : '';
                 } else if (sortBy == 'mods') {
-                    aV = a[sortBy] != null && a[sortBy].length > 0 ? a[sortBy][0].name : '';
-                    bV = b[sortBy] != null && b[sortBy].length > 0 ? b[sortBy][0].name : '';
+                    aV = (a as any)[sortBy] != null && (a as any)[sortBy].length > 0 ? (a as any)[sortBy][0].name : '';
+                    bV = (b as any)[sortBy] != null && (b as any)[sortBy].length > 0 ? (b as any)[sortBy][0].name : '';
                 }
                 if (aV < bV) {
                     return sortDesc ? 1 : -1;
@@ -85,8 +85,8 @@ export class GearService {
                     return sortDesc ? -1 : 1;
                 } else {
                     if (sortBy != 'mods') {
-                        aV = a[sortBy] != null ? a[sortBy].name : '';
-                        bV = b[sortBy] != null ? b[sortBy].name : '';
+                        aV = (a as any)[sortBy] != null ? (a as any)[sortBy].name : '';
+                        bV = (b as any)[sortBy] != null ? (b as any)[sortBy].name : '';
                         if (aV < bV) {
                             return sortDesc ? 1 : -1;
                         } else if (aV > bV) {
@@ -976,7 +976,7 @@ export class GearService {
 
 
     public async fixPerks(fixMe: InventoryItem[], log$: BehaviorSubject<string[]>): Promise<void> {
-        const log = [];
+        const log: string[] = [];
         log$.next(log);
         for (const i of fixMe) {
             this.notificationService.info('Fixing ' + i.name);

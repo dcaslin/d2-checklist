@@ -36,7 +36,7 @@ export class SimpleParseService {
 
 
   public static parseBungieMember(r: PrivBungieMember): BungieMember {
-    if (r.isDeleted === true) { return; }
+    if (r.isDeleted === true) { return null; }
     let xbl: BungieMemberPlatform;
     let psn: BungieMemberPlatform;
     let bnet: BungieMemberPlatform;

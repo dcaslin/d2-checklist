@@ -86,6 +86,7 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit {
         return currentNode;
       }
     }
+    return null;
   }
 
   public static expandParents(tree: FlatTreeControl<any>, node: TriumphFlatNode): void {

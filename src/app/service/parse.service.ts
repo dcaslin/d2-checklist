@@ -143,7 +143,7 @@ export class ParseService {
         }
     }
 
-    private static greatestCommonDenominator(a: number, b: number) {
+    private static greatestCommonDenominator(a: number, b: number): number {
         return (b) ? ParseService.greatestCommonDenominator(b, a % b) : a;
     }
 
@@ -448,13 +448,13 @@ export class ParseService {
                     c.endWeek = new Date(ms.endDate);
 
                     const clanMilestones: ClanMilestoneResult[] = [];
-                    ms.rewards.forEach(r => {
+                    ms.rewards.forEach((r: any) => {
                         // last week, for testing
                         // if (r.rewardCategoryHash == 4258746474) {
                         // this week's clan rewards
                         if (r.rewardCategoryHash === 1064137897) {
                             const rewEntryDescs = desc.rewards[r.rewardCategoryHash].rewardEntries;
-                            r.entries.forEach(rewEnt => {
+                            r.entries.forEach((rewEnt: any) => {
                                 const rewEntKey = rewEnt.rewardEntryHash;
                                 const name = rewEntryDescs[rewEntKey].displayProperties.name;
                                 const earned: boolean = rewEnt.earned;
@@ -716,17 +716,17 @@ export class ParseService {
 
     public static getBasicValue(val: any): number {
         if (val == null) { return null; }
-        if (val.basic == null) { return; }
+        if (val.basic == null) { return null; }
         return val.basic.value;
     }
 
     public static getBasicDisplayValue(val: any): string {
         if (val == null) { return null; }
-        if (val.basic == null) { return; }
+        if (val.basic == null) { return null; }
         return val.basic.displayValue;
     }
 
-    private async parseActivity(a): Promise<Activity> {
+    private async parseActivity(a: any): Promise<Activity> {
         const act: Activity = new Activity();
 
         act.period = a.period;
@@ -807,7 +807,7 @@ export class ParseService {
 
     public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[]): AggHistoryEntry[] {
         const returnMe: AggHistoryEntry[] = [];
-        let aKeys = [];
+        let aKeys: string[] = [];
         for (const c of charAggHistDicts) {
             if (c != null) {
                 aKeys = aKeys.concat(Object.keys(c));
@@ -815,8 +815,8 @@ export class ParseService {
         }
         aKeys = ParseService.dedupeArray(aKeys);
 
-        const nfHashes = [];
-        const nfDict = {};
+        const nfHashes: string[] = [];
+        const nfDict: Record<string, any> = {};
 
         for (const key of aKeys) {
             let model: AggHistoryEntry = null;
@@ -872,17 +872,17 @@ export class ParseService {
                     type: 'nf',
                     special: true,
                     hash: [hash],
-                    activityBestSingleGameScore: null,
-                    fastestCompletionMsForActivity: null,
+                    activityBestSingleGameScore: null as any,
+                    fastestCompletionMsForActivity: null as any,
                     activityCompletions: 0,
-                    charCompletions: [],
-                    activityKills: null,
-                    activityAssists: null,
-                    activityDeaths: null,
-                    activityPrecisionKills: null,
-                    activitySecondsPlayed: null,
-                    activityLightLevel: null,
-                    efficiency: null
+                    charCompletions: [] as any[],
+                    activityKills: null as any,
+                    activityAssists: null as any,
+                    activityDeaths: null as any,
+                    activityPrecisionKills: null as any,
+                    activitySecondsPlayed: null as any,
+                    activityLightLevel: null as any,
+                    efficiency: null as any
                 };
                 returnMe.push(addMe);
 
@@ -908,7 +908,7 @@ export class ParseService {
 
     public async parseAggHistory2(char: Character, resp: any): Promise<{ [key: string]: AggHistoryEntry }> {
         if (resp.activities == null) {
-            return;
+            return {};
         }
 
         const dict: { [key: string]: AggHistoryEntry } = {};
@@ -967,7 +967,7 @@ export class ParseService {
             fastest = a.fastestCompletionMsForActivity;
         }
         const timePlayed = a.activitySecondsPlayed + b.activitySecondsPlayed;        
-        const charCompDict = {};
+        const charCompDict: Record<string, any> = {};
         for (const c of a.charCompletions.concat(b.charCompletions)) {
             if (!charCompDict[c.char.id]) {
                 charCompDict[c.char.id] = c;
@@ -1124,13 +1124,13 @@ export class ParseService {
                     if (publicMs && charMs) {
                         throw new Error('Both public and char milestones are not expected');
                     } else if (publicMs) {
-                        challengeHashes = publicMs.activities.map(x => x.challengeObjectiveHashes).flat().filter(x => manifestChallengeHashes.includes(x))
-                      
+                        challengeHashes = publicMs.activities.map((x: any) => x.challengeObjectiveHashes).flat().filter((x: any) => manifestChallengeHashes.includes(x))
+
                     } else if (charMs) {
-                        challengeHashes = charMs.activities.flatMap(x => x.challenges).map(x=>x.objective?.objectiveHash).filter(x => manifestChallengeHashes.includes(x))
+                        challengeHashes = charMs.activities.flatMap((x: any) => x.challenges).map((x: any)=>x.objective?.objectiveHash).filter((x: any) => manifestChallengeHashes.includes(x))
                     }
 
-                    aDesc.challenges.filter(x =>  challengeHashes.includes(x.objectiveHash) && x.dummyRewards).map((x)=>{
+                    aDesc.challenges.filter((x: any) =>  challengeHashes.includes(x.objectiveHash) && x.dummyRewards).map((x: any)=>{
                         x.dummyRewards.map((value: any) => {
                             // console.log(`${name} has activity challenge rewards`)
                             accumulatedRewards.push(value);
@@ -1340,7 +1340,7 @@ export class ParseService {
                     }
                 }
             }
-            const dAct = {};
+            const dAct: Record<string, any> = {};
             for (const a of activities) {
                 const key = a.name + ' ' + a.modifiers.length;
                 if (dAct[key] == null) {
@@ -1550,7 +1550,7 @@ export class ParseService {
             const oChecklists: any = resp.profileProgression.data.checklists;
             for (const key of Object.keys(oChecklists)) {
                 // skip raid lair
-                if (key === '110198094') { return; }
+                if (key === '110198094') { continue; }
                 const vals: any = oChecklists[key];
                 const desc: any = await this.destinyCacheService.getChecklist(key);
                 if (desc == null) {
@@ -2112,7 +2112,7 @@ export class ParseService {
             });
         }
 
-        let recordTree = [];
+        let recordTree: any[] = [];
         const seals: Seal[] = [];
         const badges: Badge[] = [];
         const seasonChallengeEntries: SeasonalChallengeEntry[] = [];
@@ -2123,7 +2123,7 @@ export class ParseService {
         let searchableCollection: TriumphCollectibleNode[] = [];
         const dictSearchableTriumphs: any = {};
 
-        let colTree = [];
+        let colTree: any[] = [];
         let triumphScore = null;
         const currencies: Currency[] = [];
         const rankups: Rankup[] = [];
@@ -2385,7 +2385,7 @@ export class ParseService {
                     if (weeklyChild != null) {
                         const incomplete = {
                             name: 'All Incomplete',
-                            records: []
+                            records: [] as any[]
                         };
                         for (const week of weeklyChild.children) {
                             seasonChallengeEntries.push({
@@ -2590,7 +2590,7 @@ export class ParseService {
             const finalRitualPresNode = resp.profileRecords.data.records[weeklyRitualPathfinderHash];
             let pinnaclesTaken = 0;
             if (finalRitualPresNode) {
-                const firstTrue = finalRitualPresNode.rewardVisibilty.findIndex(x => x == true);
+                const firstTrue = finalRitualPresNode.rewardVisibilty.findIndex((x: any) => x == true);
                 // https://data.destinysets.com/i/Record:3234374170
                 // at this moment the first 3 sets of rewards are a prime/bright/enhancement prism/challenger xp
                 // after that it's enhancement prism/bright dust/xp only
@@ -2648,7 +2648,7 @@ export class ParseService {
             postmasterTotal: 0,
             postmaster: [],
             vault: {
-                count: profileInventory.data.items.filter(x => x.bucketHash == 138197802).length,
+                count: profileInventory.data.items.filter((x: any) => x.bucketHash == 138197802).length,
                 total: generalDesc.itemCount
             }
         };
@@ -2659,7 +2659,7 @@ export class ParseService {
         const postmasterMax = postmasterDesc.itemCount;
         for (const char of chars) {
             const key = char.characterId;
-            const postmaster = charInvs.data[key].items.filter(x => x.bucketHash == 215593132);
+            const postmaster = charInvs.data[key].items.filter((x: any) => x.bucketHash == 215593132);
             returnMe.postmaster.push({
                 char,
                 count: postmaster.length,
@@ -3396,7 +3396,7 @@ export class ParseService {
                 Object.keys(instanceData.stats).forEach(key => {
                     const val: any = instanceData.stats[key];
                     const jDesc: any = this.destinyCacheService.cacheLite.Stat[key];
-                    statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
+                    statDict[key] = new InventoryStat(+key, jDesc.displayProperties.name,
                         jDesc.displayProperties.description, val.value, jDesc.index);
                 });
                 // also grab the stats from the API architetype
@@ -3406,7 +3406,7 @@ export class ParseService {
                     // if we already got the real instance data, ignore the architetype stats
                     if (statDict[key] == null) {
                         const jDesc: any = this.destinyCacheService.cacheLite.Stat[key];
-                        statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
+                        statDict[key] = new InventoryStat(+key, jDesc.displayProperties.name,
                             jDesc.displayProperties.description, val.value, jDesc.index, true);
                     }
                 });
@@ -3798,7 +3798,7 @@ export class ParseService {
                                         sourcePlugs = plugDefs;
                                         const socketTypeDesc = await this.destinyCacheService.getSocketType(socketDesc.socketTypeHash);
                                         if (socketTypeDesc?.plugWhitelist) {
-                                            plugWhitelist = socketTypeDesc.plugWhitelist.map(x => x.categoryIdentifier);
+                                            plugWhitelist = socketTypeDesc.plugWhitelist.map((x: any) => x.categoryIdentifier);
                                         }
                                     }
                                     const modSocketType = emptyModSocketDesc?.itemTypeDisplayName;
@@ -3998,7 +3998,7 @@ export class ParseService {
             }
             let notCrafted = desc.inventory.recipeItemHash && !crafted;
 
-            const bucketOrder = null;
+            const bucketOrder: number = null;
 
             let questline: Questline = null;
             if (desc.objectives != null && type == ItemType.QuestStep) {

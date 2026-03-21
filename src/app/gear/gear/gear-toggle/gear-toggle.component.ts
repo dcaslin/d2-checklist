@@ -27,7 +27,7 @@ export class GearToggleComponent {
     this.state$.next(newState);
   }
 
-  exclusiveSelect(choice) {
+  exclusiveSelect(choice: any) {
     if (!this.state$?.getValue()?.choices?.length) {
       return;
     }
@@ -38,7 +38,7 @@ export class GearToggleComponent {
     this.state$.next(newState);
   }
 
-  select(event, choice) {
+  select(event: Event, choice: any) {
     event.stopPropagation();
     if (!this.state$?.getValue()?.choices?.length) {
       return;

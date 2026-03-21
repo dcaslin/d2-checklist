@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
 
-export function sleep(ms) {
+export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -17,7 +17,7 @@ export function getDefaultTheme(): string {
 
 const getCircularErrorReplacer = () => {
   const seen = new WeakSet();
-  return (key, value) => {
+  return (key: string, value: any) => {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {
         return;
@@ -39,7 +39,7 @@ const getCircularErrorReplacer = () => {
 };
 
 
-export function getHttpErrorMsg(x): string {
+export function getHttpErrorMsg(x: any): string {
   if (!x) {
     return '';
   }
@@ -60,10 +60,10 @@ export type Primer = (data: string) => any;
 
 export const sortByField = (field: string, reverse: boolean, primer: Primer) => {
   const key = primer ?
-    function (x) {
+    function (x: any) {
       return primer(x[field]);
     } :
-    function (x) {
+    function (x: any) {
       return x[field];
     };
 

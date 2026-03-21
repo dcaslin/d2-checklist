@@ -231,7 +231,7 @@ export class AuthService {
         return text;
     }
 
-    private static parseError(err): string {
+    private static parseError(err: any): string {
         console.dir(err);
         let jsonMsg = null;
         try {

@@ -119,7 +119,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   @HostListener('window:beforeinstallprompt', ['$event'])
-  beforeInstall(e) {
+  beforeInstall(e: Event) {
     console.log(e);
     // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
@@ -138,7 +138,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.deferredPrompt.prompt();
     // Wait for the user to respond to the prompt
     this.deferredPrompt.userChoice
-      .then((choiceResult) => {
+      .then((choiceResult: any) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the A2HS prompt');
         } else {
@@ -194,7 +194,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       takeUntil(this.unsubscribe$))
       .subscribe(
         (navEnd: NavigationEnd) => {
@@ -230,11 +230,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (window['NitroPayCCPA']) {
-      window['NitroPayCCPA'].init();
+    if ((window as any)['NitroPayCCPA']) {
+      (window as any)['NitroPayCCPA'].init();
     }
-    if (window['__cmp']) {
-      window['__cmp']('addConsentLink');
+    if ((window as any)['__cmp']) {
+      (window as any)['__cmp']('addConsentLink');
     }
   }
 
@@ -248,7 +248,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ref.markForCheck();
   }
 
-  selectUser(user) {
+  selectUser(user: any) {
     this.signedOnUserService.selectUser(user);
     this.ref.markForCheck();
   }

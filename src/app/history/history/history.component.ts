@@ -76,7 +76,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
       this.database.setData([]);
       if (platform == null) { return; }
 
-      const selPlatform = Const.PLATFORMS_DICT[platform];
+      const selPlatform = (Const.PLATFORMS_DICT as any)[platform];
 
       if (selPlatform != null) {
         this.membershipType = selPlatform.type;

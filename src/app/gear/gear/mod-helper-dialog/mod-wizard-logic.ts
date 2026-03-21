@@ -114,6 +114,7 @@ function getSocketSlotType(socket: InventorySocket): SocketSlotType {
     if (socket.plugWhitelist.find(x => x.startsWith('enhancements.v2_'))) {
         return SocketSlotType.Mod;
     }
+    return SocketSlotType.None;
 }
 
 function cookTargetPlugName(name: string, options: ManifestInventoryItem[]): string {
@@ -341,7 +342,7 @@ export async function applyMods(gearService: GearService, notificationService: N
             armor[i] = armor[i].cloneForDryRun();
         }
     }
-    const log = [];
+    const log: string[] = [];
     log$.next(log);
     if (modChoices.priorityEnergy == null) {
         alert('Please select a primary energy.');
@@ -375,7 +376,7 @@ export async function applyMods(gearService: GearService, notificationService: N
         if (item.inventoryBucket.displayProperties.name == 'Class Armor') {
             continue;
         }
-        const choices = [];
+        const choices: any[] = [];
         for (const socket of item.sockets) {
             const target = chooseModTarget(item, socket, modChoices, choices);
             await tryToInsertMod(gearService, item, socket, target, choices, log$, previewOnly);

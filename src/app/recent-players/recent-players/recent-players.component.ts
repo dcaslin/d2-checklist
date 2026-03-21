@@ -29,8 +29,8 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   msg: string;
   rows: Activity[];
   rowCntr = 0;
-  friendsDict = {};
-  friends = [];
+  friendsDict: Record<string, any> = {};
+  friends: any[] = [];
 
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
@@ -139,7 +139,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const platform: string = params['platform'];
       if (platform == null) { return; }
-      const selPlatform = Const.PLATFORMS_DICT[platform];
+      const selPlatform = (Const.PLATFORMS_DICT as any)[platform];
       if (selPlatform != null) {
         this.membershipType = selPlatform.type;
         this.membershipId = params['memberId'];

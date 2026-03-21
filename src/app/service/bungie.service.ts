@@ -117,6 +117,7 @@ export class BungieService implements OnDestroy {
                 return p;
             }
         }
+        return null;
     }
 
     public async getCachedAggHistoryForPlayer(player: Player): Promise<AggHistoryCache> {
@@ -242,7 +243,7 @@ export class BungieService implements OnDestroy {
         try {
             const resp = await this.makeReq('GroupV2/User/254/' + bungieId + '/0/1/');
             const returnMe: ClanRow[] = [];
-            const clanMap = {};
+            const clanMap: Record<string, boolean> = {};
             for (const r of resp.results) {
                 if (r.group != null && r.group.groupType === 1) {
                     if (clanMap[r.group.groupId] === true) {
@@ -316,7 +317,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public handleError(err) {
+    public handleError(err: any) {
         if (err.error != null) {
             const j = err.error;
             if (j.ErrorCode && j.ErrorCode !== 1) {
@@ -329,7 +330,7 @@ export class BungieService implements OnDestroy {
                     this.apiDown = true;
                 }
                 this.notificationService.fail(j.Message);
-                return;
+                return null;
             }
         }
         console.dir(err);
@@ -344,6 +345,7 @@ export class BungieService implements OnDestroy {
         } else {
             this.notificationService.fail('Unexpected problem: ' + err);
         }
+        return null;
     }
 
     public parseBungieResponse(j: any): any {
@@ -418,7 +420,7 @@ export class BungieService implements OnDestroy {
     }
 
     public async getActivityHistoryUntilDate(membershipType: number, membershipId: string, characterId: string, mode: number, stopDate: Date): Promise<Activity[]> {
-        let returnMe = [];
+        let returnMe: Activity[] = [];
         let page = 0;
         // repeat until we run out of activities or we precede the start date or we hit 10 pages
 

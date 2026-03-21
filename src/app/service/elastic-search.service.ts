@@ -27,7 +27,7 @@ export class ElasticSearchService implements OnDestroy {
       });
   }
 
-  private async handleSearch(searchText) {
+  private async handleSearch(searchText: string) {
     if (searchText==null || searchText.length==0) {
       this.filteredAutoCompleteOptions$.next([]);
       return;

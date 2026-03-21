@@ -235,7 +235,7 @@ export class VendorService {
 
   private checkCollectionForVendor(player: Player, vendorItems: InventoryItem[], vendorHash: string, checkType: ItemType) {
     const checkMe = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == vendorHash && i.type == checkType);
-    const returnMe = [];
+    const returnMe: InventoryItem[] = [];
     for (const c of checkMe) {
 
       // this check caused Ada shaders to not show up, hopefully no side-effects
@@ -555,7 +555,7 @@ export class VendorService {
         return null;
       }
     }
-    let returnMe = [];
+    let returnMe: InventoryItem[] = [];
 
     for (let responseKey in responses) {
       const resp = responses[responseKey];
@@ -712,7 +712,7 @@ export class VendorService {
       vendor: vendor,
       status: await this.parseSaleItemStatus(vendor.hash, i.failureIndexes),
       quantity: i.quantity,
-      objectives: objectives,
+      objectives: objectives as any,
       values: values,
       costs: costs,
       searchText: vendorSearchText.toLowerCase()
@@ -766,7 +766,7 @@ export class VendorService {
             this.bungieService.apiDown = true;
           }
           this.notificationService.fail(j.Message);
-          return;
+          return null;
         }
       }
       console.dir(err);

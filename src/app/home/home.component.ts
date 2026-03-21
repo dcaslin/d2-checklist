@@ -87,7 +87,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   private setPlatform(type: number) {
     // already set
     if (this.selectedPlatform != null && this.selectedPlatform.type === type) { return; }
-    this.selectedPlatform = Const.PLATFORMS_DICT['' + type];
+    this.selectedPlatform = (Const.PLATFORMS_DICT as any)['' + type];
   }
 
   public routeSearch(): void {

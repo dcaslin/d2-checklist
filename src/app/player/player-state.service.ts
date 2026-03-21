@@ -38,8 +38,8 @@ export class PlayerStateService {
   private _hideCompleteCollectibles = false;
 
 
-  public dTrackedTriumphIds = {};
-  public dTrackedPursuits = {};
+  public dTrackedTriumphIds: Record<string, boolean> = {};
+  public dTrackedPursuits: Record<string, boolean> = {};
 
   public get sort() {
     return this._sort;
@@ -105,7 +105,7 @@ export class PlayerStateService {
 
   public requestRefresh() {
     const p = this.currPlayer();
-    const platform = Const.PLATFORMS_DICT['' + p.profile.userInfo.membershipType];
+    const platform = (Const.PLATFORMS_DICT as any)['' + p.profile.userInfo.membershipType];
     this.loadPlayer(platform, p.profile.userInfo.membershipId, true);
   }
 
@@ -219,7 +219,7 @@ export class PlayerStateService {
   }
 
   public static sortMileStones(player: Player, sort: string): Player {
-    if (player == null || player.milestoneList == null) { return; }
+    if (player == null || player.milestoneList == null) { return player; }
     if (sort === 'rewardsDesc') {
       player.milestoneList.sort((a, b) => {
         if (a.boost.sortVal < b.boost.sortVal) { return 1; }
@@ -309,17 +309,17 @@ export class PlayerStateService {
     const tempPursuits = [];
     if (Object.keys(this.dTrackedPursuits).length > 0) {
       for (const t of player.bounties) {
-        if (this.dTrackedPursuits[t.hash] == true) {
+        if ((this.dTrackedPursuits as any)[t.hash] == true) {
           tempPursuits.push(t);
         }
       }
       for (const t of player.quests) {
-        if (this.dTrackedPursuits[t.hash] == true) {
+        if ((this.dTrackedPursuits as any)[t.hash] == true) {
           tempPursuits.push(t);
         }
       }
       for (const t of player.pursuitGear) {
-        if (this.dTrackedPursuits[t.hash] == true) {
+        if ((this.dTrackedPursuits as any)[t.hash] == true) {
           tempPursuits.push(t);
         }
       }
@@ -334,7 +334,7 @@ export class PlayerStateService {
     const tempTriumphs = [];
     if (Object.keys(this.dTrackedTriumphIds).length > 0) {
       for (const t of player.searchableTriumphs) {
-        if (this.dTrackedTriumphIds[t.hash] == true) {
+        if ((this.dTrackedTriumphIds as any)[t.hash] == true) {
           tempTriumphs.push(t);
         }
       }

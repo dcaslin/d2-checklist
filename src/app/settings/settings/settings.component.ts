@@ -55,15 +55,15 @@ export class SettingsComponent extends ChildComponent implements OnDestroy {
       });
   }
 
-  onThemeSelect({ value }) {
+  onThemeSelect({ value }: { value: string }) {
     this.storageService.setItem('theme', value);
   }
 
-  onDisableAdsSelect({ value }) {
+  onDisableAdsSelect({ value }: { value: string }) {
     this.storageService.setItem('disableads', value);
   }
 
-  onDebugSelect({ value }) {
+  onDebugSelect({ value }: { value: string }) {
     this.storageService.setItem('debugmode', value);
   }
 
