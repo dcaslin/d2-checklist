@@ -13,7 +13,7 @@ export interface Action {
 const APP_PREFIX = 'D2STATE-';
 const CLAN_MS_KEY = 'hiddenClanMilestones';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StorageService {
   public settingFeed: BehaviorSubject<any> = new BehaviorSubject({});
 

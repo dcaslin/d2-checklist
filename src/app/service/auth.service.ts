@@ -7,7 +7,7 @@ import { NotificationService } from './notification.service';
 
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
     private authSub = new ReplaySubject(null);
     public authFeed: Observable<AuthInfo>;

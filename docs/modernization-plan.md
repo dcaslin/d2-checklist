@@ -2,12 +2,12 @@
 
 Tracking document for incremental improvements to the d2-checklist codebase. Work is ordered by priority and dependency — later phases build on earlier ones.
 
-**Current state (as of 2026-03-20):**
+**Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
-- Zero test coverage, TypeScript strict mode disabled
+- Zero test coverage, 5 of 7 TypeScript strict flags enabled
 - `parse.service.ts` is 4,385 lines
 - No bundle size budgets
-- CI actions outdated, no `npm audit` in pipeline
+- CI modernized: rsync deploys, Node 20.x, npm audit
 
 ---
 
@@ -15,12 +15,13 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 
 Enable strict type checking incrementally to catch bugs at compile time instead of production.
 
-- [ ] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors
-- [ ] Enable `noImplicitAny`, fix resulting errors
-- [ ] Enable `noImplicitReturns` and `noFallthroughCasesInSwitch`
+- [x] Enable `noImplicitAny`, fix resulting errors
+- [x] Enable `noImplicitReturns` and `noFallthroughCasesInSwitch`
+- [x] Enable `strictBindCallApply` and `strictFunctionTypes`
+- [ ] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~722 errors)
+- [ ] Enable `strictPropertyInitialization` (requires `strictNullChecks`)
 - [ ] Enable `strictTemplates` in `angularCompilerOptions`
 - [ ] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning
-- [ ] Enable remaining `strict` flags (`strictBindCallApply`, `strictFunctionTypes`, `strictPropertyInitialization`)
 
 **Done when:** `"strict": true` in tsconfig.json and `strictTemplates: true` in angular compiler options.
 
@@ -76,14 +77,16 @@ Prevent bundle bloat.
 
 Bring the pipeline up to date and add safety checks.
 
-- [ ] Update `actions/checkout` from v2 to v4 in all workflows
-- [ ] Update `actions/cache` to v4 in all workflows (currently v3 in deploy, v1 in beta)
-- [ ] Add `npm audit --audit-level=moderate` step before build
+- [x] Update `actions/checkout` to v4 in all workflows
+- [x] Update `actions/setup-node` to v4 with built-in npm cache
+- [x] Replace `scp-action` with rsync deploys (single SSH connection, no UFW spam)
+- [x] Add `workflow_dispatch` trigger for manual deploys
+- [x] Add `npm audit --audit-level=moderate` step
+- [x] Upgrade Node from 18.x to 20.x
 - [ ] Add unit test step (from Phase 2)
-- [ ] Add bundle size reporting step (compare against budgets from Phase 4)
-- [ ] Standardize Node version across workflows (currently 18.x — consider 20.x)
+- [ ] Add bundle size reporting step (from Phase 4)
 
-**Done when:** Both deploy.yml and beta-deploy.yml use current action versions, run tests, and audit dependencies.
+**Done when:** Both deploy.yml and beta-deploy.yml run tests and report bundle sizes.
 
 ---
 
@@ -91,10 +94,10 @@ Bring the pipeline up to date and add safety checks.
 
 Eliminate the mixed `providedIn: 'root'` vs `app.module.ts` providers pattern.
 
-- [ ] Audit all services — list which use `providedIn: 'root'` vs module providers
-- [ ] Migrate all services to `providedIn: 'root'` (modern Angular standard)
-- [ ] Remove corresponding entries from `app.module.ts` providers array
-- [ ] Verify tree-shaking works correctly (unused services excluded from bundle)
+- [x] Audit all services — list which use `providedIn: 'root'` vs module providers
+- [x] Migrate all 9 legacy services to `providedIn: 'root'`
+- [x] Remove corresponding entries from `app.module.ts` providers array
+- [x] Verify tree-shaking works correctly (build compiles cleanly)
 
 **Done when:** All services use `providedIn: 'root'` and `app.module.ts` providers array contains only non-service tokens.
 

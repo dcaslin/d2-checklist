@@ -18,7 +18,7 @@ import { SimpleParseService } from './simple-parse.service';
 export const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class BungieService implements OnDestroy {
     private publicMilestonesAndActivities: PublicMilestonesAndActivities = null;
     private unsubscribe$: Subject<void> = new Subject<void>();

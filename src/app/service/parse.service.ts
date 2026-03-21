@@ -77,7 +77,7 @@ const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 export const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ParseService {
     MAX_LEVEL = 50;
 

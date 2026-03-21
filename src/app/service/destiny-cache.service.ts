@@ -9,7 +9,7 @@ import { DestinyObjectiveUiStyle } from './model';
 
 const LOG_CSS = `color: orangered`;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DestinyCacheService {
   public cache: Cache;
   public cacheLite: CacheLite;

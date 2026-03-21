@@ -30,7 +30,7 @@ const MARK_URL = '/api/mark';
 const LOG_CSS = `color: royalblue`;
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MarkService implements OnDestroy {
     // right now we only use this for DIM-sync
     public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);

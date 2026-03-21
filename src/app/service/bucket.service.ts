@@ -54,7 +54,7 @@ export class Bucket {
     }
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class BucketService {
     // owner id -> bucket hash -> item[]
     private buckets:  { [key: string]: { [key: string]: Bucket } };

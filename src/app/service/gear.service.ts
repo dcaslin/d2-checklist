@@ -44,7 +44,7 @@ function isGrind(i: InventoryItem): boolean {
     return i.deepsight || (i.crafted && i.craftProgress?.level < 20);
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class GearService {
 
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
