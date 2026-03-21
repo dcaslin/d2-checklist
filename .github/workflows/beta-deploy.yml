@@ -22,13 +22,15 @@ jobs:
         BETA_CLIENT_SECRET: ${{ secrets.BETA_CLIENT_SECRET }}
         BETA_DIM_API_KEY: ${{ secrets.BETA_DIM_API_KEY }}
     - run: npx ng build --configuration production
-    - name: Deploy via SCP
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.BETA_HOST }}
-        username: ${{ secrets.BETA_UID }}
-        port: ${{ secrets.BETA_PORT }}
-        key: ${{ secrets.BETA_SSH }}
-        source: "./dist/"
-        target: "/home/${{ secrets.BETA_UID }}/d2checklist-beta/"
-        strip_components: 2 # this is important
+    - name: Deploy via rsync
+      env:
+        SSH_KEY: ${{ secrets.BETA_SSH }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_KEY" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        rsync -avz --delete \
+          -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.BETA_PORT }}" \
+          ./dist/d2-checklist/ \
+          ${{ secrets.BETA_UID }}@${{ secrets.BETA_HOST }}:/home/${{ secrets.BETA_UID }}/d2checklist-beta/
+        rm -f ~/.ssh/deploy_key

@@ -2,6 +2,7 @@ name: deploy
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,13 +23,15 @@ jobs:
         PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }}
     - run: npx ng build --configuration production
-    - name: Deploy via SCP
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.UID }}
-        port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSH }}
-        source: "./dist/"
-        target: "/home/${{ secrets.UID }}/d2checklist/"
-        strip_components: 2 # this is important
+    - name: Deploy via rsync
+      env:
+        SSH_KEY: ${{ secrets.SSH }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_KEY" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        rsync -avz --delete \
+          -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.PORT }}" \
+          ./dist/d2-checklist/ \
+          ${{ secrets.UID }}@${{ secrets.HOST }}:/home/${{ secrets.UID }}/d2checklist/
+        rm -f ~/.ssh/deploy_key
