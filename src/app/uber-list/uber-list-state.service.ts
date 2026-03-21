@@ -39,7 +39,7 @@ export class UberListStateService implements OnDestroy {
   public someVisibleChecked$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public checkedRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
   public checked$: BehaviorSubject<string[]> = new BehaviorSubject([]);
-  public sort$: BehaviorSubject<UberSort> = new BehaviorSubject({
+  public sort$: BehaviorSubject<UberSort> = new BehaviorSubject<UberSort>({
     by: DEFAULT_SORT_BY,
     desc: DEFAULT_SORT_DESC
   });
@@ -62,7 +62,7 @@ export class UberListStateService implements OnDestroy {
   private async buildMe() {
     this.toggleData = await this.buildInitToggles();
     const a: BehaviorSubject<UberToggleState>[] = [];
-    const thingsToListenTo$ = [this.rows$, this.filterTags$, this.sort$, this.checked$];
+    const thingsToListenTo$: any[] = [this.rows$, this.filterTags$, this.sort$, this.checked$];
     for (const key of Object.keys(this.toggleData)) {
       a.push(this.toggleData[key]);
       thingsToListenTo$.push(this.toggleData[key]);
@@ -212,8 +212,8 @@ export class UberListStateService implements OnDestroy {
               const t = this.toggleData[key];
               const deselectedVals: string[] = t
                 .getValue()
-                .choices.filter((c) => !c.checked)
-                .map((c) => c.matchValue);
+                .choices.filter((c: any) => !c.checked)
+                .map((c: any) => c.matchValue);
               if (deselectedVals.length > 0) {
                 filterSettings.deselectedChoices[key] = deselectedVals;
               }
@@ -355,7 +355,7 @@ export class UberListStateService implements OnDestroy {
     this.checked$.next(checked);
   }
 
-  public trackUberRow(index, item: (MilestoneRow | PursuitRow)): string {
+  public trackUberRow(index: number, item: (MilestoneRow | PursuitRow)): string {
     return item ? item.id : undefined;
   }
 
@@ -475,7 +475,7 @@ export class UberListStateService implements OnDestroy {
     if (
       desc?.displayProperties?.icon == null
     ) {
-      const vendorHash = ICON_FIXES[msn.key];
+      const vendorHash = (ICON_FIXES as any)[msn.key];
       if (desc == null) {
         desc = {
           displayProperties: {}
@@ -894,6 +894,7 @@ interface UberFilterSettings {
 }
 
 interface UberToggleData {
+  [key: string]: BehaviorSubject<UberToggleState>;
   type$: BehaviorSubject<UberToggleState>;
   activity$: BehaviorSubject<UberToggleState>;
   rewardTier$: BehaviorSubject<UberToggleState>;
@@ -917,6 +918,7 @@ function _processFilterTag(actual: string, i: (MilestoneRow | PursuitRow)): bool
   if (i.searchText.indexOf(actual) >= 0) {
     return true;
   }
+  return false;
 }
 
 function getRewardText(x: (MilestoneRow | PursuitRow)): string[] {

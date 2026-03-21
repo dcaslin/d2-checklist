@@ -57,7 +57,7 @@ export class ClanCollectionSearchComponent extends ChildComponent implements OnI
         temp.push(t);
       }
     }
-    this.filteredCollection.next(temp);
+    this.filteredCollection.next(temp as any);
   }
 
 }

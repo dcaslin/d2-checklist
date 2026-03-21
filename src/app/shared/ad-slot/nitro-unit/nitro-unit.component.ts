@@ -15,7 +15,7 @@ export class NitroUnitComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // Do stuff
-    window['nitroAds'].createAd(this.unitId, {
+    (window as any)['nitroAds'].createAd(this.unitId, {
       'refreshLimit': 10,
       'refreshTime': 90,
       'demo': !environment.production,

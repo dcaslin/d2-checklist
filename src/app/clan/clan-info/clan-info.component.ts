@@ -36,8 +36,8 @@ export class ClanInfoComponent extends ChildComponent {
       });
     } else {
       members.sort((a, b) => {
-        let aV = a[sort.name];
-        let bV = b[sort.name];
+        let aV = (a as any)[sort.name];
+        let bV = (b as any)[sort.name];
         if (aV == null) {
           aV = 0;
         } else if (bV == null) {

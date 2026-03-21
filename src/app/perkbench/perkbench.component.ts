@@ -474,8 +474,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           mnk: mnkRoll,
         },
         info: w,
-        missingPerks: [],
-        defunctPerks: []
+        missingPerks: [] as any[],
+        defunctPerks: [] as any[]
       };
       PerkbenchComponent.checkRolls(addMe);
       returnMe.push(addMe);
@@ -514,23 +514,23 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   private static rebuildRolls(mappedRolls: MappedRoll[]): GunRolls[] {
     const returnMe: GunRolls[] = [];
 
-    const loaded = {};
+    const loaded: Record<string, boolean> = {};
     for (const mr of mappedRolls) {
       if (!mr.roll) {
         continue;
       }
       if (mr.roll.controller) {
         const key = `${mr.roll.controller.name}-controller`;
-        if (loaded[key]) {
+        if ((loaded as any)[key]) {
           console.log(`%c    Skipping duplicate for ${key}`);
         } else {
-          loaded[key] = true;
+          (loaded as any)[key] = true;
           returnMe.push(mr.roll.controller);
         }
       }
       if (mr.roll.mnk) {
         const key = `${mr.roll.controller.name}-mnk`;
-        if (loaded[key]) {
+        if ((loaded as any)[key]) {
           console.log(`%c    Skipping duplicate for ${key}`);
         } else {
           loaded[key] = true;
@@ -653,14 +653,14 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         if (dmgType == 'Thermal') {
           dmgType = 'Solar';
         }
-        const season = WATERMARK_TO_SEASON[desc.iconWatermark]
+        const season = (WATERMARK_TO_SEASON as any)[desc.iconWatermark]
         const gi: GunInfo = {
           desc,
           sockets,
           type: desc.itemTypeDisplayName,
           damage: dmgType,
           season,
-          seasonDesc: SEASON_TO_DESC[season]?.toLowerCase() ?? 'unknown',
+          seasonDesc: (SEASON_TO_DESC as any)[season]?.toLowerCase() ?? 'unknown',
         };
         if (gi.season == null) {
           gi.season = -1;

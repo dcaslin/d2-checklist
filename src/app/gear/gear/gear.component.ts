@@ -80,7 +80,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   DamageType = DamageType;
   ClassAllowed = ClassAllowed;
 
-  trackGearItem(index, item) {
+  trackGearItem(index: number, item: any) {
     return item ? item.id : undefined;
   }
 
@@ -374,7 +374,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   public showPlBuckets(char: Character) {
-    const platform = Const.PLATFORMS_DICT[char.membershipType];
+    const platform = (Const.PLATFORMS_DICT as any)[char.membershipType];
     this.playerStateService.loadPlayer(platform, char.membershipId, false);
     const dc = new MatDialogConfig();
     dc.disableClose = false;

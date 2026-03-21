@@ -327,7 +327,7 @@ export class PandaGodrollsService implements OnDestroy {
     if (!completeRolls.rolls?.length || !completeRolls.date || !completeRolls.manifestVersion) {
       return false;
     }
-    const loaded = {};
+    const loaded: Record<string, boolean> = {};
     // check for dupes
     for (const roll of completeRolls.rolls) {
       if(roll.pvp) {

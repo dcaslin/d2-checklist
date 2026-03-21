@@ -31,7 +31,7 @@ export class UberListBuilderComponent extends ChildComponent {
   }
   
 
-  public show(event, row: (MilestoneRow | PursuitRow)): void {
+  public show(event: Event, row: (MilestoneRow | PursuitRow)): void {
     event.preventDefault();
     const dc = new MatDialogConfig();
     dc.data = row;

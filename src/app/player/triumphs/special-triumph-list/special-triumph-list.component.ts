@@ -43,7 +43,7 @@ function sortByProgress(x: TriumphRecordNode, y: TriumphRecordNode): number {
 export class SpecialTriumphListComponent extends ChildComponent {
 
   public title$: BehaviorSubject<string> = new BehaviorSubject('');
-  public sort$: BehaviorSubject<Sort> = new BehaviorSubject({
+  public sort$: BehaviorSubject<Sort> = new BehaviorSubject<Sort>({
     name: 'progress',
     ascending: false
   });

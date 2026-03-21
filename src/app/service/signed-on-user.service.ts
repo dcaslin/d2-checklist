@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { VendorDeals, VendorService } from '@app/service/vendor.service';
-import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, from, Observable, Subject } from 'rxjs';
 import { catchError, concatAll, filter, map, takeUntil, tap } from 'rxjs/operators';
 import { AuthInfo, AuthService } from './auth.service';
 import { BungieService } from './bungie.service';
@@ -17,7 +17,7 @@ export class SignedOnUserService implements OnDestroy {
   public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
   private refreshPlayer$: BehaviorSubject<null> = new BehaviorSubject(null);
-  private refreshVendors$: BehaviorSubject<LoadType> = new BehaviorSubject(LoadType.LeaveAlone);
+  private refreshVendors$: BehaviorSubject<LoadType> = new BehaviorSubject<LoadType>(LoadType.LeaveAlone);
   private playerFirstLoad$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
@@ -137,7 +137,7 @@ export class SignedOnUserService implements OnDestroy {
       concatAll(),
       catchError((err) => {
         this.notificationService.fail(err);
-        return null;
+        return EMPTY;
       }
       ),
     ).subscribe((player: Player) => {

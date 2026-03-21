@@ -123,7 +123,7 @@ export class ClanStateService {
   public aggHistoryLoadCount: BehaviorSubject<number> = new BehaviorSubject(0);
   public aggHistoryAllLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public modelPlayer: BehaviorSubject<Player> = new BehaviorSubject(null);
-  public dTrackedTriumphIds = {};
+  public dTrackedTriumphIds: Record<string, boolean> = {};
   public inactivityMonthThreshold = 6;
   public inactivityMonthOptions = [1, 3, 6, 12, 48];
 
@@ -137,7 +137,7 @@ export class ClanStateService {
 
   private static setLeader(pushMe: ClanAggHistoryEntry, x: PlayerAggHistoryEntry, field: string, requiresCompletion?: boolean) {
     // no data for this entry, can't be a leader
-    if (!x.data[field]) {
+    if (!(x.data as any)[field]) {
       return;
     }
 
@@ -147,21 +147,21 @@ export class ClanStateService {
     }
 
     // if we have no leader, default they're a leader now
-    if (pushMe[field].length === 0) {
-      pushMe[field] = [x];
+    if ((pushMe as any)[field].length === 0) {
+      (pushMe as any)[field] = [x];
       return;
     }
-    const curLeader = pushMe[field][0];
+    const curLeader = (pushMe as any)[field][0];
 
     // if this entry is better than the current leader, it's a new leader
-    if (x.data[field] > curLeader.data[field]) {
-      pushMe[field] = [x];
+    if ((x.data as any)[field] > (curLeader.data as any)[field]) {
+      (pushMe as any)[field] = [x];
       return;
     }
     // if this entry is equal, add it
-    if (x.data[field] == curLeader.data[field]) {
-      pushMe[field].push(x);
-      pushMe[field].sort((a, b) => {
+    if ((x.data as any)[field] == (curLeader.data as any)[field]) {
+      (pushMe as any)[field].push(x);
+      (pushMe as any)[field].sort((a: any, b: any) => {
         const aN = a.member.destinyUserInfo.displayName;
         const bN = b.member.destinyUserInfo.displayName;
         if (aN < bN) {
@@ -169,6 +169,7 @@ export class ClanStateService {
         } else if (aN > bN) {
           return 1;
         }
+        return 0;
       });
     }
   }
@@ -246,8 +247,8 @@ export class ClanStateService {
       });
     } else {
       pushMe.all.sort((a, b) => {
-        let aV = a.data[sort.name];
-        let bV = b.data[sort.name];
+        let aV = (a.data as any)[sort.name];
+        let bV = (b.data as any)[sort.name];
         if (aV == null) {
           aV = 0;
         } else if (bV == null) {
@@ -475,7 +476,7 @@ export class ClanStateService {
   }
 
   private static buildBestCollectionNodes(b: Badge): TriumphCollectibleNode[] {
-    const dict = {};
+    const dict: Record<string, any> = {};
     for (const bc of b.classes) {
       for (const c of bc.children) {
         if (dict[c.hash] == null) {
@@ -678,7 +679,7 @@ export class ClanStateService {
     const tempTriumphs: ClanSearchableTriumph[] = [];
     if (Object.keys(this.dTrackedTriumphIds).length > 0) {
       for (const t of triumphs) {
-        if (this.dTrackedTriumphIds[t.data.hash] == true) {
+        if ((this.dTrackedTriumphIds as any)[t.data.hash] == true) {
           tempTriumphs.push(t);
         }
       }
@@ -723,6 +724,7 @@ export class ClanStateService {
       const functMembers = allMembers.filter(x => {
         if (x.isDefunct()) {
           this.defunctMembers.push(x);
+          return false;
         } else {
           return true;
         }
@@ -948,6 +950,7 @@ export class ClanStateService {
       } else if (sort.name === 'minsPlayed') {
         return ClanStateService.compareMinsPlayed(a, b, sort.ascending);
       }
+      return 0;
     };
   }
 

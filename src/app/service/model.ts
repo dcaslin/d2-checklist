@@ -861,6 +861,7 @@ export class InventoryItem {
         if (this.totalStatPoints > 65) {
             return 3;
         }
+        return 0;
     }
 
     damageTypeString(): string {
@@ -1191,7 +1192,7 @@ export class CharacterStat {
     desc: string;
     value: number;
 
-    constructor(name, desc, value) {
+    constructor(name: string, desc: string, value: number) {
         this.name = name;
         this.desc = desc;
         this.value = value;
@@ -1529,7 +1530,7 @@ export class InventoryStat {
     index: number;
     fromArchetype: boolean;
 
-    constructor(hash, name, desc, value, index, fromArchetype?: boolean) {
+    constructor(hash: number, name: string, desc: string, value: number, index: number, fromArchetype?: boolean) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
