@@ -42,6 +42,10 @@ npm run lint         # eslint
 
 FontAwesome Pro icon packages are vendored as tarballs in `vendor-packages/` so no private registry auth is needed. The free FA packages are installed normally from npm. All FA packages should be kept at the same major version.
 
+## Console logging
+
+`console.log` calls are intentional. The user base is technical and uses browser console output to self-debug. Do not remove, gate, or lint against `console.log` / `console.warn` / `console.error` calls.
+
 ## Deployment
 
 Production deploys are triggered by pushes to `master` via GitHub Actions. Bump `version` in `package.json` with each release to force the service worker to pick up changes.

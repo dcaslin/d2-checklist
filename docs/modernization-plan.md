@@ -6,7 +6,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
 - Zero test coverage, TypeScript strict mode disabled
 - `parse.service.ts` is 4,385 lines
-- No bundle size budgets, 154 stray console.log calls
+- No bundle size budgets
 - CI actions outdated, no `npm audit` in pipeline
 
 ---
@@ -57,18 +57,18 @@ Split the 4,385-line monolith into domain-specific parsers.
 
 ---
 
-## Phase 4: Bundle Budgets & Console Cleanup
+## Phase 4: Bundle Budgets
 
-Prevent bundle bloat and clean up debug noise.
+Prevent bundle bloat.
 
 - [ ] Add bundle size budgets to `angular.json`:
   - Initial bundle: warn at 1.5 MB, error at 2 MB
   - Vendor chunk: warn at 500 KB, error at 750 KB
   - Any component style: keep existing 6 KB limit
-- [ ] Remove or gate all 154 `console.log` / `console.warn` calls behind an `environment.production` check
-- [ ] Consider adding a `LogService` wrapper or an ESLint rule (`no-console`) to prevent new stray logs
 
-**Done when:** Budgets are enforced in production builds and `console.log` count is zero outside of a logging service.
+> **Note:** `console.log` calls are intentional — the user base is technical and uses console output for self-debugging. Do not remove or gate them.
+
+**Done when:** Budgets are enforced in production builds.
 
 ---
 
