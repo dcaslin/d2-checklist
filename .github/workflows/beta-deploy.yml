@@ -31,6 +31,6 @@ jobs:
         chmod 600 ~/.ssh/deploy_key
         rsync -avz --delete \
           -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.BETA_PORT }}" \
-          ./dist/d2-checklist/ \
+          ./dist/ \
           ${{ secrets.BETA_UID }}@${{ secrets.BETA_HOST }}:/home/${{ secrets.BETA_UID }}/d2checklist-beta/
         rm -f ~/.ssh/deploy_key
