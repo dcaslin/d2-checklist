@@ -10,7 +10,7 @@ export interface Notification {
 
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NotificationService {
   private notifySub = new Subject();
   public notifyFeed: Observable<Notification>;

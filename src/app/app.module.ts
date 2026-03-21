@@ -20,7 +20,7 @@ import { AuthModule } from './auth';
 import { BungieSearchModule } from './bungie-search';
 import { ClanModule } from './clan';
 import { ClanSearchModule } from './clan-search';
-import { ClanStateService } from './clan/clan-state.service';
+
 import { FriendsModule } from './friends';
 import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 import { GearModule } from './gear';
@@ -29,22 +29,10 @@ import { HistoryModule } from './history';
 import { PartyComponent } from './party/party.component';
 import { PGCRModule } from './pgcr';
 import { PlayerModule } from './player';
-import { PlayerStateService } from './player/player-state.service';
+
 import { PrivacyComponent } from './privacy/privacy.component';
 import { RecentPlayersModule } from './recent-players';
-import { AuthService } from './service/auth.service';
-import { BucketService } from './service/bucket.service';
-import { BungieService } from './service/bungie.service';
-import { DestinyCacheService } from './service/destiny-cache.service';
-import { GearService } from './service/gear.service';
-import { IconService } from './service/icon.service';
-import { MarkService } from './service/mark.service';
-import { NotificationService } from './service/notification.service';
-import { PandaGodrollsService } from './service/panda-godrolls.service';
-import { ParseService } from './service/parse.service';
-import { PreferredStatService } from './service/preferred-stat.service';
-import { StorageService } from './service/storage.service';
-import { WeekService } from './service/week.service';
+
 import { SettingsModule } from './settings';
 import { ChildComponent } from './shared/child.component';
 import { TestbedComponent } from './testbed/testbed.component';
@@ -61,7 +49,7 @@ import { PlayerCurrenciesComponent } from './player-currencies/player-currencies
 import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { AppStatusComponent } from './app-status/app-status.component';
 import { UberPursuitCheckComponent } from './uber-list/uber-pursuit-check/uber-pursuit-check.component';
-import { PwaService } from './service/pwa.service';
+
 import { PerkbenchComponent } from './perkbench/perkbench.component';
 import { PerkBenchDialogComponent } from './perkbench/perk-bench-dialog/perk-bench-dialog.component';
 import { UberListToggleComponent } from './uber-list/uber-list-toggle/uber-list-toggle.component';
@@ -111,22 +99,6 @@ import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dia
     PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
   ],
   providers: [
-    AuthService,
-    BucketService,
-    BungieService,
-    ClanStateService,
-    DestinyCacheService,
-    GearService,
-    IconService,
-    MarkService,
-    NotificationService,
-    ParseService,
-    PandaGodrollsService,
-    PlayerStateService,
-    PreferredStatService,
-    PwaService,
-    StorageService,
-    WeekService,
     LoggedInGuard
   ],
   bootstrap: [AppComponent]
