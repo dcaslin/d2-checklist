@@ -24,7 +24,7 @@
                             <li *ngFor="let o of i.objectives">{{o.completionValue}} {{o.progressDescription}}</li>
                         </ul>
                     </div>
-                    <div *ngIf="data?.title?.values?.length>0">
+                    <div *ngIf="(data?.title?.values?.length ?? 0)>0">
                         <h5>Rewards</h5>
                         <div class="flex-column" *ngIf="data.title as i">
                             <div *ngFor="let r of i.values">
@@ -93,7 +93,7 @@
                                                     {{ vi.vendor.nextRefreshDate |
                                                     d2cAgoHumanized}}</div>
                                             </div>
-                                            <div *ngIf="vi.costs?.length>0">
+                                            <div *ngIf="(vi.costs?.length ?? 0)>0">
                                                 <h5>Cost</h5>
                                                 <div class="type-caption" *ngFor="let c of vi.costs">
                                                     <img *ngIf="c.desc.displayProperties.icon"

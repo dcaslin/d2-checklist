@@ -2,7 +2,7 @@
     <h2 mat-dialog-title>Upgrade Mode
 
         <button mat-button (click)="parent.load()">
-            <fa-icon [icon]="iconService.fasSyncAlt" [spin]="operating$|async"></fa-icon>
+            <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(operating$|async)!"></fa-icon>
         </button>
 
     </h2>

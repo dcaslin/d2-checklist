@@ -13,7 +13,7 @@
 
           <td class="lead" data-label="">
             <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}
-                <ng-container *ngIf="faction.step==null || (faction.steps[faction.level]==null)">
+                <ng-container *ngIf="$any(faction).step==null || (faction.steps[faction.level]==null)">
                     | Level {{faction.level}}
                   </ng-container>
 

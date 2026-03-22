@@ -1,6 +1,6 @@
 <h5 mat-dialog-title class="title-row">Optimize Gun Perks
     <button mat-icon-button (click)="parent.load()">
-        <fa-icon [icon]="iconService.fasSyncAlt" [spin]="parent.loading|async"></fa-icon>
+        <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(parent.loading|async)!"></fa-icon>
     </button>
 </h5>
 <div mat-dialog-content class="body">

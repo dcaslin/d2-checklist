@@ -10,13 +10,13 @@
     <a mat-button (click)="load()">
       <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon> Refresh
     </a>
-    <a mat-button (click)="showAllMilestones()" *ngIf="(hiddenMilestones|async).length>0">Show Hidden
+    <a mat-button (click)="showAllMilestones()" *ngIf="(hiddenMilestones|async)!.length>0">Show Hidden
       Milestones</a>
   </div>
 </div>
 <div class="center-spinner">
   <mat-spinner class="loading" class="center-spinner"
-    *ngIf="(loading|async)===true || (modelPlayer==null && (members|async).length>0)"></mat-spinner>
+    *ngIf="(loading|async)===true || (modelPlayer==null && (members|async)!.length>0)"></mat-spinner>
 </div>
 <div class="body clan-body">
   <table class="responsive-table clan-table" *ngIf="(members|async)!=null && modelPlayer!=null">
@@ -28,7 +28,7 @@
         <ng-container *ngIf="modelPlayer!=null">
           <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
             <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
-              *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">
+              *ngIf="(hiddenMilestones|async)!.indexOf(mileStoneName.key)===-1">
               {{mileStoneName.name}}
               <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
               <span matTooltip="Hide this milestone, click Restore Hidden to restore it later"
@@ -52,7 +52,7 @@
             &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
           </span>
           <span style="margin-left:0.25em" class="warn-text fake-link"
-            (click)="storageService.toggleFav(member.user, member.bungieMembershipId)">
+            (click)="storageService.toggleFav(member.user, $any(member).bungieMembershipId)">
             <fa-icon [icon]="iconService.farTimes" style="font-weight: normal !important"></fa-icon>
           </span>
 
@@ -82,7 +82,7 @@
             *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones!=null && modelPlayer!=null">
             <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
 
-              <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
+              <td *ngIf="(hiddenMilestones|async)!.indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
                 [attr.data-label]="mileStoneName.name">
 
                   <span class="fake-link" style="float: left"
@@ -101,12 +101,12 @@
         </ng-container>
         <ng-container *ngIf="(member.player$|async)==null && (member.errorMsg$|async)==null && modelPlayer!=null">
           <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
-            <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">...</td>
+            <td *ngIf="(hiddenMilestones|async)!.indexOf(mileStoneName.key)===-1">...</td>
           </ng-container>
         </ng-container>
         <ng-container *ngIf="member.errorMsg$|async">
           <td colspan="0" *ngIf="modelPlayer!=null">
-            {{member.errorMsg}}
+            {{member.errorMsg$|async}}
           </td>
         </ng-container>
       </tr>

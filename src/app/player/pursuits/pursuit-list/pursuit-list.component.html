@@ -13,7 +13,7 @@
     <mat-form-field class="searchField">
       <mat-label>Search</mat-label>
       <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText" placeholder="Search">
-      <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async).length>0" matSuffix
+      <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async)!.length>0" matSuffix
         mat-icon-button aria-label="Clear" (click)="displayFilterText=null;searchSubject.next()">
         <mat-icon>close</mat-icon>
       </button>
@@ -108,8 +108,8 @@
           <td data-label="">
             <div class="img-layout" *ngIf="g.owner|async as o">
               <div class="img-cell d-none d-md-inline">
-                <span *ngIf="o.emblemPath!=null" class="player-icon"
-                  [style.background-image]="'url(//www.bungie.net' + o.emblemPath + ')'"></span>
+                <span *ngIf="$any(o).emblemPath!=null" class="player-icon"
+                  [style.background-image]="'url(//www.bungie.net' + $any(o).emblemPath + ')'"></span>
               </div>
               <div class="img-body">
                 {{o.label}}
@@ -163,7 +163,7 @@
       </ng-container>
     </tbody>
   </table>
-  <div *ngIf="mode=='tracked' && (filteredPursuits|async).length==0" class="left" style="margin: 10px">
+  <div *ngIf="mode=='tracked' && (filteredPursuits|async)!.length==0" class="left" style="margin: 10px">
     Click a star on a pursuit on another tab to track it here
   </div>
 

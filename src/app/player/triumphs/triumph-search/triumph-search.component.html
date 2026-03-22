@@ -15,7 +15,7 @@
             <span *ngIf="hasMore$|async" class="margin-left-10 warn-text">Too many results, truncating list at {{MAX_RESULTS}}</span>
         </div>
 
-        <div *ngIf="(filteredTriumphs|async).length==0" class="left" style="margin: 10px">
+        <div *ngIf="(filteredTriumphs|async)!.length==0" class="left" style="margin: 10px">
             <ng-container *ngIf="triumphFilterText==null || triumphFilterText.length==0">
                 Type above to search
             </ng-container>
@@ -29,7 +29,7 @@
                 <ng-container *ngFor="let t of filteredTriumphs|async">
                     <tr>
                         <td class="lead" data-label="">
-                            <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)">
+                            <d2c-triumph-name [t]="t" [debugmode]="(debugmode|async)!" (navigate)="navigate($event)">
                             </d2c-triumph-name>
                         </td>
 

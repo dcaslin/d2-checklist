@@ -1,13 +1,13 @@
       <div class="fixed-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true"></mat-spinner>
       </div>
-      <div class="body-text" (keydown.r)="onR($event)" tabindex="1">
+      <div class="body-text" (keydown.r)="onR($any($event))" tabindex="1">
 
         <div *ngIf="errorMsg|async as msg">{{msg}}</div>
         <ng-container *ngIf="state.player|async as player">
           <ng-container *ngIf="player!=null && player.superprivate">
             <h4>
-              <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon"
+              <fa-icon [icon]="$any(PLATFORMS_DICT)[player.profile.userInfo.membershipType+''].icon"
                 style="font-weight: normal !important"></fa-icon>
               {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings
             </h4>
@@ -15,10 +15,10 @@
 
           <ng-container *ngIf="player!=null && !player.superprivate">
             <h2>
-              <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon"
+              <fa-icon [icon]="$any(PLATFORMS_DICT)[player.profile.userInfo.membershipType+''].icon"
                 style="font-weight: normal !important"></fa-icon>
               {{player.profile.userInfo.displayName}}
-              <d2c-friend-star title="true" [userInfo]="player.profile.userInfo" [favoritesMap]=(favoritesMap|async)>
+              <d2c-friend-star [title]="true" [userInfo]="player.profile.userInfo" [favoritesMap]="(favoritesMap|async)!">
               </d2c-friend-star>
               <button mat-icon-button (click)="state.requestRefresh()">
                 <fa-icon [icon]="iconService.farSync"></fa-icon>
@@ -26,7 +26,7 @@
             </h2>
 
             <h4>
-              <ng-container *ngIf="player.title?.trim().length>0"> {{player.title}} |</ng-container>
+              <ng-container *ngIf="player.title?.trim()?.length! > 0"> {{player.title}} |</ng-container>
               <ng-container *ngIf="player.artifactPowerBonus"> +{{player.artifactPowerBonus}} Artifact</ng-container>
               <ng-container *ngIf="player.seasonRank!=null && player.seasonRank.level"> | Season Rank:
                 {{player.seasonRank.level}} </ng-container>

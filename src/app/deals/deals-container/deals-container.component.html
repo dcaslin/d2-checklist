@@ -2,9 +2,9 @@
     <ng-container *ngIf="signedOnUserService.player$|async as player; else noPlayerYet">
 
         <d2c-deals
-            [loading]="signedOnUserService.playerLoading$|async" 
-            [vendorsLoading]="signedOnUserService.vendorsLoading$|async"
-            [vendorDeals]="signedOnUserService.vendorDeals$|async"
+            [loading]="(signedOnUserService.playerLoading$|async)!"
+            [vendorsLoading]="(signedOnUserService.vendorsLoading$|async)!"
+            [vendorDeals]="(signedOnUserService.vendorDeals$|async)!"
             (refresh)="signedOnUserService.refreshPlayerAndVendors()"
         ></d2c-deals>
     </ng-container>

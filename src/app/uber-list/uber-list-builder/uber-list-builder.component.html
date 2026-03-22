@@ -19,7 +19,7 @@
                 <input matInput #filter [(ngModel)]="state.visibleFilterText" placeholder="Search"
                   (keyup)="state.filterKeyUp$.next()">
                 <button mat-button *ngIf="state.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
-                  (click)="state.visibleFilterText=null;state.filterKeyUp$.next()">
+                  (click)="state.visibleFilterText='';state.filterKeyUp$.next()">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
@@ -44,8 +44,8 @@
                 <tr>
                   <th class="check-col sticky">
                     <mat-checkbox class="margin-5"
-                      [checked]="state.allVisibleChecked$|async"
-                      [indeterminate]="state.someVisibleChecked$|async"
+                      [checked]="(state.allVisibleChecked$|async)!"
+                      [indeterminate]="(state.someVisibleChecked$|async)!"
                       (change)="state.bulkCheck($event.checked)">
                     </mat-checkbox>
                   </th>

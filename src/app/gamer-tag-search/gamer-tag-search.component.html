@@ -2,10 +2,10 @@
 <div *ngIf="progressMsg|async as msg">{{msg}}</div>
 
 <ng-container *ngIf="playerNotFound|async">
-    <h4>{{gamerTag}} not found on {{platform.desc}}. Try a different platform:</h4>
+    <h4>{{gamerTag}} not found on {{platform!.desc}}. Try a different platform:</h4>
     <div class="button-row">
         <ng-container *ngFor="let plat of platforms">
-            <button class="space-right" *ngIf="plat.type!=platform.type" mat-raised-button color="accent"
+            <button class="space-right" *ngIf="plat.type!=platform!.type" mat-raised-button color="accent"
                 (click)="router.navigate(['gt', plat.type, gamerTag])">{{plat.desc}}</button>
         </ng-container>
     </div>

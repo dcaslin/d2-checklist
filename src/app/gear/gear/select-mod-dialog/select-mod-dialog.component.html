@@ -7,7 +7,7 @@
     </div>
     <table class="simple-table">
         <tr *ngFor="let p of socket.sourcePlugs" [class.fake-link]="item.canFit(socket, p)" [class.disabled]="!item.canFit(socket, p)" (click)="select(p)"
-            [class.accent-bg-text]="socket.active.hash == p.hash">
+            [class.accent-bg-text]="socket.active.hash == $any(p).hash">
             <td>
                 <d2c-manifest-item-icon [desc]="p"></d2c-manifest-item-icon>
             </td>

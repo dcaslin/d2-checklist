@@ -7,7 +7,7 @@
 <ng-container *ngIf="(loading|async)===false && selectedUser==null">
   <d2c-sign-in-required></d2c-sign-in-required>
 </ng-container>
-<div class="gear-body" *ngIf="player$|async as player" (keydown.r)="onR($event)">
+<div class="gear-body" *ngIf="player$|async as player" (keydown.r)="onR($any($event))">
   <ng-container *ngIf="pageInfo$|async as pageInfo">
 
     <div>
@@ -99,9 +99,9 @@
       <mat-form-field class="wildcard-filter">
         <mat-label>Search</mat-label>
         <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="gearFilterStateService.visibleFilterText"
-          placeholder="Name, perk or is:goodroll" (keyup)="filterKeyUp$.next($event.target.value)">
+          placeholder="Name, perk or is:goodroll" (keyup)="filterKeyUp$.next($any($event.target).value)">
         <button mat-button *ngIf="gearFilterStateService.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
-          (click)="gearFilterStateService.visibleFilterText=null;filterKeyUp$.next()">
+          (click)="gearFilterStateService.visibleFilterText=null;filterKeyUp$.next('')">
           <mat-icon>close</mat-icon>
         </button>
         <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
@@ -124,7 +124,7 @@
         <button mat-button *ngIf="markService.dirty$|async" (click)="markService.saveMarks()">
           <fa-icon [icon]="iconService.fasSave"></fa-icon>
         </button>
-        <mat-checkbox [ngModel]="gearFilterStateService.hideDupes$|async" ngDefaultControl (ngModelChange)="toggleDupes($event)">
+        <mat-checkbox [ngModel]="(gearFilterStateService.hideDupes$|async)!" ngDefaultControl (ngModelChange)="toggleDupes($event)">
           Hide Dupes
         </mat-checkbox>
         <button mat-button *ngIf="(gearFilterStateService.filtersDirty$|async)"
@@ -183,7 +183,7 @@
           <fa-icon [icon]="mc.icon"></fa-icon>&ensp; {{mc.label}}
         </button>
       </ng-container>
-      <button mat-menu-item (click)="markCurrentRows(null)">
+      <button mat-menu-item (click)="markCurrentRows($any(null))">
         Remove Mark
       </button>
     </mat-menu>
@@ -233,32 +233,32 @@
     </mat-menu>
 
     <div class="gear-table-container">
-      <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft($event)"
-        (keydown.ArrowRight)="onRight($event)" *ngIf="preferredStatService.stats$|async as prefStats">
+      <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft($any($event))"
+        (keydown.ArrowRight)="onRight($any($event))" *ngIf="preferredStatService.stats$|async as prefStats">
         <thead>
           <tr>
             <th class="limited-gear-width">
               <span class="fake-link gear-sort" (click)="sort('power')">Light
-                <d2c-sort-indicator field="power" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async"></d2c-sort-indicator>
+                <d2c-sort-indicator field="power" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!"></d2c-sort-indicator>
               </span>
             </th>
             <th class="limited-gear-width">
               <span class="fake-link gear-sort" (click)="sort('name')">Name
-                <d2c-sort-indicator field="name" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async"></d2c-sort-indicator>
+                <d2c-sort-indicator field="name" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!"></d2c-sort-indicator>
               </span>
               <span class="fake-link gear-sort pad-left-more" (click)="sort('id')">Age
-                <d2c-sort-indicator field="id" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async"></d2c-sort-indicator>
+                <d2c-sort-indicator field="id" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!"></d2c-sort-indicator>
               </span>
             </th>
             <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
               <span class="fake-link gear-sort" (click)="sort('powerCap')">Cap
-                <d2c-sort-indicator field="powerCap" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                <d2c-sort-indicator field="powerCap" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
             </th>
             <th class="limited-gear-width">
               <span class="fake-link gear-sort" (click)="sort('typeName')">Type
-                <d2c-sort-indicator field="typeName" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                <d2c-sort-indicator field="typeName" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
 
@@ -268,26 +268,26 @@
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
               <span class="fake-link gear-sort" (click)="sort('copies')">
                 Copies
-                <d2c-sort-indicator field="copies" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async"></d2c-sort-indicator>
+                <d2c-sort-indicator field="copies" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!"></d2c-sort-indicator>
               </span>
             </th>
             <th class="limited-gear-width"
               *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
               <span class="fake-link gear-sort" (click)="sort('armorCapacity')">Energy
-                <d2c-sort-indicator field="armorCapacity" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                <d2c-sort-indicator field="armorCapacity" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
             </th>
             <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
               <span class="fake-link gear-sort" (click)="sort('masterwork.tier')">MW
-                <d2c-sort-indicator field="mw.tier" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                <d2c-sort-indicator field="mw.tier" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
             </th>
             <th
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Vehicle">
               <span class="fake-link" (click)="sort('plug.0.0')">Sockets
-                <d2c-sort-indicator field="plug.0.0" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                <d2c-sort-indicator field="plug.0.0" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
 
@@ -295,7 +295,7 @@
             <th class="limited-gear-width min-gear-width"
               *ngIf="option.type==ItemType.Armor">
               <span class="fake-link gear-sort" (click)="sort('preferredStatPoints')">Stat Pts
-                <d2c-sort-indicator field="preferredStatPoints" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                <d2c-sort-indicator field="preferredStatPoints" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
             </th>
@@ -318,7 +318,7 @@
               <div class="tag-page-container">
                 <div class="tag-page-container-tag">
                   <span class="fake-link" (click)="sort('quantity')">Quantity
-                    <d2c-sort-indicator field="quantity" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                    <d2c-sort-indicator field="quantity" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                     </d2c-sort-indicator>
                   </span>
                 </div>
@@ -332,7 +332,7 @@
               <div class="tag-page-container">
                 <div class="tag-page-container-tag">
                   <span class="fake-link" (click)="sort('mark')">Tag
-                    <d2c-sort-indicator field="mark" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                    <d2c-sort-indicator field="mark" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                     </d2c-sort-indicator>
                   </span>
                 </div>
@@ -387,7 +387,7 @@
                   <span *ngIf="i.postmaster" class="margin-left warn-text">
                     <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
                   </span>
-                  <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
+                  <d2c-god-roll-item [item]="i" [debugmode]="(debugmode|async)!"></d2c-god-roll-item>
                 </div>                
                 <div *ngIf="i.craftProgress as obj" class="obj-desc fake-link"  (click)="sort('progress.craftProgress')">
                   <div class="total-progress">
@@ -479,7 +479,7 @@
               </td>
 
               <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
-                <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
+                <d2c-god-roll-mw [item]="i" [debugmode]="(debugmode|async)!"></d2c-god-roll-mw>
               </td>
 
               <td
@@ -494,7 +494,7 @@
                 <div class="total-pts" *ngIf="i.totalStatPoints">
                   <span class="fake-link gear-sort" (click)="sort('totalStatPoints')">
                     {{i.totalStatPoints}}
-                    <d2c-sort-indicator field="totalStatPoints" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                    <d2c-sort-indicator field="totalStatPoints" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                     </d2c-sort-indicator>
                   </span>
                 </div>
@@ -518,7 +518,7 @@
                             <ng-template #default>
                               {{stat.name}}
                             </ng-template>
-                            <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                            <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                             </d2c-sort-indicator>
                           </span>
                         </td>
@@ -544,7 +544,7 @@
                               [matTooltipDisabled]="prefStat <= 0"
                               [class.italics]="prefStat > 0 && prefStats.showAllStats"
                               (click)="sort('stat.'+stat.hash)">{{stat.name}}
-                                <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+                                <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                                 </d2c-sort-indicator>
                               </span>
                             </td>

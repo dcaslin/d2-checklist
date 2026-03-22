@@ -20,7 +20,7 @@
             <tbody>
                 <tr *ngFor="let coll of c">
                     <td>
-                        <d2c-clan-collection-item [item]="coll"></d2c-clan-collection-item>
+                        <d2c-clan-collection-item [item]="$any(coll)"></d2c-clan-collection-item>
                     </td>
                 </tr>
             </tbody>
