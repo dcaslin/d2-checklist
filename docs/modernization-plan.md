@@ -4,7 +4,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 
 **Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
-- Zero test coverage, 7 of 7 TypeScript strict flags enabled
+- Zero test coverage, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
 - `parse.service.ts` is 4,385 lines
 - No bundle size budgets
 - CI modernized: rsync deploys, Node 20.x, npm audit
@@ -21,7 +21,7 @@ Enable strict type checking incrementally to catch bugs at compile time instead 
 - [x] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~632 errors across 60+ files)
 - [x] Enable `strictPropertyInitialization`, fix resulting errors (~211 errors across 47 files)
 - [x] Enable `strictTemplates` in `angularCompilerOptions` (~212 errors across 56 template files)
-- [ ] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning
+- [x] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning (446 warnings for gradual cleanup)
 
 **Done when:** `"strict": true` in tsconfig.json and `strictTemplates: true` in angular compiler options.
 
@@ -134,7 +134,7 @@ Angular migrations must go one major version at a time:
 
 1. ~~Phase 5: CI/CD Hardening~~ — Done
 2. ~~Phase 6: Standardize Service Providers~~ — Done
-3. **Phase 1: TypeScript Strictness** — In progress (strict flags done, ESLint `no-explicit-any` remains)
+3. ~~Phase 1: TypeScript Strictness~~ — Done
 4. **Phase 3: Break Up parse.service.ts** — Next. Easier to split before adding tests.
 5. **Phase 2: Unit Tests** — After the split, each parser file is small enough to test meaningfully.
 6. **Phase 4: Bundle Budgets** — Low risk, can slot in anytime.
