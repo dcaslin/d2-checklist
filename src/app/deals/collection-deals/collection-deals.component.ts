@@ -9,7 +9,7 @@ import { DestinyClasses } from '@app/service/model';
   styleUrls: ['./collection-deals.component.scss']
 })
 export class CollectionDealsComponent {
-  @Input() vendorDeals: VendorDeals;
+  @Input() vendorDeals!: VendorDeals;
 
   public DestinyClasses = DestinyClasses;
 

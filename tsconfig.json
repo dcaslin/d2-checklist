@@ -11,6 +11,7 @@
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
+    "strictPropertyInitialization": true,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "sourceMap": true,

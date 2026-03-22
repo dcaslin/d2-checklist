@@ -12,7 +12,7 @@ import { DetailedPreferredStats, PreferredStatService } from '@app/service/prefe
 })
 export class TargetArmorStatsDialogComponent {
   preferred: DetailedPreferredStats;
-  targetChoices: string[];
+  targetChoices!: string[];
   destinyClasses = DestinyClasses;
 
   constructor(

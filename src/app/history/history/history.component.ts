@@ -26,16 +26,16 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   selectedMaxResults: number;
   selectedMode: ActivityMode;
 
-  membershipType: number;
-  membershipId: string;
-  characterId: string;
+  membershipType!: number;
+  membershipId!: string;
+  characterId!: string;
 
   public _player: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
 
   database = new SortFilterDatabase([]);
-  dataSource: SortFilterDataSource | null;
-  @ViewChild('paginator', {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  dataSource!: SortFilterDataSource | null;
+  @ViewChild('paginator', {static: true}) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 

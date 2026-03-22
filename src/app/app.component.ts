@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly year = new Date().getFullYear();
   public readonly const: Const = Const;
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
-  disableads: boolean; // for GA
+  disableads!: boolean; // for GA
   // signed on info
 
   public signedOnUser: BehaviorSubject<SelectedUser | null> = new BehaviorSubject<SelectedUser | null>(null);

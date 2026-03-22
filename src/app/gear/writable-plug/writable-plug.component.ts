@@ -9,13 +9,13 @@ import { InventoryItem, InventoryPlug, InventorySocket } from '@app/service/mode
 })
 export class WritablePlugComponent {
 
-  @Input() item: InventoryItem;
+  @Input() item!: InventoryItem;
 
-  @Input() plug: InventoryPlug;
+  @Input() plug!: InventoryPlug;
 
-  @Input() socket: InventorySocket;
+  @Input() socket!: InventorySocket;
 
-  @Input() debugmode: boolean;
+  @Input() debugmode!: boolean;
 
   constructor(private gearService: GearService) { }
 

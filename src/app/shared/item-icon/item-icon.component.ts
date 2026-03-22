@@ -13,9 +13,9 @@ export class ItemIconComponent  {
   ItemType = ItemType;
   DamageType = DamageType;
 
-  @Input() i: InventoryItem;
-  @Input() mark: string|null;
-  @Input() option: ItemType;
+  @Input() i!: InventoryItem;
+  @Input() mark!: string|null;
+  @Input() option!: ItemType;
   @Input() hideMenu = false;
 
   @Output() toggleLock = new EventEmitter<boolean>();

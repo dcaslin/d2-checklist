@@ -24,8 +24,8 @@ export class TriumphFlatNode {
   styleUrls: ['./collection-tree.component.scss']
 })
 export class CollectionTreeComponent extends ChildComponent implements OnInit {
-  selectedTreeNodeHash: string;
-  collectionDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
+  selectedTreeNodeHash!: string;
+  collectionDatasource!: MatTreeFlatDataSource<any, TriumphFlatNode>;
   collectionTreeControl: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
 

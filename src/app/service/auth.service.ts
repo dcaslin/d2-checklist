@@ -12,7 +12,7 @@ export class AuthService {
     private authSub = new ReplaySubject(null!);
     public authFeed: Observable<AuthInfo>;
 
-    token: Token;
+    token!: Token;
 
     constructor(
         private activatedRoute: ActivatedRoute,

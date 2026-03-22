@@ -16,7 +16,7 @@ export class SignedOnUserService implements OnDestroy {
   unsubscribe$: Subject<void> = new Subject<void>();
   public signedOnUser$: BehaviorSubject<SelectedUser | null> = new BehaviorSubject<SelectedUser | null>(null);
 
-  private refreshPlayer$: BehaviorSubject<null | null> = new BehaviorSubject<null | null>(null);
+  private refreshPlayer$: BehaviorSubject<null> = new BehaviorSubject<null>(null);
   private refreshVendors$: BehaviorSubject<LoadType> = new BehaviorSubject<LoadType>(LoadType.LeaveAlone);
   private playerFirstLoad$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 

@@ -11,7 +11,7 @@ import { SelectModDialogComponent } from '../gear/select-mod-dialog/select-mod-d
   styleUrls: ['./writable-sockets.component.scss']
 })
 export class WritableSocketsComponent extends ChildComponent {
-  @Input() item: InventoryItem;
+  @Input() item!: InventoryItem;
 
   @Output() socketsChanged = new EventEmitter<boolean>();
 

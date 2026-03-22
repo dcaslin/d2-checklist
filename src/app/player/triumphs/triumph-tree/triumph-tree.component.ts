@@ -19,10 +19,10 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./triumph-tree.component.scss']
 })
 export class TriumphTreeComponent extends ChildComponent implements OnInit {
-  selectedTreeNodeHash: string;
+  selectedTreeNodeHash!: string;
   triumphTreeControl: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
-  recordDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
+  recordDatasource!: MatTreeFlatDataSource<any, TriumphFlatNode>;
 
   constructor(storageService: StorageService,
     public iconService: IconService,

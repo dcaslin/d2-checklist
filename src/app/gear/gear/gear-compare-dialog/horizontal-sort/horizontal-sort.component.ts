@@ -14,9 +14,9 @@ export interface SortEvent {
 })
 export class HorizontalSortComponent {
 
-  @Input() field: string;
-  @Input() currVal: string;
-  @Input() descending: boolean;
+  @Input() field!: string;
+  @Input() currVal!: string;
+  @Input() descending!: boolean;
   @Output() sort = new EventEmitter<SortEvent>();
 
   constructor(public iconService: IconService) { }

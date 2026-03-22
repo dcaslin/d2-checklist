@@ -451,9 +451,9 @@ export interface SearchResult {
 
 
 export class BungieMembership {
-    bungieId: string;
+    bungieId!: string;
     clans: ClanRow[] = [];
-    destinyMemberships: UserInfo[];
+    destinyMemberships!: UserInfo[];
 
     public getBnetInfo(): UserInfo {
         if (this.destinyMemberships == null) { return null!; }
@@ -499,24 +499,24 @@ export interface BountySet {
 }
 
 export class SelectedUser {
-    userInfo: UserInfo;
+    userInfo!: UserInfo;
     currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
     gearMeta$: BehaviorSubject<GearMetaData | null> = new BehaviorSubject<GearMetaData | null>(null);
     clans: BehaviorSubject<ClanRow[]> = new BehaviorSubject<ClanRow[]>([]);
-    membership: BungieMembership;
+    membership!: BungieMembership;
     promptForPlatform = false;
 }
 
 export class BungieGroupMember {
-    memberType: number;
-    isOnline: boolean;
-    lastOnlineStatusChange: string;
-    groupId: string;
-    destinyUserInfo: UserInfo;
-    bungieNetUserInfo: BungieNetUserInfo;
-    joinDate: string;
+    memberType!: number;
+    isOnline!: boolean;
+    lastOnlineStatusChange!: string;
+    groupId!: string;
+    destinyUserInfo!: UserInfo;
+    bungieNetUserInfo!: BungieNetUserInfo;
+    joinDate!: string;
     player$: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
-    errorMsg: string;
+    errorMsg!: string;
 
     currentPlayer(): Player | null {
         return this.player$.getValue();
@@ -531,7 +531,7 @@ export class BungieGroupMember {
 
 
 export class FriendListEntry {
-    user: UserInfo;
+    user!: UserInfo;
     player$: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
     errorMsg$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
@@ -674,12 +674,12 @@ export class Player {
     readonly seasonChallengeEntries: SeasonalChallengeEntry[];
     readonly hasHiddenClosest: boolean;
     readonly accountProgressions: Progression[];
-    readonly glory: Progression;
-    readonly trialsRank: Progression;
-    readonly seasonRank: Progression;
-    readonly crucibleRank: Progression;
-    readonly vanguardRank: Progression;
-    readonly gambitRank: Progression;
+    readonly glory!: Progression;
+    readonly trialsRank!: Progression;
+    readonly seasonRank!: Progression;
+    readonly crucibleRank!: Progression;
+    readonly vanguardRank!: Progression;
+    readonly gambitRank!: Progression;
     readonly artifactPowerBonus: number;
     readonly transitoryData: ProfileTransitoryData;
     readonly minsPlayed: number;
@@ -807,22 +807,22 @@ export class InventoryItem {
     readonly totalStatPoints: number;
     public searchText: string;
     public isHighest = false;
-    public markLabel: string;
-    public mark: string;
-    public notes: string;
+    public markLabel!: string;
+    public mark!: string;
+    public notes!: string;
     public inventoryBucket: ApiInventoryBucket;
     public tier: string;
     public options: Target[] = [];
     public readonly isRandomRoll: boolean;
     public readonly ammoType: DestinyAmmunitionType;
     public postmaster: boolean;
-    public canReallyEquip: boolean;
+    public canReallyEquip!: boolean;
     public copies = 1;
     public pandaPve = 0;
     public pandaPvp = 0;
-    public godRollInfo: string;
+    public godRollInfo!: string;
     public noGodRollInfo = false;
-    public preferredStatPoints: number;
+    public preferredStatPoints!: number;
     public readonly seasonalModSlot: number;
     public readonly powerCap: number;
     public dupesByArmorSlot?: number;
@@ -832,14 +832,14 @@ export class InventoryItem {
     readonly redacted: boolean;
     readonly specialModSockets: string[];
     readonly collectibleHash: string;
-    public lowLinks: LowLinks;
+    public lowLinks!: LowLinks;
     readonly versionNumber: number;
     readonly crafted: boolean;
     readonly deepsight: boolean;
     readonly notCrafted: boolean;
     readonly craftProgress: WeaponShapeLevelObjective;
-    public patternTriumph: TriumphRecordNode;
-    public exoticCatalystTriumph: TriumphRecordNode;
+    public patternTriumph!: TriumphRecordNode;
+    public exoticCatalystTriumph!: TriumphRecordNode;
 
     canFit(socket: InventorySocket, plug: ManifestInventoryItem): boolean {
         const current = socket.active ? socket.active.energyCost : 0;
@@ -1080,26 +1080,26 @@ export class Character extends Target {
     basePLString?: string;
     bestPlGear: { [key: string]: InventoryItem } = {};
 
-    dateLastPlayed: string;
-    minutesPlayedThisSession: string;
-    minutesPlayedTotal: number;
-    emblemBackgroundPath: string;
-    emblemPath: string;
-    baseCharacterLevel: number;
-    maxLevel: number;
-    percentToNextLevel: number;
-    title: string;
-    race: string;
-    gender: string;
-    classType: number;
+    dateLastPlayed!: string;
+    minutesPlayedThisSession!: string;
+    minutesPlayedTotal!: number;
+    emblemBackgroundPath!: string;
+    emblemPath!: string;
+    baseCharacterLevel!: number;
+    maxLevel!: number;
+    percentToNextLevel!: number;
+    title!: string;
+    race!: string;
+    gender!: string;
+    classType!: number;
     wellRested = false;
-    currentActivity: CurrentActivity;
-    milestones: { [key: string]: MilestoneStatus };
-    clanMilestones: ClanMilestoneResult[];
-    factions: Progression[];
-    stats: CharacterStat[];
-    startWeek: Date;
-    endWeek: Date;
+    currentActivity!: CurrentActivity;
+    milestones!: { [key: string]: MilestoneStatus };
+    clanMilestones!: ClanMilestoneResult[];
+    factions!: Progression[];
+    stats!: CharacterStat[];
+    startWeek!: Date;
+    endWeek!: Date;
     lifetimeRaid = 0;
     lifetimeRaidNormal = 0;
     lifetimeRaidPrestige = 0;
@@ -1128,12 +1128,12 @@ export class Character extends Target {
 }
 
 export class Nightfall {
-    name: string;
-    desc: string;
-    tiers: number[];
-    modifiers: NameDesc[];
-    challenges: NameDesc[];
-    image: string;
+    name!: string;
+    desc!: string;
+    tiers!: number[];
+    modifiers!: NameDesc[];
+    challenges!: NameDesc[];
+    image!: string;
 }
 
 
@@ -1206,9 +1206,9 @@ export interface ClanMilestoneResult {
 }
 
 export class CurrentActivity {
-    dateActivityStarted: string;
-    name: string;
-    type: string;
+    dateActivityStarted!: string;
+    name!: string;
+    type!: string;
 }
 
 // export interface SuppCurrentActivityInfo{
@@ -1223,31 +1223,31 @@ export class CurrentActivity {
 // }
 
 export class Activity {
-    period: string;
-    type: string;
-    mode: string;
-    name: string;
-    desc: string;
-    pvType: string;
-    completed: number;
-    timePlayedSeconds: number;
-    playerCount: number;
-    standing: number;
-    kills: number;
-    deaths: number;
-    kd: number;
-    assists: number;
-    score: number;
-    teamScore: number;
-    completionReason: number;
-    success: boolean;
+    period!: string;
+    type!: string;
+    mode!: string;
+    name!: string;
+    desc!: string;
+    pvType!: string;
+    completed!: number;
+    timePlayedSeconds!: number;
+    playerCount!: number;
+    standing!: number;
+    kills!: number;
+    deaths!: number;
+    kd!: number;
+    assists!: number;
+    score!: number;
+    teamScore!: number;
+    completionReason!: number;
+    success!: boolean;
 
-    activityLevel: number;
-    activityLightLevel: number;
-    referenceId: number;
-    instanceId: string;
-    activityTypeHashOverride: number;
-    isPrivate: boolean;
+    activityLevel!: number;
+    activityLightLevel!: number;
+    referenceId!: number;
+    instanceId!: string;
+    activityTypeHashOverride!: number;
+    isPrivate!: boolean;
 }
 
 export class Platform {
@@ -1286,15 +1286,15 @@ export class BungieMemberPlatform {
 
 export class ClanInfo {
 
-    groupId: string;
-    name: string;
-    creationDate: string;
-    memberCount: number;
-    avatarPath: string;
-    bannerPath: string;
-    primaryProgression: Progression;
-    progressions: Progression[];
-    about: string;
+    groupId!: string;
+    name!: string;
+    creationDate!: string;
+    memberCount!: number;
+    avatarPath!: string;
+    bannerPath!: string;
+    primaryProgression!: Progression;
+    progressions!: Progression[];
+    about!: string;
 }
 
 export interface ProgressStep {
@@ -1304,29 +1304,29 @@ export interface ProgressStep {
 }
 
 export class Progression {
-    icon: string;
-    name: string;
-    info: string;
-    desc: string;
-    hash: string;
-    nextLevelAt: number;
-    progressToNextLevel: number;
-    progressionHash: number;
-    level: number;
-    levelCap: number;
-    dailyProgress: number;
-    dailyLimit: number;
-    weeklyProgress: number;
-    weeklyLimit: number;
-    currentProgress: number;
+    icon!: string;
+    name!: string;
+    info!: string;
+    desc!: string;
+    hash!: string;
+    nextLevelAt!: number;
+    progressToNextLevel!: number;
+    progressionHash!: number;
+    level!: number;
+    levelCap!: number;
+    dailyProgress!: number;
+    dailyLimit!: number;
+    weeklyProgress!: number;
+    weeklyLimit!: number;
+    currentProgress!: number;
     completeProgress?: number; // includes resets
-    percentToNextLevel: number;
-    steps: ProgressStep[];
-    totalProgress: number;
-    currentResetCount: number;
-    title: string;
-    nextTitle: string;
-    special: string;
+    percentToNextLevel!: number;
+    steps!: ProgressStep[];
+    totalProgress!: number;
+    currentResetCount!: number;
+    title!: string;
+    nextTitle!: string;
+    special!: string;
 }
 
 export class Const {
@@ -1526,7 +1526,7 @@ export class InventoryStat {
     readonly name: string;
     readonly desc: string;
     value: number;
-    enhancement: number;
+    enhancement!: number;
     index: number;
     fromArchetype: boolean;
 
@@ -1597,7 +1597,7 @@ export class InventoryPlug {
     public desc: string;
     public selectedPossible = false; // used for possible roll screen only
     public inventoryStats: InventoryStat[] = [];
-    public requiredLevel: number|null;
+    public requiredLevel!: number|null;
 
     public getPandaRating() {
         return Math.max(this.pandaPve, this.pandaPvp);

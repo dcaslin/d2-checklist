@@ -18,8 +18,8 @@ import { IconService } from '@app/service/icon.service';
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
   Const = Const;
-  routedName: string;
-  name: string;
+  routedName!: string;
+  name!: string;
   public rows$: BehaviorSubject<BungieGlobalSearchResult[] | null> = new BehaviorSubject<BungieGlobalSearchResult[] | null>(null);
 
   constructor(storageService: StorageService, private bungieService: BungieService,

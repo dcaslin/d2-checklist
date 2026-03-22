@@ -22,7 +22,7 @@ export function generateUberState(config: UberToggleConfig, choices: UberChoice[
   styleUrls: ['./uber-list-toggle.component.scss']
 })
 export class UberListToggleComponent {
-  @Input() state$: BehaviorSubject<UberToggleState>;
+  @Input() state$!: BehaviorSubject<UberToggleState>;
 
   constructor(public iconService: IconService) { }
 

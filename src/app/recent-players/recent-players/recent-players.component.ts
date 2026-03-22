@@ -21,13 +21,13 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   selectedMaxResults: number;
   selectedMode: ActivityMode;
 
-  membershipType: number;
-  membershipId: string;
-  characterId: string;
-  player: Player;
+  membershipType!: number;
+  membershipId!: string;
+  characterId!: string;
+  player!: Player;
 
-  msg: string;
-  rows: Activity[];
+  msg!: string;
+  rows!: Activity[];
   rowCntr = 0;
   friendsDict: Record<string, any> = {};
   friends: any[] = [];

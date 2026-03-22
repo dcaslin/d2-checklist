@@ -26,7 +26,7 @@ export class PursuitListComponent extends ChildComponent {
     name: 'expiration',
     ascending: true
   };
-  mode: string;
+  mode!: string;
 
   constructor(
     storageService: StorageService,

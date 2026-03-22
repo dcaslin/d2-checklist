@@ -18,11 +18,11 @@ export class GodRollItemComponent {
 
 
   @Input()
-  item: InventoryItem;
+  item!: InventoryItem;
 
 
   @Input()
-  debugmode: boolean;
+  debugmode!: boolean;
 
   constructor(public iconService: IconService) { }
 

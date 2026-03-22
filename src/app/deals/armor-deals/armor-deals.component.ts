@@ -15,7 +15,7 @@ import { ArmorCompareDialogComponent } from '../armor-compare-dialog/armor-compa
   styleUrls: ['./armor-deals.component.scss']
 })
 export class ArmorDealsComponent {
-  @Input() vendorDeals: VendorDeals;
+  @Input() vendorDeals!: VendorDeals;
 
   public DestinyClasses = DestinyClasses;
 

@@ -44,13 +44,13 @@ export class GearComponent extends ChildComponent implements OnInit {
   // show thinking while gear filtering is occurring
   public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  private shortcutInfo$: BehaviorSubject<ShortcutInfo|null | null> = new BehaviorSubject<ShortcutInfo|null | null>(null);
+  private shortcutInfo$: BehaviorSubject<ShortcutInfo | null> = new BehaviorSubject<ShortcutInfo | null>(null);
 
   @ViewChild('paginator')
-  public paginator: MatPaginator;
+  public paginator!: MatPaginator;
 
   @ViewChild('optionsgroup')
-  public optionsgroup: MatButtonToggleGroup;
+  public optionsgroup!: MatButtonToggleGroup;
 
   showAllWeaponStats = false;
 
@@ -61,7 +61,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   public filterKeyUp$: Subject<string> = new Subject();
 
   @ViewChild('filter')
-  filter: ElementRef;
+  filter!: ElementRef;
 
   options: TabOption[];
   option: TabOption;

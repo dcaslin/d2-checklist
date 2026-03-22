@@ -103,7 +103,7 @@ export class ClanStateService {
   public notFound: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public inactiveMembers: BungieGroupMember[] = [];
   public defunctMembers: BungieGroupMember[] = [];
-  public id: string;
+  public id!: string;
 
   public rawMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
   public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);

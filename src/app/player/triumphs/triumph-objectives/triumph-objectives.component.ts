@@ -9,7 +9,7 @@ import { TriumphRecordNode } from '@app/service/model';
   styleUrls: ['./triumph-objectives.component.scss']
 })
 export class TriumphObjectivesComponent {
-  @Input() triumph: TriumphRecordNode;
+  @Input() triumph!: TriumphRecordNode;
   @Input() hideDesc = false;
 
   constructor(public iconService: IconService) { }

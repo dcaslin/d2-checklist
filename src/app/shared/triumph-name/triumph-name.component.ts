@@ -10,10 +10,10 @@ import { TriumphRecordNode } from '@app/service/model';
   styleUrls: ['./triumph-name.component.scss']
 })
 export class TriumphNameComponent {
-  @Input() cntr: number|null;
-  @Input() t: TriumphRecordNode;
-  @Input() debugmode: boolean;
-  @Input() hideOption: boolean;
+  @Input() cntr!: number|null;
+  @Input() t!: TriumphRecordNode;
+  @Input() debugmode!: boolean;
+  @Input() hideOption!: boolean;
   @Output() navigate = new EventEmitter<string>();
 
   constructor(

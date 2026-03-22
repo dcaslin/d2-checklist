@@ -9,7 +9,7 @@ import { PursuitTuple } from '@app/service/model';
   styleUrls: ['./uber-pursuit-check.component.scss']
 })
 export class UberPursuitCheckComponent {
-  @Input() pursuit: PursuitTuple;
+  @Input() pursuit!: PursuitTuple;
 
   constructor(public iconService: IconService) { }
 
