@@ -16,7 +16,7 @@
   </div>
 
 
-  <div *ngIf="(hiddenMilestones|async).length>0" class="mobile-button-row" style="margin-top: 5px">
+  <div *ngIf="(hiddenMilestones|async)!.length>0" class="mobile-button-row" style="margin-top: 5px">
     <span class="mat-caption warn-text" (click)="showAllMilestones()">Show hidden milestones</span>
   </div>
 
@@ -34,12 +34,12 @@
             <fa-icon [icon]="iconService.falEye" class="warn-text"></fa-icon>
           </button>
 
-          <span *ngIf="(hiddenMilestones|async).length>0" matTooltip="Show all hidden milestones"
+          <span *ngIf="(hiddenMilestones|async)!.length>0" matTooltip="Show all hidden milestones"
             class="warn-text pad-left fake-link pad-left-more" (click)="showAllMilestones()">Restore Hidden</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           <button mat-stroked-button (click)="showPlBuckets(char)"
-            [matTooltip]="char.basePLString ? char.basePLString :null">
+            [matTooltip]="char.basePLString ? char.basePLString : null!">
             {{char.className}} - {{char.light}}
             <ng-container *ngIf="char.lightFraction">
               <sup>{{char.lightFraction.top}}</sup>&frasl;<sub>{{char.lightFraction.bottom}}</sub>
@@ -59,7 +59,7 @@
     </thead>
     <tbody>
       <ng-container *ngFor="let mileStoneName of player.milestoneList">
-        <tr *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
+        <tr *ngIf="(hiddenMilestones|async)!.indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
           <td class="lead">
             <div class="milestone-row">
               <div [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
@@ -81,7 +81,7 @@
             <div class="milestone-row">
               <d2c-reward-desc [boost]="mileStoneName.boost" [maxPl]="player.characters[0].basePL" [rewards]="mileStoneName.rewards" [sort]="state.sort"
                 (sortClick)="sortByRewards()"></d2c-reward-desc>
-              <div class="caption milestone-resets" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
+              <div class="caption milestone-resets" *ngIf="mileStoneName.resets!=null && $any(mileStoneName)!=''">
                 <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
                   Resets {{mileStoneName.resets | d2cAgoHumanized}}
                   <fa-icon *ngIf="state.sort=='resetDesc'" [icon]="iconService.falSortDown"></fa-icon>
@@ -104,7 +104,7 @@
         </tr>
       </ng-container>
       <tr
-        *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && (hiddenMilestones|async).indexOf('1')===-1">
+        *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && (hiddenMilestones|async)!.indexOf('1')===-1">
         <td class="lead" matTooltip="Shared clan rewards, one per account">
 
           <div class="milestone-row">
@@ -123,11 +123,11 @@
             <span style="margin-right: 0.5em" *ngFor="let clanMs of player.characters[0].clanMilestones">
               {{clanMs.name}}
               <fa-icon [icon]="iconService.fasStar" matTooltip='Collect reward'
-                *ngIf="clanMs.earned==true && !clanMs.redeemed==true" class="warn-text mat-option.mat-selected">
+                *ngIf="clanMs.earned==true && clanMs.redeemed!=true" class="warn-text mat-option.mat-selected">
               </fa-icon>
               <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="clanMs.earned==true && clanMs.redeemed==true"
                 class="accent-text mat-option.mat-selected"></fa-icon>
-              <fa-icon [icon]="iconService.farSquare" *ngIf="!clanMs.earned==true"></fa-icon>
+              <fa-icon [icon]="iconService.farSquare" *ngIf="clanMs.earned!=true"></fa-icon>
             </span>
           </div>
         </td>

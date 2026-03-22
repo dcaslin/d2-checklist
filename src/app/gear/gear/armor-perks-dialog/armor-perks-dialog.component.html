@@ -1,11 +1,11 @@
 <h2 mat-dialog-title>Equipped Armor Perks
 </h2>
-<mat-dialog-content *ngIf="data.parent.player$|async as player">
+<mat-dialog-content *ngIf="parent.player$|async as player">
 
     <mat-tab-group>
         <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
             <div style="margin: 20px">
-                <ng-container *ngFor="let p of charPerks[char.id]">
+                <ng-container *ngFor="let p of $any(charPerks)[char.id]">
                     <div [title]="p.mod.desc" [class.warn-text]="p.count>1">
                         <div *ngIf="p.mod.icon!=null" class="item-image divider-border mod-child-icon"
                             [style.background-image]="'url(//www.bungie.net' + p.mod.icon + ')'">

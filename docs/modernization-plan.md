@@ -20,7 +20,7 @@ Enable strict type checking incrementally to catch bugs at compile time instead 
 - [x] Enable `strictBindCallApply` and `strictFunctionTypes`
 - [x] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~632 errors across 60+ files)
 - [x] Enable `strictPropertyInitialization`, fix resulting errors (~211 errors across 47 files)
-- [ ] Enable `strictTemplates` in `angularCompilerOptions`
+- [x] Enable `strictTemplates` in `angularCompilerOptions` (~212 errors across 56 template files)
 - [ ] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning
 
 **Done when:** `"strict": true` in tsconfig.json and `strictTemplates: true` in angular compiler options.
@@ -134,7 +134,7 @@ Angular migrations must go one major version at a time:
 
 1. ~~Phase 5: CI/CD Hardening~~ — Done
 2. ~~Phase 6: Standardize Service Providers~~ — Done
-3. **Phase 1: TypeScript Strictness** — In progress (`strictNullChecks` is the last big flag)
+3. **Phase 1: TypeScript Strictness** — In progress (strict flags done, ESLint `no-explicit-any` remains)
 4. **Phase 3: Break Up parse.service.ts** — Next. Easier to split before adding tests.
 5. **Phase 2: Unit Tests** — After the split, each parser file is small enough to test meaningfully.
 6. **Phase 4: Bundle Budgets** — Low risk, can slot in anytime.

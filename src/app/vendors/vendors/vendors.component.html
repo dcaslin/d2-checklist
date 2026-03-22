@@ -22,7 +22,7 @@
         <mat-form-field>
             <mat-label>Search</mat-label>
             <input autocomplete="off" matInput #filter [(ngModel)]="visibleFilterText" placeholder="Name, vendor, stat">
-            <button mat-button *ngIf="visibleFilterText?.length>0" matSuffix mat-icon-button aria-label="Clear"
+            <button mat-button *ngIf="visibleFilterText?.length! > 0" matSuffix mat-icon-button aria-label="Clear"
                 (click)="visibleFilterText='';filterText$.next(null)">
                 <mat-icon>close</mat-icon>
             </button>
@@ -88,7 +88,7 @@
                                 <td class="hide-mobile-table-cell">
                                     <div>{{i.name}} <d2c-god-roll-item [item]="i" [simple]="true"></d2c-god-roll-item>
                                         <span class="secondary-text bold"
-                                            *ngIf="i.vendorItemInfo?.quantity>1">({{i.vendorItemInfo.quantity}})</span>
+                                            *ngIf="i.vendorItemInfo?.quantity! > 1">({{i.vendorItemInfo!.quantity}})</span>
                                     </div>
                                     <div class="type-caption">{{i.typeName}}</div>
                                     <div class="type-caption"*ngIf="i.masterwork?.name">
@@ -130,7 +130,7 @@
                                 *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty">
                                 <ng-container *ngIf="i.vendorItemInfo as vi">
                                     <div *ngFor="let o of vi.objectives">
-                                        {{o.total}} {{o.units}}
+                                        {{$any(o).total}} {{$any(o).units}}
                                     </div>
                                 </ng-container>
                             </td>

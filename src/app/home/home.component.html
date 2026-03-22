@@ -30,7 +30,7 @@
             <fa-icon [icon]="iconService.farList"></fa-icon> Show all
           </a>
           <a *ngFor="let ui of fl" mat-menu-item [routerLink]="['/',ui.membershipType, ui.membershipId]">
-            <fa-icon [icon]="platformMap[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
+            <fa-icon [icon]="$any(platformMap)[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
           </a>
 
         </mat-menu>
@@ -253,6 +253,6 @@
   <mat-option *ngFor="let v of elasticSearchService.filteredAutoCompleteOptions$|async" [value]="v">
 
     <img class="option-img" aria-hidden [src]="'https://www.bungie.net' + v.iconPath " height="36">
-    {{v.displayName}} <fa-icon [icon]="platformMap[v.membershipType].icon"></fa-icon> <span class="pad-left simple-caption-darker-no-margin">{{v.lastPlayed|d2cAgoHumanized}}</span>
+    {{v.displayName}} <fa-icon [icon]="$any(platformMap)[v.membershipType].icon"></fa-icon> <span class="pad-left simple-caption-darker-no-margin">{{$any(v.lastPlayed)|d2cAgoHumanized}}</span>
   </mat-option>
 </mat-autocomplete>

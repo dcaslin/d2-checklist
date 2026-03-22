@@ -63,8 +63,8 @@
                         {{member.destinyUserInfo.displayName}}
                     </a>
                     <ng-container *ngIf="member.player$|async as player">
-                        <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
-                            {{player.title}}
+                        <span class="simple-caption" *ngIf="player!=null && $any(player).title.trim().length>0">
+                            {{$any(player).title}}
                         </span>
                     </ng-container>
                 </td>

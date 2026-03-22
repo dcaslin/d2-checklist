@@ -39,7 +39,7 @@
             <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
             Processing manifest DB...
         </div>
-        <div *ngIf="(destinyCacheService.percent | async) < 100">
+        <div *ngIf="(destinyCacheService.percent | async)! < 100">
             <br>
             <div *ngIf="destinyCacheService.checkingCache|async">
                 <mat-progress-bar color="primary" mode="query"></mat-progress-bar>

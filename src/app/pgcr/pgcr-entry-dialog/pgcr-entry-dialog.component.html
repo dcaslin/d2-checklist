@@ -7,7 +7,7 @@
       <div class="simple-caption-darker-no-margin sub-title">{{player.characterClass}} {{player.lightLevel}}</div>
     </div>
     <div>
-      <d2c-friend-star [userInfo]="player.destinyUserInfo" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+      <d2c-friend-star [userInfo]="$any(player.destinyUserInfo)" [favoritesMap]="(favoritesMap|async)!"></d2c-friend-star>
     </div>
   </div>
 </div>
@@ -47,12 +47,12 @@
           </tr>
           <tr *ngFor="let v of entry.weapons">
             <td class="vert-middle">
-              <div *ngIf="v.displayProperties.icon as icon" class="icon size-22" 
+              <div *ngIf="$any(v).displayProperties?.icon as icon" class="icon size-22"
                   [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
             </td>
-            <td class="vert-middle">{{v.displayProperties.name}}</td>
-            <td class="vert-middle">{{v.kills|number}}</td>
-            <td class="d-none d-md-table-cell vert-middle">{{(v.precPct * 100)|number:'1.0-0'}}%</td>
+            <td class="vert-middle">{{$any(v).displayProperties?.name}}</td>
+            <td class="vert-middle">{{$any(v).kills|number}}</td>
+            <td class="d-none d-md-table-cell vert-middle">{{($any(v).precPct * 100)|number:'1.0-0'}}%</td>
           </tr>
         </table>
       </div>

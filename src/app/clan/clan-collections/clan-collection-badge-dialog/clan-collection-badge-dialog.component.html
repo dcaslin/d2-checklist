@@ -7,7 +7,7 @@
                 <fa-icon [icon]="iconService.fasChartLine"></fa-icon><span class="d-none d-md-inline">&ensp;Chart</span>
             </ng-template>
             <div class="tab-body">
-                <d2c-clan-triumph-graph [data]="badge.all"></d2c-clan-triumph-graph>
+                <d2c-clan-triumph-graph [data]="$any(badge.all)"></d2c-clan-triumph-graph>
             </div>
         </mat-tab>
         <mat-tab>
@@ -62,8 +62,8 @@
                         {{member.destinyUserInfo.displayName}}
                     </a>                                       
                     <ng-container *ngIf="member.player$|async as player">
-                        <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
-                            {{player.title}}
+                        <span class="simple-caption" *ngIf="player!=null && $any(player).title.trim().length>0">
+                            {{$any(player).title}}
                         </span>
                     </ng-container>
                 </td>

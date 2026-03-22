@@ -30,7 +30,7 @@
     <tr *ngFor="let row of rows">
       <td class="lead" data-label="Name">
         <a [routerLink]="['/', row.searchResult.membershipType, row.searchResult.membershipId]">
-        <fa-icon [icon]="Const.PLATFORMS_DICT[row.searchResult.membershipType+''].icon"></fa-icon>
+        <fa-icon [icon]="$any(Const.PLATFORMS_DICT)[row.searchResult.membershipType+''].icon"></fa-icon>
         {{row.bungieGlobalDisplayName}}
         </a>
       </td>

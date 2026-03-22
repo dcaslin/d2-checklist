@@ -27,43 +27,43 @@
           <table class="checklist-table">
             <tbody>
               <ng-container *ngFor="let c of s.children">
-                <tr *ngIf="!state.hideCompleteTriumphs || !c.complete || !c.redeemed">
+                <tr *ngIf="!state.hideCompleteTriumphs || !c.complete || !$any(c).redeemed">
                   <td>
-                    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && c.redeemed"
+                    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && $any(c).redeemed"
                       class="accent-text mat-option.mat-selected"></fa-icon>
 
-                    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && !c.redeemed"
+                    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && !$any(c).redeemed"
                       class="warn-text mat-option.mat-selected"></fa-icon>
                     <fa-icon [icon]="iconService.farSquare" *ngIf="!c.complete"></fa-icon>
 
-                    <fa-icon *ngIf="c.forTitleGilding" class="pad-left pad-right accent-text" [icon]="iconService.fadShieldAlt" matTooltip="For title guilding"></fa-icon>
+                    <fa-icon *ngIf="$any(c).forTitleGilding" class="pad-left pad-right accent-text" [icon]="iconService.fadShieldAlt" matTooltip="For title guilding"></fa-icon>
                     {{c.name}}
                     
-                    <ng-container *ngIf="c.lowLinks!=null">                      
-                      <a [href]="c.lowLinks.mapLink" class="pad-left" *ngIf="c.lowLinks.mapLink!=null && c.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
-                      <a [href]="c.lowLinks.loreLink" class="pad-left" *ngIf="c.lowLinks.loreLink!=null && c.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
-                      <a [href]="c.lowLinks.videoLink" class="pad-left" *ngIf="c.lowLinks.videoLink!=null && c.lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+                    <ng-container *ngIf="$any(c).lowLinks!=null">                      
+                      <a [href]="$any(c).lowLinks.mapLink" class="pad-left" *ngIf="$any(c).lowLinks.mapLink!=null && $any(c).lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
+                      <a [href]="$any(c).lowLinks.loreLink" class="pad-left" *ngIf="$any(c).lowLinks.loreLink!=null && $any(c).lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+                      <a [href]="$any(c).lowLinks.videoLink" class="pad-left" *ngIf="$any(c).lowLinks.videoLink!=null && $any(c).lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
                     </ng-container>
                     
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
                     <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
-                      (click)="state.trackTriumph(c)"></fa-icon>
-                    <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph(c)"></fa-icon>                                         
+                      (click)="state.trackTriumph($any(c))"></fa-icon>
+                    <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph($any(c))"></fa-icon>                                         
                     <br>
-                    <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">
+                    <span class="simple-warn-caption" *ngIf="c.complete && !$any(c).redeemed">
                       Not yet redeemed.<br></span>
 
                     <span class="simple-caption">
-                      {{c.score}} pts. {{c.desc}}
+                      {{$any(c).score}} pts. {{c.desc}}
                     </span>
-                    <div *ngIf="c.badge!=null" class="badge-margin">
-                      <div>Badge | {{c.badge.name}}: {{c.badge.bestProgress}} / {{c.badge.total}}</div>
+                    <div *ngIf="$any(c).badge!=null" class="badge-margin">
+                      <div>Badge | {{$any(c).badge.name}}: {{$any(c).badge.bestProgress}} / {{$any(c).badge.total}}</div>
                       <a mat-raised-button class="badge-margin"
-                        [routerLink]="state.getPlayerRoute(['collections', 'badges', c.badge.hash])" color="accent">
+                        [routerLink]="state.getPlayerRoute(['collections', 'badges', $any(c).badge.hash])" color="accent">
                         View Badge
                       </a>
                     </div>
-                    <div *ngFor="let o of c.objectives">
+                    <div *ngFor="let o of $any(c).objectives">
                       <span class="simple-caption">
                         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="o.complete"
                           class="accent-text mat-option.mat-selected"></fa-icon>

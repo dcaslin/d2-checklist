@@ -25,7 +25,7 @@
             <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
                 <tr *ngIf="cntr < selectedMaxResults">
                     <td class="lead" data-label="">
-                        <d2c-triumph-name [t]="t" [cntr]="cntr" [hideOption]="true" [debugmode]="debugmode|async" (navigate)="navigate($event)"></d2c-triumph-name>                        
+                        <d2c-triumph-name [t]="t" [cntr]="cntr" [hideOption]="true" [debugmode]="(debugmode|async)!" (navigate)="navigate($event)"></d2c-triumph-name>                        
                     </td>
                     <td class="left" data-label="">
                         {{t.percent}}%

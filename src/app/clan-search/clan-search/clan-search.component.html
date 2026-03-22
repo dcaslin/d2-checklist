@@ -16,23 +16,23 @@
 </div>
 <ng-container *ngIf="(clan|async)!=null">
   <div>
-    <a [routerLink]="['/clan', (clan|async).groupId]">{{(clan|async).name}}</a>
+    <a [routerLink]="['/clan', (clan|async)!.groupId]">{{(clan|async)!.name}}</a>
   </div>
   <mat-card class="clan-card">
     <mat-card-header>
-      <div mat-card-avatar class="clan-avatar transparent-icon" [style.background-image]="'url(//www.bungie.net' + (clan|async).avatarPath + ')'"></div>
+      <div mat-card-avatar class="clan-avatar transparent-icon" [style.background-image]="'url(//www.bungie.net' + (clan|async)!.avatarPath + ')'"></div>
       <mat-card-title>
-          <a [routerLink]="['/clan', (clan|async).groupId]">{{(clan|async).name}}</a>
+          <a [routerLink]="['/clan', (clan|async)!.groupId]">{{(clan|async)!.name}}</a>
       </mat-card-title>
       <mat-card-subtitle>
-        {{(clan|async).memberCount}} members
+        {{(clan|async)!.memberCount}} members
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      {{(clan|async).about}}
+      {{(clan|async)!.about}}
     </mat-card-content>
     <mat-card-actions>
-        <a mat-button [routerLink]="['/clan', (clan|async).groupId]">VIEW CLAN PROGRESS</a>
+        <a mat-button [routerLink]="['/clan', (clan|async)!.groupId]">VIEW CLAN PROGRESS</a>
       </mat-card-actions>
   </mat-card>
 </ng-container>

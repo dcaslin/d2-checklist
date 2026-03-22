@@ -114,7 +114,7 @@
             <div class="flex-row">
                 <div *ngFor="let e of g.entries">
                     <div class="detail-list">                
-                        <ng-container *ngIf="e?.info.player as player">
+                        <ng-container *ngIf="e?.info?.player as player">
                             <div class="flex-row">
                                 <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon size-40" [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
                                 <div>
@@ -126,9 +126,9 @@
                     </div>                
                     <div class="detail-list">
                         <h3>Values</h3>
-                        <ng-container *ngFor="let key of Object.keys(e.values)">
+                        <ng-container *ngFor="let key of Object.keys(e.values!)">
                             <div>
-                                {{key}}: {{e.values[key]}}
+                                {{key}}: {{$any(e.values)[key]}}
                             </div>
                         </ng-container>                    
                     </div>
@@ -156,7 +156,7 @@
                         <h3>Weapons</h3>
                         <ng-container *ngFor="let w of e.weapons">
                             <div>
-                                {{w.displayProperties.name}}: {{w.kills}}
+                                {{$any(w).displayProperties.name}}: {{$any(w).kills}}
                             </div>
                         </ng-container>
                         

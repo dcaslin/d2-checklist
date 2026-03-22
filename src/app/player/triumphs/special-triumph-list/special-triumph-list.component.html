@@ -14,7 +14,7 @@
                         <mat-label>Filter</mat-label>
                         <mat-select [(ngModel)]="craftedFilter">
                             <ng-container *ngFor="let c of craftedFilterChoices">
-                                <mat-option *ngIf="!o.player.privateGear || c.value.indexOf('CRAFTED')<0"
+                                <mat-option *ngIf="!o.player!.privateGear || c.value.indexOf('CRAFTED')<0"
                                     [value]="c.value">{{c.name}}</mat-option>
                             </ng-container>
 
@@ -38,7 +38,7 @@
                 </ng-container>
             </h4>
             <div>
-                <p *ngIf="o.player.privateGear && o.showCrafted">
+                <p *ngIf="o.player!.privateGear && o.showCrafted">
                     Private gear is hidden on this account, so crafting and attunement status will not be reported. Sign in or modify Bungie.net privacy settings to fix this.
                 </p>
                 <table class="responsive-table">
@@ -72,12 +72,12 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <d2c-triumph-name [t]="t" [debugmode]="debugmode|async"
+                                            <d2c-triumph-name [t]="t" [debugmode]="(debugmode|async)!"
                                                 (navigate)="navigate($event)">
                                             </d2c-triumph-name>
-                                            <ng-container *ngIf="o.showCrafted && !o.player.privateGear">
+                                            <ng-container *ngIf="o.showCrafted && !o.player!.privateGear">
                                                 <div *ngIf="t.complete">
-                                                    <span *ngIf="t.crafted.length==0" class="crafted-text">Craft me!</span>
+                                                    <span *ngIf="t.crafted?.length==0" class="crafted-text">Craft me!</span>
                                                     <ng-container *ngFor="let i of t.crafted">
                                                         <div *ngIf="i.craftProgress as obj">
                                                             <div class="total-progress">
@@ -92,8 +92,8 @@
                                                         </div>
                                                     </ng-container>
                                                 </div>
-                                                <div *ngIf="!t.complete && t.redborder.length>0">
-                                                    <span class="crafted-text">{{t.redborder.length}} Deepsight held to attune.</span>
+                                                <div *ngIf="!t.complete && t.redborder?.length! > 0">
+                                                    <span class="crafted-text">{{t.redborder?.length}} Deepsight held to attune.</span>
                                                 </div>
                                             </ng-container>
                                         </div>
