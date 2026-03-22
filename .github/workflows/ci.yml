@@ -18,7 +18,9 @@ jobs:
         cache: 'npm'
     - run: npm install
     - name: Create placeholder keys for CI
-      run: cp src/environments/keys.example.ts src/environments/keys.ts
+      run: |
+        cp src/environments/keys.example.ts src/environments/keys.ts
+        sed 's/bungieDev/bungieProd/' src/environments/keys.example.ts > src/environments/keys-prod.ts
     - run: npm run lint
     - run: npm run test:ci
     - run: npx ng build --configuration production
