@@ -20,9 +20,9 @@ import { PlayerStateService } from './player-state.service';
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
   public const: Const = Const;
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
-  public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
+  public errorMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  public publicInfo: PublicMilestonesAndActivities = null;
+  public publicInfo: PublicMilestonesAndActivities | null = null;
 
   constructor(public bungieService: BungieService,
     public iconService: IconService,
@@ -34,8 +34,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   public getRaidLink(p: Player) {
-    let platformstr: string;
-    let memberid: string;
+    let platformstr: string | undefined = undefined;
+    let memberid: string | undefined = undefined;
     if (p.profile.userInfo.membershipType === 1) {
       platformstr = 'xb';
       memberid = p.profile.userInfo.displayName;
@@ -59,7 +59,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   public static validateInteger(s: string): string {
     if (!/^[0-9]\d*$/.test(s)) {
-      return null;
+      return null!;
     }
     return s;
   }

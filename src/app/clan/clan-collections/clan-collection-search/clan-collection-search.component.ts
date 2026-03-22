@@ -13,8 +13,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class ClanCollectionSearchComponent extends ChildComponent implements OnInit {
   private collectionSearchSubject: Subject<void> = new Subject<void>();
-  public collectionFilterText: string = null;
-  public filteredCollection: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
+  public collectionFilterText: string | null = null;
+  public filteredCollection: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject<ClanSearchableTriumph[]>([]);
 
   constructor(storageService: StorageService, public state: ClanStateService) {
     super(storageService);
@@ -31,7 +31,7 @@ export class ClanCollectionSearchComponent extends ChildComponent implements OnI
       debounceTime(50))
       .subscribe(() => {
         const saveMe = this.collectionFilterText == null ? null : this.collectionFilterText.toLowerCase();
-        localStorage.setItem('collection-filter', saveMe);
+        localStorage.setItem('collection-filter', saveMe!);
         this.filterTriumphs();
       });
   }

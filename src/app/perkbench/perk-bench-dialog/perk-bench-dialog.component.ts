@@ -69,8 +69,8 @@ export class PerkBenchDialogComponent extends ChildComponent {
   mwOptions = NORMAL_MW;
   r: MappedRoll;
 
-  pve$: BehaviorSubject<GunRoll> = new BehaviorSubject(null);
-  pvp$: BehaviorSubject<GunRoll> = new BehaviorSubject(null);
+  pve$: BehaviorSubject<GunRoll | null> = new BehaviorSubject<GunRoll | null>(null);
+  pvp$: BehaviorSubject<GunRoll | null> = new BehaviorSubject<GunRoll | null>(null);
   info: GunInfo;
   maxPlugs = 0;
 
@@ -157,31 +157,31 @@ export class PerkBenchDialogComponent extends ChildComponent {
   }
 
   togglePerk(perk: string) {
-    let addToMe: string[] = null;
-    let removeFromMe: string[] = null;
+    let addToMe: string[] | null = null;
+    let removeFromMe: string[] | null = null;
     if (this.clickMode === ClickMode.GodRollPvE) {
       const perks = this.pve$.getValue();
-      addToMe = perks.greatPerks;
-      removeFromMe = perks.goodPerks;
+      addToMe = perks!.greatPerks;
+      removeFromMe = perks!.goodPerks;
     } else if (this.clickMode === ClickMode.GoodRollPvE) {
       const perks = this.pve$.getValue();
-      removeFromMe = perks.greatPerks;
-      addToMe = perks.goodPerks;
+      removeFromMe = perks!.greatPerks;
+      addToMe = perks!.goodPerks;
     } else if (this.clickMode === ClickMode.GodRollPvP) {
       const perks = this.pvp$.getValue();
-      addToMe = perks.greatPerks;
-      removeFromMe = perks.goodPerks;
+      addToMe = perks!.greatPerks;
+      removeFromMe = perks!.goodPerks;
     } else if (this.clickMode === ClickMode.GoodRollPvP) {
       const perks = this.pvp$.getValue();
-      removeFromMe = perks.greatPerks;
-      addToMe = perks.goodPerks;
+      removeFromMe = perks!.greatPerks;
+      addToMe = perks!.goodPerks;
     }
     // this is an uncheck
-    if (addToMe.includes(perk)) {
-      removeStringFromList(addToMe, perk);
+    if (addToMe!.includes(perk)) {
+      removeStringFromList(addToMe!, perk);
     } else {
-      removeStringFromList(removeFromMe, perk);
-      addToMe.push(perk);
+      removeStringFromList(removeFromMe!, perk);
+      addToMe!.push(perk);
     }
   }
   

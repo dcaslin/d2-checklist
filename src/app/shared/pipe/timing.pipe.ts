@@ -15,11 +15,11 @@ export class TimingPipe implements PipeTransform {
 
     }
     const dur = intervalToDuration({ start: 0, end: value });
-    const hours = 24 * dur.days + dur.hours;
+    const hours = 24 * dur!.days! + dur!.hours!;
     if (hours > 36) {
-      return dur.days + 'd ' + TimingPipe.pad(dur.hours, 2) + ':' + TimingPipe.pad(dur.minutes, 2) + ':' + TimingPipe.pad(dur.seconds, 2);
+      return dur.days + 'd ' + TimingPipe.pad(dur.hours!, 2) + ':' + TimingPipe.pad(dur.minutes!, 2) + ':' + TimingPipe.pad(dur.seconds!, 2);
     } else {
-      return TimingPipe.pad(hours, 2) + ':' + TimingPipe.pad(dur.minutes, 2) + ':' + TimingPipe.pad(dur.seconds, 2);
+      return TimingPipe.pad(hours, 2) + ':' + TimingPipe.pad(dur.minutes!, 2) + ':' + TimingPipe.pad(dur.seconds!, 2);
     }
   }
 

@@ -14,8 +14,8 @@ import { IconService } from '@app/service/icon.service';
 })
 export class ClanTriumphSearchComponent extends ChildComponent implements OnInit {
   private triumphSearchSubject: Subject<void> = new Subject<void>();
-  public triumphFilterText: string = null;
-  public filteredTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
+  public triumphFilterText: string | null = null;
+  public filteredTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject<ClanSearchableTriumph[]>([]);
 
   constructor(storageService: StorageService, public state: ClanStateService, public iconService: IconService) {
     super(storageService);
@@ -32,7 +32,7 @@ export class ClanTriumphSearchComponent extends ChildComponent implements OnInit
       debounceTime(50))
       .subscribe(() => {
         const saveMe = this.triumphFilterText == null ? null : this.triumphFilterText.toLowerCase();
-        localStorage.setItem('triumph-filter', saveMe);
+        localStorage.setItem('triumph-filter', saveMe!);
         this.filterTriumphs();
       });
   }

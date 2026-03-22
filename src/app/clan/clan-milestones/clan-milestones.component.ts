@@ -14,7 +14,7 @@ import { ClanStateService } from '../clan-state.service';
   styleUrls: ['./clan-milestones.component.scss']
 })
 export class ClanMilestonesComponent extends ChildComponent {  
-  public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
+  public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
 
   constructor(
     public state: ClanStateService,
@@ -48,9 +48,9 @@ export class ClanMilestonesComponent extends ChildComponent {
     let temp = this.state.sortedMembers.getValue().slice(0);
     temp = temp.filter(member => {
       if (member.currentPlayer() == null) { return false; }
-      if (member.currentPlayer().characters == null) { return false; }
-      if (member.currentPlayer().characters.length === 0) { return false; }
-      if (member.currentPlayer().characters[0].milestones == null) { return false; }
+      if (member!.currentPlayer()!.characters == null) { return false; }
+      if (member!.currentPlayer()!.characters!.length === 0) { return false; }
+      if (member!.currentPlayer()!.characters[0].milestones == null) { return false; }
       return true;
     });
     this.filteredMembers.next(temp);

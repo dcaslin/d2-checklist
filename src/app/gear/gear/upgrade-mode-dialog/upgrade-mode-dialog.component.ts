@@ -44,7 +44,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
   ItemType = ItemType;
   data$ = new BehaviorSubject<UpgradeModeDialogData>(buildEmptyData());
   operating$ = new BehaviorSubject<boolean>(false);
-  gm$ = new BehaviorSubject<GearMetaData>(null);
+  gm$ = new BehaviorSubject<GearMetaData>(null!);
 
   constructor(
     storageService: StorageService,
@@ -56,7 +56,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
     super(storageService);
     this.parent = data.parent;
     // subscribe to parent's filter updates
-    this.parent.player$.pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player) => {
+    this.parent.player$.pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player | null) => {
       if (!player) {
         return;
       }
@@ -108,7 +108,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
       // dummy subject to avoid repainting gear component prematurely
-      const msg = await this.gearService.upgradeMode(this.parent.player$.getValue(), new Subject<void>(), itemType);
+      const msg = await this.gearService.upgradeMode(this.parent.player$.getValue()!, new Subject<void>(), itemType);
       this.parent.gearFilterStateService.filterUpdated$.next();
       await this.parent.load(true);
       await this.parent.syncLocks();
@@ -125,7 +125,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
     try {
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
-      const totalMoved = await this.parent.gearService.emptyVault(this.parent.player$.getValue(), new Subject<void>());
+      const totalMoved = await this.parent.gearService.emptyVault(this.parent.player$.getValue()!, new Subject<void>());
       await this.parent.load(true);
       await this.parent.syncLocks();
       this.parent.gearFilterStateService.filterUpdated$.next();
@@ -141,7 +141,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
     try {      
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
-      await this.parent.gearService.processGearLocks(this.parent.player$.getValue(), true);
+      await this.parent.gearService.processGearLocks(this.parent.player$.getValue()!, true);
     } finally {
       this.parent.gearService.clearOperatingOn();
       this.operating$.next(false);

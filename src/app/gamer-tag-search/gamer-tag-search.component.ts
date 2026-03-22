@@ -16,11 +16,11 @@ import { Platform, Const } from '@app/service/model';
 })
 export class GamerTagSearchComponent extends ChildComponent implements OnInit {
 
-  public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
-  public progressMsg: BehaviorSubject<string> = new BehaviorSubject(null);
+  public errorMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  public progressMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   public playerNotFound: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  platform: Platform = null;
-  gamerTag: string = null;
+  platform: Platform | null = null;
+  gamerTag: string | null = null;
   platforms = Const.PLATFORMS_ARRAY;
 
   constructor(storageService: StorageService, private bungieService: BungieService,

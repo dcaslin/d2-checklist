@@ -15,8 +15,8 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./collection-badge.component.scss']
 })
 export class CollectionBadgeComponent extends ChildComponent implements OnInit {
-  private selectedBadge: string = null;
-  public _badge: BehaviorSubject<Badge> = new BehaviorSubject<Badge>(null);
+  private selectedBadge: string | null = null;
+  public _badge: BehaviorSubject<Badge> = new BehaviorSubject<Badge>(null!);
 
   constructor(storageService: StorageService,
     public iconService: IconService,
@@ -53,10 +53,10 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       this.selectedBadge = params['node'];
-      this.load(this.state.currPlayer(), this.selectedBadge);
+      this.load(this.state.currPlayer(), this.selectedBadge!);
     });
     this.state.player.pipe(takeUntil(this.unsubscribe$)).subscribe((p: Player) => {
-      this.load(p, this.selectedBadge);
+      this.load(p, this.selectedBadge!);
     });
   }
 }

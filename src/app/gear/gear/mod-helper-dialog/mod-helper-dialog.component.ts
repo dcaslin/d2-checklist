@@ -25,10 +25,10 @@ export class ModHelperDialogComponent extends ChildComponent {
   public choices = getEnergyApproachArray();
   public getEnergyApproachString = getEnergyApproachString
 
-  armor$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
-  public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
+  armor$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
+  public char$: BehaviorSubject<Character | null> = new BehaviorSubject<Character | null>(null);
   public modChoices: ModChoices = this.defaultChoices();
-  log$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  log$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
 
   public previewMods(): void {
@@ -68,7 +68,7 @@ export class ModHelperDialogComponent extends ChildComponent {
         return;
       }
       const player = this.parent.player$.getValue();
-      const armor = player.gear.filter(i => (i.equipped.getValue())).filter(i => i.type == ItemType.Armor).filter(i => i.owner.getValue().id == char.id);
+      const armor = player!.gear.filter(i => (i.equipped.getValue())).filter(i => i.type == ItemType.Armor).filter(i => i.owner.getValue().id == char.id);
       this.armor$.next(armor);
 
     });
@@ -77,8 +77,8 @@ export class ModHelperDialogComponent extends ChildComponent {
   private defaultChoices(): ModChoices {
     return {
       pve: true,
-      priorityEnergy: null,
-      secondaryEnergy: null,
+      priorityEnergy: null!,
+      secondaryEnergy: null!,
       preferredStat: PreferredStat.LeaveAlone
     };
   }

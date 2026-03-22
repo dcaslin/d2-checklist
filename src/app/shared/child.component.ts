@@ -12,13 +12,13 @@ import { StorageService } from '../service/storage.service';
 })
 export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
-    public favoritesList$: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
+    public favoritesList$: BehaviorSubject<UserInfo[]> = new BehaviorSubject<UserInfo[]>([]);
     public favoritesMap: BehaviorSubject<{ [id: string]: UserInfo }> = new BehaviorSubject({});
     public disableAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
-    public hiddenClanMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
+    public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+    public hiddenClanMilestones: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     storageService: StorageService;
 
     constructor(storageService: StorageService) {

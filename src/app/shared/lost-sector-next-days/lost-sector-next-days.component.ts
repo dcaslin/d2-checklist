@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./lost-sector-next-days.component.scss']
 })
 export class LostSectorNextDaysComponent {
-  public days$: BehaviorSubject<LostSectors[]> = new BehaviorSubject([]);
+  public days$: BehaviorSubject<LostSectors[]> = new BehaviorSubject<LostSectors[]>([]);
   public links = ['Legendary LS', 'Master LS'];
   public activeLink = this.links[0];
 

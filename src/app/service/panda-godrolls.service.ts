@@ -18,7 +18,7 @@ export const GUN_SUFFIXES = [' (Adept)', ' (Timelost)', ' (Harrowed)'];
 export class PandaGodrollsService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public meta$: BehaviorSubject<RollMeta | null> = new BehaviorSubject(null);
+  public meta$: BehaviorSubject<RollMeta | null> = new BehaviorSubject<RollMeta | null>(null);
 
   private data: { [name: string]: GunInfo };
   public isController = true;
@@ -58,7 +58,7 @@ export class PandaGodrollsService implements OnDestroy {
   }
 
   public async reload() {
-    this.data = null;
+    this.data = null!;
     await this.update(this.isController, this.matchLastTwoSockets);
   }
 
@@ -141,7 +141,7 @@ export class PandaGodrollsService implements OnDestroy {
         console.log(`%cMissing mnk roll for '${name}'.`, LOG_CSS);
         
       }
-      let rolls: GunRolls = null;
+      let rolls: GunRolls | null = null;
       if (this.isController) {
         rolls = info.controller;
       } else {
@@ -370,9 +370,9 @@ export class PandaGodrollsService implements OnDestroy {
   }
 
   public static async getCustomGodRolls(): Promise<CompleteGodRolls | null> {
-    const custom: CompleteGodRolls = await get(CUSTOM_GOD_ROLLS);
-    if (PandaGodrollsService.isValid(custom)) {
-      return custom;
+    const custom: CompleteGodRolls | undefined = await get(CUSTOM_GOD_ROLLS);
+    if (PandaGodrollsService.isValid(custom!)) {
+      return custom!;
     }
     return null;
   }
@@ -382,10 +382,10 @@ export class PandaGodrollsService implements OnDestroy {
     const t0 = performance.now();
 
     const key = `${prefix}-${env.versions.app}`;
-    let completeGodRolls: CompleteGodRolls = await PandaGodrollsService.getCustomGodRolls();
+    let completeGodRolls: CompleteGodRolls | null = await PandaGodrollsService.getCustomGodRolls();
     let customGodRolls = false;
     if (!completeGodRolls) {
-      completeGodRolls = await get(key);
+      completeGodRolls = (await get(key)) as CompleteGodRolls | null;
     } else {
       console.log(`'%c    USING CUSTOM GOD ROLLS: ${completeGodRolls.title}`, LOG_CSS);
       customGodRolls = true;

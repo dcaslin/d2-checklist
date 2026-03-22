@@ -48,7 +48,7 @@ export class SpecialTriumphListComponent extends ChildComponent {
     ascending: false
   });
 
-  public rows$: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public rows$: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject<TriumphRecordNode[]>([]);
   public showCrafted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public craftedFilter = 'TODO';
   public craftedWildCardFilter = '';
@@ -151,15 +151,15 @@ export class SpecialTriumphListComponent extends ChildComponent {
           return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='NOT_CRAFTED') {
-        if (t.complete && t.crafted.length==0) {
+        if (t.complete && t!.crafted!.length==0) {
           return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='CRAFTED') {
-        if (t.complete && t.crafted.length>0) {
+        if (t.complete && t!.crafted!.length>0) {
           return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='ATTUNE_TO_CRAFT') {
-        if (!t.complete && t.redborder.length>0) {
+        if (!t.complete && t!.redborder!.length>0) {
           return this.filterPatternName(t);
         }
       } 

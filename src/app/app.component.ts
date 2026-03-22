@@ -28,7 +28,7 @@ import { Location } from '@angular/common';
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private unsubscribe$: Subject<void> = new Subject<void>();
   navigating$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  private lastPath$: BehaviorSubject<string> = new BehaviorSubject(null);
+  private lastPath$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   @HostBinding('class') componentCssClass;
   readonly version = env.versions.app;
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   disableads: boolean; // for GA
   // signed on info
 
-  public signedOnUser: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
+  public signedOnUser: BehaviorSubject<SelectedUser | null> = new BehaviorSubject<SelectedUser | null>(null);
 
   public showInstallButton: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -154,7 +154,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     dc.disableClose = false;
     dc.autoFocus = true;
     dc.width = '300px';
-    dc.data = this.signedOnUser.value.membership.destinyMemberships;
+    dc.data = this.signedOnUser.value!.membership!.destinyMemberships!;
 
     const dialogRef = this.dialog.open(SelectPlatformDialogComponent, dc);
 
@@ -180,11 +180,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       return AppComponent.getFinalComponent(r.children[0]);
 
     }
-    return r.routeConfig.path;
+    return r!.routeConfig!.path!;
   }
 
   ngOnInit(): void {
-    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
       this.signedOnUser.next(selectedUser);
       if (selectedUser == null) { return; }
       if (selectedUser.promptForPlatform === true) {
@@ -202,7 +202,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             const route = this.route;
             const baseRoute = route.firstChild?.routeConfig?.path;
             const lastPath = this.lastPath$.getValue();
-            this.lastPath$.next(baseRoute);
+            this.lastPath$.next(baseRoute!);
             // we've navigated to a new "page"
             if (lastPath && (lastPath !== baseRoute)) {
               // console.log(`New page: ${baseRoute}`);

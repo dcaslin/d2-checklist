@@ -42,7 +42,7 @@ export class DimSyncService {
   async logon(): Promise<CustomAuthTokenResponse> {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
     if (!selectedUser) {
-      return null;
+      return null!;
     }
 
     const sDimAuth = localStorage.getItem('dim-authorization');
@@ -86,7 +86,7 @@ export class DimSyncService {
       localStorage.setItem('dim-authorization', JSON.stringify(resp));
       return resp;
     }
-    return null;
+    return null!;
   }
 
   private logUpdates(updates: ProfileUpdate[]): void {
@@ -109,7 +109,7 @@ export class DimSyncService {
   async setDimTags(updates: ProfileUpdate[]): Promise<boolean> {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
     const body: ProfileUpdateRequest = {
-      platformMembershipId: selectedUser.userInfo.membershipId,
+      platformMembershipId: selectedUser!.userInfo.membershipId,
       destinyVersion: 2,
       updates,
     };
@@ -138,12 +138,12 @@ export class DimSyncService {
     try {
       console.log('%cGetting DIM tags', LOG_CSS);
       const headers = await this.buildHeaders();
-      const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser.userInfo.membershipId}&components=tags`;
+      const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser!.userInfo.membershipId}&components=tags`;
       const hResp = await this.httpClient
         .get<ProfileResponse>(url, { headers })
         .toPromise();
       // this.notificationService.success('Got latest DIM-sync tags');
-      return hResp.tags;
+      return hResp.tags!;
     } catch (x) {
       this.notificationService.fail('Failed to get DIM-sync tags');
       console.dir(x);

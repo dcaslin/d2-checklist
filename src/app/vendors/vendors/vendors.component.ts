@@ -25,13 +25,13 @@ export class VendorsComponent implements OnInit, OnDestroy {
     { text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost, ItemType.Shader] }];
 
 
-  public visibleFilterText: string = null;
-  public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
+  public visibleFilterText: string | null = null;
+  public filterText$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
+  public char$: BehaviorSubject<Character | null> = new BehaviorSubject<Character | null>(null);
   public option$: BehaviorSubject<VendorChoice> = new BehaviorSubject(this.options[0]);
-  public data$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
-  private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
+  public data$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
+  private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject<CharacterVendorData[]>([]);
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   ItemType = ItemType;
@@ -129,7 +129,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
       // debounceTime(150),
       distinctUntilChanged()
     ).subscribe(([char, option, filterText, hideCompleted, vendorData]) => {
-      const data = VendorsComponent.filterData(char, option, filterText, hideCompleted, vendorData);
+      const data = VendorsComponent.filterData(char!, option, filterText!, hideCompleted, vendorData);
       console.log('Done filtering');
       this.data$.next(data);
     });
@@ -152,11 +152,11 @@ export class VendorsComponent implements OnInit, OnDestroy {
         return false;
       }
       if (filterText && filterText.length > 0) {
-        if (item.vendorItemInfo.searchText.indexOf(filterText) < 0) {
+        if (item.vendorItemInfo!.searchText.indexOf(filterText) < 0) {
           return false;
         }
       }
-      if (hideCompleted && item.vendorItemInfo.status === 'Already completed') {
+      if (hideCompleted && item!.vendorItemInfo!.status === 'Already completed') {
         return false;
       }
       return true;

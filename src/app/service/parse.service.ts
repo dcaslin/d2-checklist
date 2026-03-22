@@ -124,7 +124,7 @@ export class ParseService {
 
     private static decimalToFraction(value: number): Fraction {
         if (value === parseInt(value.toString(), 10)) {
-            return null;
+            return null!;
         } else {
             let top = value.toString().includes('.') ? +(value.toString().replace(/\d+[.]/, '')) : 0;
             const wholeNumber = Math.floor(value);
@@ -199,7 +199,7 @@ export class ParseService {
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
         if (char.emblemPath == '/img/misc/missing_icon_d2.png') {
-            char.emblemPath = null;
+            char.emblemPath = null!;
         }
         char.title = '';
         if (c.titleRecordHash != null) {
@@ -301,7 +301,7 @@ export class ParseService {
                 name = 'The Drifter';
                 info = 'Gambit';
             } else if (name === 'Classified') {
-                return null;
+                return null!;
             }
 
             // fix names on clan progressions
@@ -312,7 +312,7 @@ export class ParseService {
 
             prog.name = name;
             if ('Resonance Rank' == prog.name) {
-                return null;
+                return null!;
             }
             prog.info = info;
             prog.desc = desc.displayProperties.description;
@@ -372,11 +372,11 @@ export class ParseService {
                 if (prog.weeklyProgress == 0) {
                     prog.weeklyProgress = suppProg.weeklyProgress;
                 }
-                prog.currentResetCount = suppProg.currentResetCount;
+                prog.currentResetCount = suppProg.currentResetCount!;
             }
             return prog;
         } else {
-            return null;
+            return null!;
         }
     }
 
@@ -476,8 +476,8 @@ export class ParseService {
                 let total = 0;
                 let complete = 0;
                 let phases = [];
-                let info: string = null;
-                let suppInfo: string = null;
+                let info: string | null = null;
+                let suppInfo: string | null = null;
                 let readyToCollect = false;
                 let oPct = 0;
                 if (ms.availableQuests != null) {
@@ -579,8 +579,8 @@ export class ParseService {
                         milestonesByKey[key].hasPartial = true;
                     }
                 }
-                if (phases.length == 0) { phases = null; }
-                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, [suppInfo], phases, false, false, readyToCollect);
+                if (phases.length == 0) { phases = null!; }
+                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info!, [suppInfo!], phases, false, false, readyToCollect);
                 c.milestones[key] = m;
             }
         }
@@ -710,19 +710,19 @@ export class ParseService {
                 return sp;
             }
         }
-        return null;
+        return null!;
     }
 
 
     public static getBasicValue(val: any): number {
-        if (val == null) { return null; }
-        if (val.basic == null) { return null; }
+        if (val == null) { return null!; }
+        if (val.basic == null) { return null!; }
         return val.basic.value;
     }
 
     public static getBasicDisplayValue(val: any): string {
-        if (val == null) { return null; }
-        if (val.basic == null) { return null; }
+        if (val == null) { return null!; }
+        if (val.basic == null) { return null!; }
         return val.basic.displayValue;
     }
 
@@ -789,9 +789,9 @@ export class ParseService {
 
     public async parseModifier(hash: string): Promise<NameDesc> {
         const jDesc = await this.destinyCacheService.getActivityModifier(hash);
-        let name: string = null;
-        let desc: string = null;
-        let icon: string = null;
+        let name: string | null = null;
+        let desc: string | null = null;
+        let icon: string | null = null;
         if (jDesc != null) {
             name = jDesc.displayProperties.name;
             desc = jDesc.displayProperties.description;
@@ -799,8 +799,8 @@ export class ParseService {
         }
         if (name != null && name !== '' && name !== 'Classified') {
             // Bungie doesn't return string variables in their public milestone endpoint, so just strip that part so it's not ugly
-            desc = ParseService.dynamicStringClear(desc);
-            return new NameDesc(name, desc, icon, hash);
+            desc = ParseService.dynamicStringClear(desc!);
+            return new NameDesc(name, desc, icon!, hash);
         }
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
@@ -819,7 +819,7 @@ export class ParseService {
         const nfDict: Record<string, any> = {};
 
         for (const key of aKeys) {
-            let model: AggHistoryEntry = null;
+            let model: AggHistoryEntry | null = null;
             for (const c of charAggHistDicts) {
                 if (c == null) {
                     continue;
@@ -834,7 +834,7 @@ export class ParseService {
             }
             if (model != null) {
                 if (model.type == 'nf') {
-                    const match = nfHashes.filter(x => model.hash.includes(x));
+                    const match = nfHashes.filter(x => model!.hash.includes(x));
                     for (const m of match) {
                         nfDict[m].found = true;
                     }
@@ -960,7 +960,7 @@ export class ParseService {
 
     private static mergeAggHistoryEntry(a: AggHistoryEntry, b: AggHistoryEntry): AggHistoryEntry {
         if (b == null) { return a; }
-        let fastest: number = null;
+        let fastest: number | null = null;
         if (a.fastestCompletionMsForActivity && b.fastestCompletionMsForActivity) {
             fastest = Math.min(a.fastestCompletionMsForActivity, b.fastestCompletionMsForActivity);
         } else if (a.fastestCompletionMsForActivity) {
@@ -984,7 +984,7 @@ export class ParseService {
             type: a.type,
             hash: a.hash.concat(b.hash),
             activityBestSingleGameScore: Math.max(a.activityBestSingleGameScore, b.activityBestSingleGameScore),
-            fastestCompletionMsForActivity: fastest,
+            fastestCompletionMsForActivity: fastest!,
             activityCompletions: a.activityCompletions + b.activityCompletions,
             charCompletions: charCompletions,
             activityKills: a.activityKills + b.activityKills,
@@ -1002,7 +1002,7 @@ export class ParseService {
     private parseAggHistoryEntry(char: Character, name: string, a: any, type: string, vDesc: any): AggHistoryEntry {
         let fastest = ParseService.getBasicValue(a.values.fastestCompletionMsForActivity);
         if (fastest == 0) {
-            fastest = null;
+            fastest = null!;
         }
         const total = ParseService.getBasicValue(a.values.activityCompletions);
 
@@ -1332,8 +1332,8 @@ export class ParseService {
                             hash: 'quest-' + q.questItemHash,
                             name: iDesc.displayProperties.name,
                             desc: iDesc.displayProperties.description,
-                            ll: null,
-                            tier: null,
+                            ll: null!,
+                            tier: null!,
                             icon: iDesc.displayProperties.icon,
                             modifiers: []
                         });
@@ -1443,7 +1443,7 @@ export class ParseService {
             if (a.name > b.name) { return 1; }
             return 0;
         });
-        let weekStart: Date = null;
+        let weekStart: Date | null = null;
 
         // grab special milestones to have them for the home screen and such
         for (const m of returnMe) {
@@ -1453,8 +1453,8 @@ export class ParseService {
         }
         const pmsa: PublicMilestonesAndActivities = {
             publicMilestones: returnMe,
-            nightfall: returnMe.find(x => x.hash == '2029743966'),
-            weekStart: weekStart
+            nightfall: returnMe.find(x => x.hash == '2029743966')!,
+            weekStart: weekStart!
         };
 
         if (pmsa.nightfall?.activities) {
@@ -1646,7 +1646,7 @@ export class ParseService {
     private async parseArtifactProgressions(resp: any, chars: Character[], accountProgressions: Progression[]): Promise<number> {
         if (resp.profileProgression == null || resp.profileProgression.data == null
             || resp.profileProgression.data.seasonalArtifact == null) {
-            return null;
+            return null!;
         }
         const _art = resp.profileProgression.data.seasonalArtifact;
 
@@ -1686,7 +1686,7 @@ export class ParseService {
                         if (desc == null) {
                             continue;
                         }
-                        let checklist: CharChecklist = null;
+                        let checklist: CharChecklist | null = null;
                         for (const c of checklists) {
                             if (c.hash === key) {
                                 checklist = c;
@@ -1715,7 +1715,7 @@ export class ParseService {
                             cntr++;
                             const hash = entry.hash;
 
-                            let checklistItem: CharChecklistItem = null;
+                            let checklistItem: CharChecklistItem | null = null;
                             for (const cl of checklist.entries) {
                                 if (cl.hash === hash) {
                                     checklistItem = cl;
@@ -1797,7 +1797,7 @@ export class ParseService {
 
     private async buildBadge(node: TriumphNode): Promise<Badge> {
         const pDesc = await this.destinyCacheService.getPresentationNode(node.hash);
-        if (pDesc == null) { return null; }
+        if (pDesc == null) { return null!; }
         const badgeClasses: BadgeClass[] = [];
         let badgeComplete = false;
         let bestProgress = 0;
@@ -1838,10 +1838,10 @@ export class ParseService {
 
     private async buildSeal(node: TriumphNode, badges: Badge[]): Promise<Seal> {
         const pDesc = await this.destinyCacheService.getPresentationNode(node.hash);
-        if (pDesc == null) { return null; }
+        if (pDesc == null) { return null!; }
         const completionRecordHash = pDesc.completionRecordHash;
         const cDesc = await this.destinyCacheService.getRecord(completionRecordHash);
-        if (cDesc == null) { return null; }
+        if (cDesc == null) { return null!; }
         let title = 'Secret';
         if (cDesc.titleInfo != null) {
             title = cDesc.titleInfo.titlesByGenderHash[2204441813];
@@ -1920,7 +1920,7 @@ export class ParseService {
         if (resp.characters != null && resp.characters.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s characters.');
         }
-        let profile: Profile;
+        let profile!: Profile;
         if (resp.profile != null) {
             profile = resp.profile.data;
         }
@@ -1929,10 +1929,10 @@ export class ParseService {
         const accountProgressions: Progression[] = [];
         const milestoneList: MileStoneName[] = [];
         let weeklyRitualPathfinderHash = null;
-        let currentActivity: CurrentActivity = null;
+        let currentActivity: CurrentActivity | null = null;
         const chars: Character[] = [];
         let hasWellRested = false;
-        let weekEnd: string = null;
+        let weekEnd: string | null = null;
         
         // handle string interpolation aka dynamic strings
         const dynamicStrings = ParseService.buildDynamicStrings(resp);
@@ -1956,7 +1956,7 @@ export class ParseService {
                 try {
                     p.end = new Date(p.end).toISOString();
                 } catch (e) {
-                    p.end = null;
+                    p.end = null!;
                 }
                 const ms: MileStoneName = {
                     key: p.hash,
@@ -1971,7 +1971,7 @@ export class ParseService {
                 };
                 // Fix any empty dates
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
-                    ms.resets = null;
+                    ms.resets = null!;
                 }
                 milestoneList.push(ms);
             }
@@ -2034,7 +2034,7 @@ export class ParseService {
                                     if (!activityAvailable) {
                                         activityAvailable = true;
                                     }
-                                    c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
+                                    c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null!, null!, [], !activityAvailable, c.notReady);
                                     if (!activityAvailable || c.notReady) {
                                         // console.dir(c.milestones[missingKey]);
                                     }
@@ -2062,7 +2062,7 @@ export class ParseService {
                             for (const dKey of dependsOn) {
                                 const dependentMilestoneStatus = c.milestones[dKey];
                                 if (!dependentMilestoneStatus?.complete) {
-                                    const incompletePlaceholder: MilestoneStatus = new MilestoneStatus(checkKey, false, 0, null, null, [], false, false);
+                                    const incompletePlaceholder: MilestoneStatus = new MilestoneStatus(checkKey, false, 0, null!, null!, [], false, false);
                                     c.milestones[checkKey] = incompletePlaceholder;
                                     break;
                                 }
@@ -2136,8 +2136,8 @@ export class ParseService {
         let checklists: Checklist[] = [];
 
         let charChecklists: CharChecklist[] = [];
-        let vault: Vault = null;
-        let shared: Shared = null;
+        let vault: Vault | null = null;
+        let shared: Shared | null = null;
         let hasHiddenClosest = false;
         let artifactPowerBonus = 0;
         let gearMeta = null;
@@ -2176,7 +2176,7 @@ export class ParseService {
                     options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     for (const itm of items) {
-                        const parsed: InventoryItem = await this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions, resp, dynamicStrings);
+                        const parsed: InventoryItem = await this.parseInvItem(itm, char, resp.itemComponents, detailedInv!, options, resp.characterProgressions, resp, dynamicStrings);
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
                             // if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
@@ -2354,7 +2354,7 @@ export class ParseService {
                 // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
                 // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
-                parent = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, []);
+                parent = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs!, showInvisTriumphs!, []);
                 recordTree = parent?.children ? parent.children : [];
                 // exotic catalysts
                 let oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
@@ -2371,7 +2371,7 @@ export class ParseService {
                 oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild);
-                    let weeklyChild: TriumphNode;
+                    let weeklyChild: TriumphNode | undefined = undefined;
                     // we're at "Seasonal Challenges" which has two children, "Past Challenges" and "Weekly", we want weekly
                     // get down to the weeks, we have "weekly" and "past challenges"
                     if (oChild?.children?.length > 0) {
@@ -2489,7 +2489,7 @@ export class ParseService {
                 break;
             }
         }
-        let transitoryData: ProfileTransitoryData = null;
+        let transitoryData: ProfileTransitoryData | null = null;
         // enhance current activity with transitory profile data
         if (resp.profileTransitoryData != null && resp.profileTransitoryData.data != null) {
             const _transData: PrivProfileTransitoryData = resp.profileTransitoryData.data;
@@ -2499,7 +2499,7 @@ export class ParseService {
                     continue;
                 }
                 const sr: SearchResult = {
-                    iconPath: null,
+                    iconPath: null!,
                     membershipType: 0,
                     membershipId: p.membershipId,
                     displayName: p.displayName
@@ -2531,9 +2531,9 @@ export class ParseService {
         if (resp.profileInventory?.data) {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
         }
-        this.cookMileStones(milestoneList, dynamicStrings, resp, weeklyRitualPathfinderHash, chars);
+        this.cookMileStones(milestoneList, dynamicStrings, resp, weeklyRitualPathfinderHash!, chars);
         for (const t of searchableTriumphs) {
-            t.desc = ParseService.dynamicStringReplace(t.desc, null, dynamicStrings);
+            t.desc = ParseService.dynamicStringReplace(t.desc, null!, dynamicStrings);
         }
         for (const b of bounties) {
             b.desc = ParseService.dynamicStringReplace(b.desc, b.owner.getValue().id, dynamicStrings);
@@ -2547,11 +2547,11 @@ export class ParseService {
             if (a.order < b.order) { return -1; }
             return 0;
         });
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
+        return new Player(profile, chars, currentActivity!, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
-            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
+            gear, vault!, shared!, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs, privateGear, resp.responseMintedTimestamp, resp.secondaryComponentsMintedTimestamp,
+            transitoryData!, specialProgressions, gearMeta!, patternTriumphs, exoticCatalystTriumphs, privateGear, resp.responseMintedTimestamp, resp.secondaryComponentsMintedTimestamp,
         unparseableGearIds);
     }
 
@@ -2614,8 +2614,8 @@ export class ParseService {
             nfScore.desc = 'Complete Nightfalls until your total score reaches 200K';
         }
         const rootOfNightmares = milestoneList.find(x => x.key == '3699252268');
-        if (rootOfNightmares?.name?.indexOf('###') > -1) {
-            rootOfNightmares.name = 'Root of Nightmares Raid';
+        if (rootOfNightmares!?.name?.indexOf('###') > -1) {
+            rootOfNightmares!.name = 'Root of Nightmares Raid';
         }
         // weekly ritual
         milestoneList.filter(x => x.key == '1049998276' || x.key == '1049998277' || x.key == '1049998279').map((x) => {
@@ -2631,7 +2631,7 @@ export class ParseService {
             }
         });
         for (const m of milestoneList) {
-            m.desc = ParseService.dynamicStringReplace(m.desc, null, dynamicStrings);
+            m.desc = ParseService.dynamicStringReplace(m.desc, null!, dynamicStrings);
         }
     }
 
@@ -2640,7 +2640,7 @@ export class ParseService {
             return {
                 postmasterTotal: 0,
                 postmaster: [],
-                vault: null
+                vault: null!
             };
         }
         const generalDesc = await this.destinyCacheService.getInventoryBucket('138197802');
@@ -2698,16 +2698,16 @@ export class ParseService {
 
     private async cookSpecialAccountProgression(accountProgressions: Progression[]): Promise<SpecialAccountProgressions> {
         const returnMe: SpecialAccountProgressions = {
-            glory: null,
-            seasonRank: null,
-            crucibleRank: null,
-            gambitRank: null,
-            vanguardRank: null, 
-            trialsRank: null
+            glory: null!,
+            seasonRank: null!,
+            crucibleRank: null!,
+            gambitRank: null!,
+            vanguardRank: null!, 
+            trialsRank: null!
         };
         if (accountProgressions != null) {
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cacheLite.destiny2CoreSettings.currentRankProgressionHashes;
-            let prestige: Progression = null;
+            let prestige: Progression | null = null;
             const sp = await this.getSeasonProgression();
             for (const ap of accountProgressions) {
                 const iHash = parseInt(ap.hash, 10);
@@ -2754,11 +2754,11 @@ export class ParseService {
     private async handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, extraRoots?: string[]): Promise<TriumphPresentationNode> {
         const val = this.getBestPres(pres, key);
         if (!val) {
-            return null;
+            return null!;
         }
         const pDesc = await this.destinyCacheService.getPresentationNode(key);
         if (pDesc == null) {
-            return null;
+            return null!;
         }
         path.push({
             path: pDesc.displayProperties.name,
@@ -2778,7 +2778,7 @@ export class ParseService {
                 for (const extraRoot of extraRoots) {
                     const xrDesc = await this.destinyCacheService.getPresentationNode(extraRoot);
                     if (xrDesc == null) {
-                        return null;
+                        return null!;
                     }
                     presNodes = presNodes.concat(xrDesc.children.presentationNodes);
                     recNodes = presNodes.concat(xrDesc.children.records);
@@ -2793,9 +2793,9 @@ export class ParseService {
                 unredeemedCount += oChild.unredeemedCount;
                 total += oChild.totalPts;
                 pts += oChild.pts;
-                vaulted += oChild.vaultedChildren;
-                vaultedComplete += oChild.vaultedChildrenComplete;
-                vaultedIncomplete += oChild.vaultedChildrenIncomplete;
+                vaulted += oChild!.vaultedChildren!;
+                vaultedComplete += oChild!.vaultedChildrenComplete!;
+                vaultedIncomplete += oChild!.vaultedChildrenIncomplete!;
             }
             for (const child of recNodes) {
                 const oChild = await this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
@@ -2812,7 +2812,7 @@ export class ParseService {
             }
         }
         if (children == null || children.length == 0) {
-            return null;
+            return null!;
         }
         children.sort(function (a, b) {
             if (a.index < b.index) {
@@ -2847,7 +2847,7 @@ export class ParseService {
 
     private async handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): Promise<TriumphRecordNode> {
         const rDesc = await this.destinyCacheService.getRecord(key);
-        if (rDesc == null) { return null; }        
+        if (rDesc == null) { return null!; }        
         let pointsToBadge = false;
         if (rDesc.displayProperties != null && rDesc.displayProperties.description != null) {
             if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
@@ -2859,7 +2859,7 @@ export class ParseService {
         }
 
         const val = this.getBestRec(records, key);
-        if (val == null) { return null; }
+        if (val == null) { return null!; }
 
         path.push({
             path: rDesc.displayProperties.name,
@@ -2879,7 +2879,7 @@ export class ParseService {
             searchText += ' interval';
         }
         if (!iterateMe) {
-            return null;
+            return null!;
         }
         let objs: ItemObjective[] = [];
         let totalProgress = 0;
@@ -3026,7 +3026,7 @@ export class ParseService {
             redeemed: redeemed,
             forTitleGilding: rDesc.forTitleGilding,
             title: title,
-            children: null,
+            children: null!,
             path: path,
             interval: isInterval,
             earned: earnedPts,
@@ -3067,10 +3067,10 @@ export class ParseService {
     private async handleColPresNode(path: PathEntry[], key: string, pres: any[], collectibles: any[], collLeaves: TriumphCollectibleNode[]): Promise<TriumphPresentationNode> {
         const val = this.getBestPres(pres, key);
         if (val == null) {
-            return null;
+            return null!;
         }
         const pDesc = await this.destinyCacheService.getPresentationNode(key);
-        if (pDesc == null) { return null; }
+        if (pDesc == null) { return null!; }
         path.push({
             path: pDesc.displayProperties.name,
             hash: key
@@ -3131,10 +3131,10 @@ export class ParseService {
 
     private async handleCollectibleNode(path: PathEntry[], key: string, collectibles: any[]): Promise<TriumphCollectibleNode> {
         const cDesc = await this.destinyCacheService.getCollectible(key);
-        if (cDesc == null) { return null; }
+        if (cDesc == null) { return null!; }
         const val = this.getBestCol(collectibles, key);
         if (val != null && val.state != null && (val.state & 4) > 0) {
-            return null;
+            return null!;
         }
         path.push({
             path: cDesc.displayProperties.name,
@@ -3156,14 +3156,14 @@ export class ParseService {
             complete: acquired,
             sourceString: cDesc.sourceString,
             searchText: cDesc.displayProperties.name.toLowerCase(),
-            children: null,
+            children: null!,
             path: path
         };
     }
 
     private async parseQuestStep(stepHash: number, currentStepHash: number): Promise<QuestlineStep> {
         const desc: any = await this.destinyCacheService.getInventoryItem(stepHash);
-        if (desc == null) { return null; }
+        if (desc == null) { return null!; }
         const values = [];
         if (desc.value != null && desc.value.itemValue != null) {
             for (const val of desc.value.itemValue) {
@@ -3206,9 +3206,9 @@ export class ParseService {
 
     private async parseQuestLine(qli: number, stepHash: number): Promise<Questline> {
         const qdesc: any = await this.destinyCacheService.getInventoryItem(qli);
-        if (qdesc == null) { return null; }
+        if (qdesc == null) { return null!; }
         // if (qdesc.setData != null) { }
-        if (qdesc.setData == null) { return null; }
+        if (qdesc.setData == null) { return null!; }
         // wtf was this doing anyway?
         const qType = qdesc.setData.setType;
         // this is a milestone, don't show it here
@@ -3226,7 +3226,7 @@ export class ParseService {
                 }
             }
             if (skip) {
-                return null;
+                return null!;
             }
         }
         const steps = qdesc.setData.itemList;
@@ -3298,13 +3298,13 @@ export class ParseService {
             }
         }
         if (invStat==null){
-             return null;
+             return null!;
         }
         const tier = invStat.value;
         const statHash = invStat.statTypeHash;
         const statDesc: any = this.destinyCacheService.cacheLite.Stat[statHash];        
         if (statDesc == null) {
-            return null;
+            return null!;
         }
         const name = statDesc.displayProperties.name;
         const desc = statDesc.displayProperties.description;
@@ -3324,21 +3324,21 @@ export class ParseService {
     }
 
     private parseMasterwork(plugDesc: any): MasterworkInfo {
-        if (plugDesc.plug == null) { return null; }
-        if (plugDesc.plug.plugCategoryIdentifier == null) { return null; }
+        if (plugDesc.plug == null) { return null!; }
+        if (plugDesc.plug.plugCategoryIdentifier == null) { return null!; }
         if (plugDesc.plug.plugCategoryIdentifier.indexOf('masterworks.stat.') < 0) {
-            return null;
+            return null!;
         }
         // from here on out we know its MW
         if (plugDesc.investmentStats == null || plugDesc.investmentStats.length == 0) {
-            return null;
+            return null!;
         }
         const invStats = plugDesc.investmentStats[0];
         const tier = invStats.value;
         const statHash = invStats.statTypeHash;
         const statDesc: any = this.destinyCacheService.cacheLite.Stat[statHash];
         if (statDesc == null) {
-            return null;
+            return null!;
         }
         const name = statDesc.displayProperties.name;
         const desc = statDesc.displayProperties.description;
@@ -3374,14 +3374,14 @@ export class ParseService {
 
     private static getPlugName(plugDesc: any): string {
         const name = plugDesc.displayProperties.name;
-        if (name == null) { return null; }
-        if (name.trim().length == 0) { return null; }
-        if (plugDesc.plug == null) { return null; }
-        if (plugDesc.plug.plugCategoryIdentifier == null) { return null; }
-        if (plugDesc.plug.plugCategoryHash == null) { return null; }
+        if (name == null) { return null!; }
+        if (name.trim().length == 0) { return null!; }
+        if (plugDesc.plug == null) { return null!; }
+        if (plugDesc.plug.plugCategoryIdentifier == null) { return null!; }
+        if (plugDesc.plug.plugCategoryHash == null) { return null!; }
         const ch = plugDesc.plug.plugCategoryHash;
         if (ch == 2947756142) { // hide trackers
-            return null;
+            return null!;
         }
 
         return name;
@@ -3440,7 +3440,7 @@ export class ParseService {
             const desc: any = await this.destinyCacheService.getInventoryItem(itm.itemHash);
             if (desc == null) {
                 console.log('Skipping - no desc: ' + itm.itemHash);
-                return null;
+                return null!;
                 // return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
             }
             // anything with no type goes away too
@@ -3448,7 +3448,7 @@ export class ParseService {
             let type: ItemType = desc.itemType;
             let itemTypeDisplayName = desc.itemTypeDisplayName;
             
-            let craftProgress: WeaponShapeLevelObjective = null;
+            let craftProgress: WeaponShapeLevelObjective | null = null;
 
             // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
             const ignoreWeaponPerkStats: InventoryPlug[] = [];
@@ -3466,18 +3466,18 @@ export class ParseService {
                             type = ItemType.Armor;
                         } else {
                             console.log('Skipping no type: ' + itm.itemHash);
-                            return null;
+                            return null!;
                         }
 
                     }
                 } else {
-                    return null;
+                    return null!;
                 }
             } else {
                 type = desc.itemType;
             }
             const postmaster = (itm.bucketHash == 215593132);
-            let ammoType: DestinyAmmunitionType;
+            let ammoType: DestinyAmmunitionType | null = null;
             if (desc.equippingBlock != null) {
                 ammoType = desc.equippingBlock.ammoType;
             }
@@ -3503,7 +3503,7 @@ export class ParseService {
                 // this is fine, keep going
             } else if (!detailedInv) {
                 // nothing useful
-                return null;
+                return null!;
             } else {
                 // gear we need to check on or not
                 if (type === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
@@ -3526,7 +3526,7 @@ export class ParseService {
                 } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Element')) {
                     // type = ItemType.ExchangeMaterial;       
                     // itemTypeDisplayName = 'Shaping Material';
-                    return null;
+                    return null!;
                 } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Alloy')) {
                     // type = ItemType.ExchangeMaterial;         
                     // itemTypeDisplayName = 'Shaping Material';
@@ -3557,7 +3557,7 @@ export class ParseService {
                     && type != ItemType.Subclass
                     && type != ItemType.Consumable) {
                     // console.log(`Skipping ${desc.displayProperties.name} type ${type}`);
-                    return null;
+                    return null!;
                 }
                 if (type == ItemType.Consumable) {
                     type = ItemType.ExchangeMaterial;
@@ -3569,7 +3569,7 @@ export class ParseService {
                 // these objectives don't work for proper gear, just bounties and quests
                 if (itemComp.objectives?.data && type!=ItemType.Weapon && type!=ItemType.Armor) {
                     const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
-                    let objs: any[] = null;
+                    let objs: any[] | null = null;
                     if (parentObj != null) {
                         objs = parentObj.objectives;
 
@@ -3586,7 +3586,7 @@ export class ParseService {
                             const iObj: ItemObjective = {
                                 hash: o.objectiveHash,
                                 completionValue: oDesc.completionValue,
-                                progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null, dynamicStrings),
+                                progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null!, dynamicStrings!),
                                 progress: o.progress == null ? 0 : o.progress,
                                 complete: o.complete,
                                 percent: 0
@@ -3609,9 +3609,9 @@ export class ParseService {
                     if (pObj?.objectivesPerPlug) {                        
                         const craftedLevel = pObj.objectivesPerPlug['659359923'] || pObj.objectivesPerPlug['1922808508'] || pObj.objectivesPerPlug['4029346515'];
                         if (craftedLevel != null && craftedLevel.length>0) {
-                            let dateCrafted: number = null;
-                            let level: number = null;
-                            let objective: WeaponShapeLevelObjective = null;
+                            let dateCrafted: number | null = null;
+                            let level: number | null = null;
+                            let objective: WeaponShapeLevelObjective | null = null;
                             for (const o of craftedLevel) {
                                 const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
                                 if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevel || oDesc.progressDescription == 'Weapon Level' ) {
@@ -3622,7 +3622,7 @@ export class ParseService {
                                     const iObj: WeaponShapeLevelObjective = {
                                         hash: o.objectiveHash,
                                         completionValue: oDesc.completionValue,
-                                        progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null, dynamicStrings),
+                                        progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null!, dynamicStrings!),
                                         progress: o.progress == null ? 0 : o.progress,
                                         complete: o.complete,
                                         percent: 0
@@ -3641,8 +3641,8 @@ export class ParseService {
                                 }
                             }
                             if (objective) {
-                                objective.level = level;
-                                objective.date = dateCrafted;
+                                objective.level = level!;
+                                objective.date = dateCrafted!;
                                 objectives.push(objective);
                                 craftProgress = objective;
                             }
@@ -3657,9 +3657,9 @@ export class ParseService {
             }
             let power = 0;
             let damageType: DamageType = DamageType.None;
-            let armorCapacity: number = null;
-            let capacityUsed: number = null;
-            let totalStatPoints: number = null;
+            let armorCapacity: number | null = null;
+            let capacityUsed: number | null = null;
+            let totalStatPoints: number | null = null;
             let equipped = false;
             let canEquip = false;
             let searchText = '';
@@ -3670,8 +3670,8 @@ export class ParseService {
             const specialModSockets: string[] = [];
             let stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
-            let mw: MasterworkInfo = null;
-            let inventoryBucket: ApiInventoryBucket = null;
+            let mw: MasterworkInfo | null = null;
+            let inventoryBucket: ApiInventoryBucket | null = null;
             let tier = null;
             let isRandomRoll = false;
             let deepsight = false;
@@ -3924,7 +3924,7 @@ export class ParseService {
                                     }
                                     plugs.push(oPlug);
                                 }
-                                sockets.push(new InventorySocket(jCat.socketCategoryHash, plugWhitelist, plugs, possiblePlugs, index, sourcePlugs));
+                                sockets.push(new InventorySocket(jCat.socketCategoryHash, plugWhitelist, plugs, possiblePlugs, index, sourcePlugs!));
                                 if (socketDesc.randomizedPlugSetHash) {                                    
                                     const randomRollsDesc: any = await this.destinyCacheService.getPlugSet(socketDesc.randomizedPlugSetHash);
                                     if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
@@ -3980,7 +3980,7 @@ export class ParseService {
                 }
             }
             const locked: boolean = (itm.state & ItemState.Locked) > 0;
-            const masterworked = (itm.state & ItemState.Masterwork) > 0 || mw?.tier >= 10;
+            const masterworked = (itm.state & ItemState.Masterwork) > 0 || mw!?.tier >= 10;
             const tracked = (itm.state & ItemState.Tracked) > 0;
             const crafted = (itm.state & ItemState.Crafted) > 0;
             if (crafted && mw==null) {
@@ -3988,7 +3988,7 @@ export class ParseService {
                     hash: '0',
                     name: 'None',
                     desc: '',
-                    icon: null,
+                    icon: null!,
                     tier: 0,
                     godTierPve: false,
                     godTierPvp: false,
@@ -3998,16 +3998,16 @@ export class ParseService {
             }
             let notCrafted = desc.inventory.recipeItemHash && !crafted;
 
-            const bucketOrder: number = null;
+            const bucketOrder: number | null = null;
 
-            let questline: Questline = null;
+            let questline: Questline | null = null;
             if (desc.objectives != null && type == ItemType.QuestStep) {
                 const qli = desc.objectives.questlineItemHash;
 
                 if (qli != null && qli != 0) {
                     questline = await this.parseQuestLine(qli, itm.itemHash);
                     if (questline == null) {
-                        return null;
+                        return null!;
                     }
                 }
             }
@@ -4101,7 +4101,7 @@ export class ParseService {
                         }
                         s.enhancement += 2;
                     }
-                    totalStatPoints += s.value;
+                    totalStatPoints! += s.value;
                 }
             }
             let icon = desc.displayProperties.icon;
@@ -4174,15 +4174,15 @@ export class ParseService {
                 itm.quantity,
                 power, damageType, stats, sockets, objectives,
                 description,
-                desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
-                isRandomRoll, ammoType, postmaster, capacityUsed, armorCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, crafted, deepsight, craftProgress, notCrafted
+                desc.classType, bucketOrder!, aggProgress, values, itm.expirationDate,
+                locked, masterworked, mw!, tracked, questline!, searchText, inventoryBucket!, tier, options.slice(),
+                isRandomRoll, ammoType!, postmaster, capacityUsed!, armorCapacity!, totalStatPoints!, seasonalModSlot,
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted
             );
         } catch (exc) {
             console.dir(itemComp);
             console.error(exc);
-            return null;
+            return null!;
         }
     }
 

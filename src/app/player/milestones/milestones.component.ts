@@ -15,7 +15,7 @@ import { PlayerStateService } from '../player-state.service';
   styleUrls: ['./milestones.component.scss']
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {
-  hideCompleteChars: string = null;
+  hideCompleteChars: string | null = null;
   Const = Const;
 
   constructor(

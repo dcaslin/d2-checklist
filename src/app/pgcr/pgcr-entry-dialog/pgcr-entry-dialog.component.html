@@ -13,10 +13,10 @@
 </div>
 <mat-dialog-content>
   <div class="flex-row margin-5">
-    <div>Time played: {{entry.values.timePlayedSecondsText}}</div>
-    <div>Kills: {{entry.values.kills|number}}</div>
-    <div>Deaths: {{entry.values.deaths|number}}</div>
-    <div>Assists: {{entry.values.assists|number}}</div>
+    <div>Time played: {{entry.values?.timePlayedSecondsText}}</div>
+    <div>Kills: {{entry.values?.kills|number}}</div>
+    <div>Deaths: {{entry.values?.deaths|number}}</div>
+    <div>Assists: {{entry.values?.assists|number}}</div>
   </div>
   <mat-tab-group>
     <mat-tab>

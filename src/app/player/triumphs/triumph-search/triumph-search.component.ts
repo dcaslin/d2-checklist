@@ -18,8 +18,8 @@ import { PlayerStateService } from '../../player-state.service';
 export class TriumphSearchComponent extends ChildComponent implements OnInit {
   public MAX_RESULTS = 30;
   private triumphSearchSubject: Subject<void> = new Subject<void>();
-  public triumphFilterText: string = null;
-  public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public triumphFilterText: string | null = null;
+  public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject<TriumphRecordNode[]>([]);
   public hasMore$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(storageService: StorageService,
@@ -45,7 +45,7 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
       debounceTime(50))
       .subscribe(() => {
         const saveMe = this.triumphFilterText == null ? null : this.triumphFilterText.toLowerCase();
-        localStorage.setItem('triumph-filter', saveMe);
+        localStorage.setItem('triumph-filter', saveMe!);
         this.filterTriumphs();
       });
   }

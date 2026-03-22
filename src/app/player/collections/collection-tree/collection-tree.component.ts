@@ -77,7 +77,7 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit {
   public static getParentNode(tree: FlatTreeControl<any>, node: TriumphFlatNode): TriumphFlatNode {
     const currentLevel = tree.getLevel(node);
     if (currentLevel < 1) {
-      return null;
+      return null!;
     }
     const startIndex = tree.dataNodes.indexOf(node) - 1;
     for (let i = startIndex; i >= 0; i--) {
@@ -86,7 +86,7 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit {
         return currentNode;
       }
     }
-    return null;
+    return null!;
   }
 
   public static expandParents(tree: FlatTreeControl<any>, node: TriumphFlatNode): void {

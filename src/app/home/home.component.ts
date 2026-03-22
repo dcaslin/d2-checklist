@@ -41,7 +41,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   selectedPlatform: Platform;
   gamerTag: string;
   showMoreInfo = false;
-  today: Today = null;
+  today: Today | null = null;
 
   onHideAnnouncement() {
     this.hideAnnouncement = true;
@@ -161,7 +161,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.loading.next(true);
     this.loadMileStones();
     // selected user changed
-    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
       this.isSignedOn$.next(selectedUser != null);
     });
 

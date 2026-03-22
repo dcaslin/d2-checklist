@@ -24,7 +24,7 @@ export class GearCompareDialogComponent extends ChildComponent {
   hideJunk = false;
   source: InventoryItem;
   items: InventoryItem[];
-  sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
   parent: GearComponent;
   showAllNames: boolean;
   maxPlugs: number[] = [];
@@ -149,14 +149,14 @@ export class GearCompareDialogComponent extends ChildComponent {
 
   public static getStatStatic(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
     if (i.stats == null) {
-      return null;
+      return null!;
     }
     for (const s of i.stats) {
       if (s.name == originalStat.name) {
         return s;
       }
     }
-    return null;
+    return null!;
   }
 
   getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {

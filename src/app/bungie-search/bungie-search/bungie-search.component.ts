@@ -20,7 +20,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   Const = Const;
   routedName: string;
   name: string;
-  public rows$: BehaviorSubject<BungieGlobalSearchResult[]> = new BehaviorSubject(null);
+  public rows$: BehaviorSubject<BungieGlobalSearchResult[] | null> = new BehaviorSubject<BungieGlobalSearchResult[] | null>(null);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public iconService: IconService,
@@ -32,7 +32,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   public async loadClan(member: BungieGlobalSearchResult) {
     this.loading.next(true);
     try {
-      const x = await this.bungieService.getClans(member.bungieNetMembershipId);
+      const x = await this.bungieService.getClans(member.bungieNetMembershipId!);
       member.clans = x;
     }
     finally {

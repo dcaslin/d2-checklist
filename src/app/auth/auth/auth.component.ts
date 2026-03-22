@@ -15,7 +15,7 @@ import { ChildComponent } from '../../shared/child.component';
 })
 export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
   statusMsg = 'Authorizing';
-  errMsg: string = null;
+  errMsg: string | null = null;
 
   constructor(
     storageService: StorageService, private authService: AuthService,

@@ -92,7 +92,7 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
       } else if (t.interval) {
         for (const i of t.objectives) {
           if (i.complete) {
-            sum += i.score;
+            sum += i!.score!;
           }
         }
       }

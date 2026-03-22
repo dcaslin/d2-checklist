@@ -20,9 +20,9 @@ import { ChildComponent } from '../shared/child.component';
 })
 export class PartyComponent extends ChildComponent implements OnInit, OnDestroy {
   DamageType = DamageType;
-  public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
-  public _player: BehaviorSubject<Player> = new BehaviorSubject(null);
-  public _party: BehaviorSubject<PartyPlayer[]> = new BehaviorSubject([]);
+  public errorMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  public _player: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
+  public _party: BehaviorSubject<PartyPlayer[]> = new BehaviorSubject<PartyPlayer[]>([]);
 
   constructor(public bungieService: BungieService,
     public iconService: IconService,
@@ -42,7 +42,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
   public async loadPlayer(likelyMembershipType: number, pp: PartyPlayer): Promise<void> {
     try {
       if (pp.errMsg) {
-        pp.errMsg = null;
+        pp.errMsg = null!;
         this._party.next(this._party.getValue());
       }
 
@@ -54,7 +54,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
         console.log('Nothing found');
         pp.errMsg = 'Not found';
       } else {
-        pp.errMsg = null;
+        pp.errMsg = null!;
         pp.player = x;
         if (x.characters != null && x.characters.length > 0) {
           pp.character = x.characters[0];
@@ -104,13 +104,13 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
         for (const p of x.transitoryData.partyMembers) {
           party.push({
             searchResult: p,
-            player: null,
-            character: null,
+            player: null!,
+            character: null!,
             guns: [],
             armorMods: [],
-            exoticArmor: null,
-            subClass: null,
-            errMsg: null
+            exoticArmor: null!,
+            subClass: null!,
+            errMsg: null!
           });
         }
       }

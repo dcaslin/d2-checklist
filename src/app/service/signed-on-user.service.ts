@@ -14,24 +14,24 @@ import { PandaGodrollsService } from './panda-godrolls.service';
 })
 export class SignedOnUserService implements OnDestroy {
   unsubscribe$: Subject<void> = new Subject<void>();
-  public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
+  public signedOnUser$: BehaviorSubject<SelectedUser | null> = new BehaviorSubject<SelectedUser | null>(null);
 
-  private refreshPlayer$: BehaviorSubject<null> = new BehaviorSubject(null);
+  private refreshPlayer$: BehaviorSubject<null | null> = new BehaviorSubject<null | null>(null);
   private refreshVendors$: BehaviorSubject<LoadType> = new BehaviorSubject<LoadType>(LoadType.LeaveAlone);
   private playerFirstLoad$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
+  public player$: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public authorizing$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 
-  public vendors$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
+  public vendors$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject<CharacterVendorData[]>([]);
   public vendorsLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public vendorDeals$: BehaviorSubject<VendorDeals> = new BehaviorSubject(null);
+  public vendorDeals$: BehaviorSubject<VendorDeals | null> = new BehaviorSubject<VendorDeals | null>(null);
 
-  public currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
-  public clans$: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
-  public gearMetadata$: BehaviorSubject<GearMetaData> = new BehaviorSubject(null);
+  public currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
+  public clans$: BehaviorSubject<ClanRow[]> = new BehaviorSubject<ClanRow[]>([]);
+  public gearMetadata$: BehaviorSubject<GearMetaData | null> = new BehaviorSubject<GearMetaData | null>(null);
 
   // Refresh the currently loaded player, don't touch vendors at all
   public refreshPlayer(): void {
@@ -88,7 +88,7 @@ export class SignedOnUserService implements OnDestroy {
               // fake.platformName = "BNET";
               // membership.destinyMemberships.push(fake);
               let platform = 2;
-              const sPlatform: string = localStorage.getItem('D2STATE-preferredPlatform');
+              const sPlatform: string | null = localStorage.getItem('D2STATE-preferredPlatform');
               if (sPlatform != null) {
                 platform = parseInt(sPlatform, 10);
               } else {
@@ -113,7 +113,7 @@ export class SignedOnUserService implements OnDestroy {
         }
       });
     // handle clans
-    this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
       if (selectedUser != null) {
         this.applyClans(selectedUser);
         this.pandaGodRollsService.updateUser(selectedUser);
@@ -126,8 +126,8 @@ export class SignedOnUserService implements OnDestroy {
       filter(([refresh, selectedUser, cacheReady]) => cacheReady && (selectedUser != null)),
       tap(([refresh, selectedUser, cacheReady]) => this.playerLoading$.next(true)),
       map(([refresh, selectedUser, cacheReady]) => from(
-        this.bungieService.getChars(selectedUser.userInfo.membershipType,
-          selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
+        this.bungieService.getChars(selectedUser!.userInfo.membershipType,
+          selectedUser!.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
           'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
           'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
           'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles',
@@ -206,7 +206,7 @@ export class SignedOnUserService implements OnDestroy {
       takeUntil(this.unsubscribe$)
     ).subscribe(([player, vendors]) => {
       // force this to async for lazy loading inv items
-      this.handleVendorDeals(player, vendors);
+      this.handleVendorDeals(player!, vendors);
     });
   }
 
@@ -225,7 +225,7 @@ export class SignedOnUserService implements OnDestroy {
   public selectUser(u: UserInfo) {
     localStorage.setItem('D2STATE-preferredPlatform', '' + u.membershipType);
     const curr = this.signedOnUser$.getValue();
-    curr.userInfo = u;
+    curr!.userInfo = u;
     this.signedOnUser$.next(curr);
   }
 

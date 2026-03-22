@@ -140,7 +140,7 @@ export class StorageService {
   }
 
   getItem(key: string, defVal?: any) {
-    const val = JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`));
+    const val = JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`)!);
     if (val == null) { return defVal; }
     return val;
   }
@@ -155,7 +155,7 @@ export class StorageService {
           let currentStateRef = state;
           stateKey.forEach((key, index) => {
             if (index === stateKey.length - 1) {
-              currentStateRef[key] = JSON.parse(localStorage.getItem(storageKey));
+              currentStateRef[key] = JSON.parse(localStorage.getItem(storageKey)!);
               return;
             }
             currentStateRef[key] = currentStateRef[key] || {};

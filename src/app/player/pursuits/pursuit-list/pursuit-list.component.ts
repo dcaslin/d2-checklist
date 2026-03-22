@@ -18,10 +18,10 @@ import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
   styleUrls: ['./pursuit-list.component.scss']
 })
 export class PursuitListComponent extends ChildComponent {
-  public displayFilterText: string = null;
-  public realFilterText: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public displayFilterText: string | null = null;
+  public realFilterText: BehaviorSubject<string> = new BehaviorSubject<string>(null!);
   public searchSubject: Subject<void> = new Subject<void>();
-  public filteredPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  public filteredPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
   sort: Sort = {
     name: 'expiration',
     ascending: true
@@ -60,7 +60,7 @@ export class PursuitListComponent extends ChildComponent {
           localStorage.removeItem('pursuit-filter');
         }
         if (this.displayFilterText == null) {
-          this.realFilterText.next(null);
+          this.realFilterText.next(null!);
         } else {
           this.realFilterText.next(this.displayFilterText.toLowerCase().trim());
         }

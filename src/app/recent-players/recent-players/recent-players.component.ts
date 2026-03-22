@@ -90,14 +90,14 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     let targetFireTeamId = null;
     for (const e of p.entries) {
       if (e.info.characterId === this.characterId) {
-        targetFireTeamId = e.values.fireteamId;
+        targetFireTeamId = e!.values!.fireteamId;
         break;
       }
     }
     if (targetFireTeamId == null) { return; }
     for (const e of p.entries) {
       if (e.info.characterId !== this.characterId) {
-        if (e.values.fireteamId === targetFireTeamId) {
+        if (e!.values!.fireteamId === targetFireTeamId) {
           this.countFriend(p, e);
         }
       }

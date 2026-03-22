@@ -26,7 +26,7 @@ export class WeaponCompareDialogComponent extends ChildComponent {
   maxPlugs: number[] = [];
 
 
-  sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
 
   constructor(
     storageService: StorageService,

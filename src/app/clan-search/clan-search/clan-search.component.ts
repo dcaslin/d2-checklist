@@ -15,7 +15,7 @@ import { ChildComponent } from '../../shared/child.component';
 })
 export class ClanSearchComponent extends ChildComponent implements OnInit, OnDestroy {
   name: string;
-  public clan: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
+  public clan: BehaviorSubject<ClanInfo | null> = new BehaviorSubject<ClanInfo | null>(null);
 
   constructor(storageService: StorageService,
     private bungieService: BungieService) {
@@ -32,7 +32,7 @@ export class ClanSearchComponent extends ChildComponent implements OnInit, OnDes
       this.clan.next(x);
       localStorage.setItem('last-clan-search', this.name);
     } catch (exc) {
-      this.clan = null;
+      this.clan = null!;
     }
     finally {
       this.loading.next(false);
@@ -41,6 +41,6 @@ export class ClanSearchComponent extends ChildComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.name = localStorage.getItem('last-clan-search');
+    this.name = localStorage.getItem('last-clan-search')!;
   }
 }

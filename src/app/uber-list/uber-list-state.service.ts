@@ -32,13 +32,13 @@ export class UberListStateService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   public filterKeyUp$: Subject<void> = new Subject();
-  public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
-  public currChar$: BehaviorSubject<Character | null> = new BehaviorSubject(null);
-  public filteredRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject<(MilestoneRow | PursuitRow)[]>([]);
+  public currChar$: BehaviorSubject<Character | null> = new BehaviorSubject<Character | null>(null);
+  public filteredRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject<(MilestoneRow | PursuitRow)[]>([]);
   public allVisibleChecked$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public someVisibleChecked$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public checkedRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
-  public checked$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public checkedRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject<(MilestoneRow | PursuitRow)[]>([]);
+  public checked$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public sort$: BehaviorSubject<UberSort> = new BehaviorSubject<UberSort>({
     by: DEFAULT_SORT_BY,
     desc: DEFAULT_SORT_DESC
@@ -50,7 +50,7 @@ export class UberListStateService implements OnDestroy {
   public filterUpdated$: Subject<void> = new Subject<void>();
   private toggleDataInit = false;
   public orMode = false;
-  public filterTags$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public filterTags$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public hideTrials = false;
   public hideComplete = false;
   public hideUnheld = false;
@@ -63,7 +63,7 @@ export class UberListStateService implements OnDestroy {
     this.toggleData = await this.buildInitToggles();
     const a: BehaviorSubject<UberToggleState>[] = [];
     const thingsToListenTo$: any[] = [this.rows$, this.filterTags$, this.sort$, this.checked$];
-    for (const key of Object.keys(this.toggleData)) {
+    for (const key of Object.keys(this.toggleData!)) {
       a.push(this.toggleData[key]);
       thingsToListenTo$.push(this.toggleData[key]);
     }
@@ -100,9 +100,9 @@ export class UberListStateService implements OnDestroy {
         filter(([player, vendors]) => player != null && vendors != null)
       )
       .subscribe(([player, charVendors, dbi, dbm, dbv]) => {
-        this.currChar$.next(player.characters[0]);
+        this.currChar$.next(player!.characters[0]);
         const rowData: { [key: string]: MilestoneRow | PursuitRow } = {};
-        for (const char of player.characters) {
+        for (const char of player!.characters) {
           const vendors = charVendors.find((x) => x?.char?.id == char.id);
           if (vendors) {
             for (const vi of vendors.data) {
@@ -114,15 +114,15 @@ export class UberListStateService implements OnDestroy {
                 const target = rowData[vi.hash] as PursuitRow;
                 if (!target.characterEntries[char.id]) {
                   target.characterEntries[char.id] = {
-                    characterItem: null,
-                    vendorItem: null,
+                    characterItem: null!,
+                    vendorItem: null!,
                   };
                 }
                 target.characterEntries[char.id].vendorItem = vi;
               }
             }
           }
-          const bounties = player.bounties.filter(
+          const bounties = player!.bounties.filter(
             (x) => x.owner.getValue().id == char.id
           );
           for (const b of bounties) {
@@ -132,13 +132,13 @@ export class UberListStateService implements OnDestroy {
             const target = rowData[b.hash] as PursuitRow;
             if (!target.characterEntries[char.id]) {
               target.characterEntries[char.id] = {
-                characterItem: null,
-                vendorItem: null,
+                characterItem: null!,
+                vendorItem: null!,
               };
             }
             target.characterEntries[char.id].characterItem = b;
           }
-          const quests = player.quests.filter(
+          const quests = player!.quests.filter(
             (x) => x.owner.getValue().id == char.id
           );
           for (const b of quests) {
@@ -148,13 +148,13 @@ export class UberListStateService implements OnDestroy {
             const target = rowData[b.hash] as PursuitRow;
             if (!target.characterEntries[char.id]) {
               target.characterEntries[char.id] = {
-                characterItem: null,
-                vendorItem: null,
+                characterItem: null!,
+                vendorItem: null!,
               };
             }
             target.characterEntries[char.id].characterItem = b;
           }
-          for (const msn of player.milestoneList) {
+          for (const msn of player!.milestoneList) {
             const c = char.milestones[msn.key];
             if (c) {
               if (!rowData[c.hash]) {
@@ -172,7 +172,7 @@ export class UberListStateService implements OnDestroy {
           rows.push(rowData[key]);
         }
         this.rows$.next(rows);
-        this.initWithPlayer(player, rows);
+        this.initWithPlayer(player!, rows);
 
         // TODO finish click on item modal
         // fix deadly venatics
@@ -208,8 +208,8 @@ export class UberListStateService implements OnDestroy {
               sort: this.sort$.getValue(),
               checked: this.checked$.getValue()
             };
-            for (const key of Object.keys(this.toggleData)) {
-              const t = this.toggleData[key];
+            for (const key of Object.keys(this.toggleData!)) {
+              const t = this.toggleData![key];
               const deselectedVals: string[] = t
                 .getValue()
                 .choices.filter((c: any) => !c.checked)
@@ -323,16 +323,16 @@ export class UberListStateService implements OnDestroy {
     checkMe = checkMe.filter(x => checked.indexOf(x.id) >= 0);
     if (this.hideComplete) {
       const currChar = this.currChar$.getValue();
-      checkMe = checkMe.filter(x => getProgress(x, currChar.characterId) !== -.2);
+      checkMe = checkMe.filter(x => getProgress(x, currChar!.characterId) !== -.2);
     }
     if (this.hideUnheld) {
       const currChar = this.currChar$.getValue();
       // remove missing entries
-      checkMe = checkMe.filter(x => x.characterEntries[currChar.characterId] != null);
+      checkMe = checkMe.filter(x => x.characterEntries[currChar!.characterId] != null);
       // remove vendor only bounties
-      checkMe = checkMe.filter(x => !(x.type == 'bounty' && !(x as PursuitRow).characterEntries[currChar.characterId]?.characterItem));
+      checkMe = checkMe.filter(x => !(x.type == 'bounty' && !(x as PursuitRow).characterEntries[currChar!.characterId]?.characterItem));
       // remove locked milestones
-      checkMe = checkMe.filter(x => !((x.type == 'milestone') && (x as MilestoneRow).characterEntries[currChar.characterId]?.locked));
+      checkMe = checkMe.filter(x => !((x.type == 'milestone') && (x as MilestoneRow).characterEntries[currChar!.characterId]?.locked));
     }
     this.sortRows(checkMe);
     this.checkedRows$.next(checkMe);
@@ -356,7 +356,7 @@ export class UberListStateService implements OnDestroy {
   }
 
   public trackUberRow(index: number, item: (MilestoneRow | PursuitRow)): string {
-    return item ? item.id : undefined;
+    return item ? item.id : undefined!;
   }
 
 
@@ -389,9 +389,9 @@ export class UberListStateService implements OnDestroy {
         this.checked$.next(filterSettings.checked);
       }
       this.parseWildcardFilter();
-      for (const key of Object.keys(this.toggleData)) {
+      for (const key of Object.keys(this.toggleData!)) {
         let changeMade = false;
-        const t: UberToggleState = this.toggleData[key].getValue();
+        const t: UberToggleState = this.toggleData![key].getValue();
         const deselectedVals: string[] =
           filterSettings.deselectedChoices[key];
         if (deselectedVals) {
@@ -406,7 +406,7 @@ export class UberListStateService implements OnDestroy {
             }
           }
           if (changeMade) {
-            this.toggleData[key].next(generateUberState(t.config, choices));
+            this.toggleData![key].next(generateUberState(t.config, choices));
           }
         }
       }
@@ -557,7 +557,7 @@ export class UberListStateService implements OnDestroy {
   }
 
   public resetFilters() {
-    this.visibleFilterText = null;
+    this.visibleFilterText = null!;
     this.orMode = false;
     this.filterTags$.next([]);
     for (const toggle$ of this.toggleDataArray) {
@@ -801,8 +801,8 @@ export class UberListStateService implements OnDestroy {
       tempOwners.push(new UberChoice(char.id, char.label));
     }
     tempOwners.push(new UberChoice('vendor', 'Vendor'));
-    this.toggleData.owner$.next({
-      ...this.toggleData.owner$.getValue(),
+    this.toggleData!.owner$.next({
+      ...this.toggleData!.owner$.getValue()!,
       choices: tempOwners
     });
     const rewards: Set<string> = new Set();
@@ -826,8 +826,8 @@ export class UberListStateService implements OnDestroy {
       // }
     }
 
-    this.toggleData.reward$.next({
-      ...this.toggleData.reward$.getValue(),
+    this.toggleData!.reward$.next({
+      ...this.toggleData!.reward$.getValue()!,
       choices: customRewards
     });
   }
@@ -1223,7 +1223,7 @@ function classify(x: (MilestoneRow | PursuitRow)): void {
     }
     for (const c of CLASSIFICATIONS) {
       for (const bl of c.bountyLabels) {
-        if (p.label.indexOf(bl) >= 0) {
+        if (p.label && p.label.indexOf(bl) >= 0) {
           x.classification = c.name;
           x.vendor = c.vendor;
           classified = true;

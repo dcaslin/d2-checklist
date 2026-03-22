@@ -48,7 +48,7 @@ export class ShardModeDialogComponent extends ChildComponent {
   ItemType = ItemType;
   data$ = new BehaviorSubject<ShardModeDialogData>(buildEmptyData());
   operating$ = new BehaviorSubject<boolean>(false);
-  gm$ = new BehaviorSubject<GearMetaData>(null);
+  gm$ = new BehaviorSubject<GearMetaData>(null!);
 
   constructor(
     storageService: StorageService,
@@ -60,7 +60,7 @@ export class ShardModeDialogComponent extends ChildComponent {
     super(storageService);
     this.parent = data.parent;
     // subscribe to parent's filter updates
-    this.parent.player$.pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player) => {
+    this.parent.player$.pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player | null) => {
       if (!player) {
         return;
       }
@@ -100,7 +100,7 @@ export class ShardModeDialogComponent extends ChildComponent {
     try {      
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
-      await this.parent.gearService.processGearLocks(this.parent.player$.getValue(), true);
+      await this.parent.gearService.processGearLocks(this.parent.player$.getValue()!, true);
     } finally {
       this.parent.gearService.clearOperatingOn();
       this.operating$.next(false);
@@ -114,7 +114,7 @@ export class ShardModeDialogComponent extends ChildComponent {
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
       // dummy subject to avoid repainting gear component prematurely
-      const msg = await this.parent.gearService.shardMode(this.parent.player$.getValue(), new Subject<void>(), itemType);
+      const msg = await this.parent.gearService.shardMode(this.parent.player$.getValue()!, new Subject<void>(), itemType);
       this.parent.gearFilterStateService.filterUpdated$.next();
       await this.parent.load(true);
       await this.parent.syncLocks();
@@ -131,7 +131,7 @@ export class ShardModeDialogComponent extends ChildComponent {
     try {
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
-      const msg = await this.parent.gearService.shardBlues(this.parent.player$.getValue(), new Subject<void>(), itemType);
+      const msg = await this.parent.gearService.shardBlues(this.parent.player$.getValue()!, new Subject<void>(), itemType);
       await this.parent.load(true);
       await this.parent.syncLocks();
       this.parent.gearFilterStateService.filterUpdated$.next();
@@ -147,7 +147,7 @@ export class ShardModeDialogComponent extends ChildComponent {
     try {
       this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
-      const totalMoved = await this.parent.gearService.emptyVault(this.parent.player$.getValue(), new Subject<void>());
+      const totalMoved = await this.parent.gearService.emptyVault(this.parent.player$.getValue()!, new Subject<void>());
       await this.parent.load(true);
       await this.parent.syncLocks();
       this.parent.gearFilterStateService.filterUpdated$.next();

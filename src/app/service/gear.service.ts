@@ -41,16 +41,16 @@ function isNeverTrue(i: InventoryItem): boolean {
 }
 
 function isGrind(i: InventoryItem): boolean {
-    return i.deepsight || (i.crafted && i.craftProgress?.level < 20);
+    return i.deepsight || (i.crafted && (i.craftProgress?.level ?? 0) < 20);
 }
 
 @Injectable({ providedIn: 'root' })
 export class GearService {
 
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public _operatingOn$: BehaviorSubject<Operation> = new BehaviorSubject(null);
+    public _operatingOn$: BehaviorSubject<Operation | null> = new BehaviorSubject<Operation | null>(null);
 
-    public operatingOn$: Observable<Operation>;
+    public operatingOn$: Observable<Operation | null>;
 
     public static sortGear(sortBy: string, sortDesc: boolean, tempGear: InventoryItem[]) {
         if (sortBy.startsWith('masterwork.') || sortBy == 'mods' || sortBy.startsWith('stat.')) {
@@ -213,7 +213,7 @@ export class GearService {
             tap((o) => {
                 if (o) {
                     console.log(`${o.item?.displayProperties?.name}: ${o.action} `);
-                } 
+                }
             }),
             debounceTime(50));
     }
@@ -230,11 +230,11 @@ export class GearService {
                 if (lastPlayer.responseMintedTimestamp>player.responseMintedTimestamp) {
                     console.log(`STALE RESPONSE`);
                     this.notificationService.info('Stale response from Bungie. Please try again.');
-                    return null;
+                    return null!;
                 } else if (lastPlayer.responseMintedTimestamp==player.responseMintedTimestamp) {
                     console.log(`NOTHING NEW HERE`);
                     this.notificationService.info('Bungie shows no profile changes. Please try again.');
-                    return null;
+                    return null!;
 
                 }
             }
@@ -319,7 +319,7 @@ export class GearService {
 
     public setExplicitOperatingOnMessage(msg: string) {
         this._operatingOn$.next({
-            item: null,
+            item: null!,
             action: msg
         });
     }
@@ -397,7 +397,7 @@ export class GearService {
                     if (itemType == null || i.type == itemType) {
                         if (i.type == ItemType.Weapon
                             || i.type == ItemType.Armor) {
-                            if (i.postmaster === true) {
+                            if (i.postmaster) {
                                 continue;
                             }
                             try {
@@ -484,7 +484,7 @@ export class GearService {
             if (tryCount > 1) {
                 console.log(`Shard mode, pass # ${tryCount} - last run moved ${incrementalWork} items`);
             }
-            invClearedSuccessfully = await this.clearInvForMode(target, player, isJunk, itemType, vaultStatus, progressTracker$);
+            invClearedSuccessfully = await this.clearInvForMode(target, player, isJunk, itemType!, vaultStatus, progressTracker$);
             if (!vaultStatus.isFull) {
                 console.log(`Shard mode cleared inv successfully.`);
             } else {
@@ -507,7 +507,7 @@ export class GearService {
                             });
                             try {
                                 let success;
-                                if (i.postmaster === true) {
+                                if (i.postmaster) {
                                     const owner = i.owner.getValue();
                                     success = await this.transfer(player, i, owner, vaultStatus, progressTracker$);
                                     if (success) {
@@ -581,7 +581,7 @@ export class GearService {
                 if (i.typeName != g.typeName) {
                     continue;
                 }
-                let iArchetype: string = null;
+                let iArchetype: string | null = null;
                 let gArchetype = null;
                 for (const s of i.sockets) {
                     if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
@@ -702,7 +702,7 @@ export class GearService {
     public async clearInv(player: Player, progressTracker$: Subject<void>, itemType?: ItemType) {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
-        const clearSuccess = await this.clearInvForMode(target, player, isKeepUpgradeUntagged, itemType, vaultStatus, progressTracker$);
+        const clearSuccess = await this.clearInvForMode(target, player, isKeepUpgradeUntagged, itemType!, vaultStatus, progressTracker$);
         if (!clearSuccess) {
             this.notificationService.info('Inventory could not be fully cleared, your vault ran out of space');
         } else {
@@ -738,7 +738,7 @@ export class GearService {
                         console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
                         try {
                             let success;
-                            if (i.postmaster === true) {
+                            if (i.postmaster) {
                                 const owner = i.owner.getValue();
                                 this._operatingOn$.next({
                                     item: i.toSimpleInventoryItem(),
@@ -783,7 +783,7 @@ export class GearService {
     public async upgradeMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType): Promise<string> {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
-        const clearSuccess = await this.clearInvForMode(target, player, isNeverTrue, itemType, vaultStatus, progressTracker$);
+        const clearSuccess = await this.clearInvForMode(target, player, isNeverTrue, itemType!, vaultStatus, progressTracker$);
         let totalErr = 0;
         let moved = 0;
         for (const i of player.gear) {
@@ -916,7 +916,7 @@ export class GearService {
         this.loading.next(true);
 
         try {
-            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash);
+            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue()!, item, socket, plug.hash);
             if (success) {
                 if (socket.active) {
                     socket.active.active = false;
@@ -950,7 +950,7 @@ export class GearService {
         try {
             let success = true;
             if (!previewOnly) {
-                success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
+                success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue()!, item, socket, plug.hash + '');
             }
             if (success) {
                 let newCost = plug.plug?.energyCost?.energyCost;
