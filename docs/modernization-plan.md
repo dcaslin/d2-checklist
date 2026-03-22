@@ -4,7 +4,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 
 **Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
-- Zero test coverage, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
+- 88 unit tests across 3 spec files, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
 - `parse.service.ts` split into 6 files (was 4,385 lines)
 - No bundle size budgets
 - CI modernized: rsync deploys, Node 20.x, npm audit
@@ -31,12 +31,14 @@ Enable strict type checking incrementally to catch bugs at compile time instead 
 
 Add test infrastructure and cover the highest-risk code paths.
 
-- [ ] Verify Karma/Jasmine config works (or switch to Jest if preferred)
+- [x] Verify Karma/Jasmine config works — installed test dependencies, created `test.ts`, fixed sass include paths
+- [x] Add unit tests for `parse-utils.ts` — 51 tests covering all pure utility functions
+- [x] Add unit tests for `gear-parser.service.ts` — 24 tests for static methods (cookDamageType, isDamageTypeEnergy, getPlugName)
+- [x] Add unit tests for `history-parser.service.ts` — 13 tests for mergeAggHistory2
+- [x] Add a CI step to run tests on every push/PR (`ci.yml` for PRs, test step in deploy workflows)
 - [ ] Add unit tests for `auth.service.ts`
 - [ ] Add unit tests for `bungie.service.ts` (mock HTTP calls)
-- [ ] Add unit tests for `parse.service.ts` — focus on public methods with complex logic
-- [ ] Add unit tests for `gear.service.ts`
-- [ ] Add a CI step to run tests on every push/PR
+- [ ] Add unit tests for remaining `parse.service.ts` methods
 - [ ] Set a coverage floor (e.g., 30% for critical services) and enforce in CI
 
 **Done when:** Critical services have tests running in CI with a coverage gate.
@@ -86,7 +88,7 @@ Bring the pipeline up to date and add safety checks.
 - [x] Add `workflow_dispatch` trigger for manual deploys
 - [x] Add `npm audit --audit-level=moderate` step
 - [x] Upgrade Node from 18.x to 20.x
-- [ ] Add unit test step (from Phase 2)
+- [x] Add unit test step (from Phase 2)
 - [ ] Add bundle size reporting step (from Phase 4)
 
 **Done when:** Both deploy.yml and beta-deploy.yml run tests and report bundle sizes.

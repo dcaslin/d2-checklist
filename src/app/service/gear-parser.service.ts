@@ -44,7 +44,7 @@ export class GearParserService {
     ) {
     }
 
-    private static cookDamageType(damageType: DamageType): string {
+    public static cookDamageType(damageType: DamageType): string {
         if (damageType == DamageType.None) {
             return 'None';
         } else if (damageType == DamageType.Kinetic) {
@@ -64,7 +64,7 @@ export class GearParserService {
         }
     }
 
-    private static isDamageTypeEnergy(damageType: DamageType): boolean {
+    public static isDamageTypeEnergy(damageType: DamageType): boolean {
         if (damageType == DamageType.Arc) {
             return true;
         } else if (damageType == DamageType.Thermal) {
@@ -164,7 +164,7 @@ export class GearParserService {
         }
     }
 
-    private static getPlugName(plugDesc: any): string {
+    public static getPlugName(plugDesc: any): string {
         const name = plugDesc.displayProperties.name;
         if (name == null) { return null!; }
         if (name.trim().length == 0) { return null!; }
