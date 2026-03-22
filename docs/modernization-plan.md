@@ -5,7 +5,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 **Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
 - Zero test coverage, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
-- `parse.service.ts` is 4,385 lines
+- `parse.service.ts` split into 6 files (was 4,385 lines)
 - No bundle size budgets
 - CI modernized: rsync deploys, Node 20.x, npm audit
 
@@ -47,14 +47,17 @@ Add test infrastructure and cover the highest-risk code paths.
 
 Split the 4,385-line monolith into domain-specific parsers.
 
-- [ ] Identify logical domains within `parse.service.ts` (gear, triumphs, milestones, perks/buffs, stats, vendors, etc.)
-- [ ] Extract each domain into its own service/class (e.g., `gear-parser.service.ts`, `triumph-parser.service.ts`)
-- [ ] Keep `parse.service.ts` as a thin facade that delegates to the new parsers
-- [ ] Move shared parsing utilities into a `parse-utils.ts` helper
-- [ ] Ensure no file exceeds ~800 lines
-- [ ] Verify existing functionality still works (manual smoke test + any new unit tests)
+- [x] Identify logical domains within `parse.service.ts` (gear, triumphs, milestones, history/stats)
+- [x] Extract each domain into its own service/class:
+  - `gear-parser.service.ts` (1008 lines) — inventory item parsing
+  - `triumph-parser.service.ts` (666 lines) — triumphs, seals, badges, collectibles, quests
+  - `milestone-parser.service.ts` (696 lines) — milestones, activities, modifiers
+  - `history-parser.service.ts` (236 lines) — aggregated history stats
+- [x] Keep `parse.service.ts` as a facade that delegates to the new parsers (1729 lines)
+- [x] Move shared parsing utilities into `parse-utils.ts` (268 lines)
+- [ ] Verify existing functionality still works (manual smoke test)
 
-**Done when:** `parse.service.ts` is under 500 lines and each extracted parser has its own file and tests.
+**Done when:** Smoke test passes. Note: `parse.service.ts` retains ~1700 lines as the player-parsing orchestrator — further splitting would require breaking up the 640-line `parsePlayer` method.
 
 ---
 
@@ -135,7 +138,7 @@ Angular migrations must go one major version at a time:
 1. ~~Phase 5: CI/CD Hardening~~ — Done
 2. ~~Phase 6: Standardize Service Providers~~ — Done
 3. ~~Phase 1: TypeScript Strictness~~ — Done
-4. **Phase 3: Break Up parse.service.ts** — Next. Easier to split before adding tests.
+4. **Phase 3: Break Up parse.service.ts** — In progress (extracted, needs smoke test).
 5. **Phase 2: Unit Tests** — After the split, each parser file is small enough to test meaningfully.
 6. **Phase 4: Bundle Budgets** — Low risk, can slot in anytime.
 7. **Phase 7: Angular 18 Migration** — Last. Benefits from all prior phases.
