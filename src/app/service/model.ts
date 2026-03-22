@@ -456,13 +456,13 @@ export class BungieMembership {
     destinyMemberships: UserInfo[];
 
     public getBnetInfo(): UserInfo {
-        if (this.destinyMemberships == null) { return null; }
+        if (this.destinyMemberships == null) { return null!; }
         for (const u of this.destinyMemberships) {
             if (u.membershipType == 4) {
                 return u;
             }
         }
-        return null;
+        return null!;
     }
 }
 
@@ -470,7 +470,7 @@ export class BungieMember {
     name: string;
     id: string;
     noClan = false;
-    clans: ClanRow[] = null;
+    clans: ClanRow[] | null = null;
     xbl: BungieMemberPlatform;
     psn: BungieMemberPlatform;
     bnet: BungieMemberPlatform;
@@ -500,9 +500,9 @@ export interface BountySet {
 
 export class SelectedUser {
     userInfo: UserInfo;
-    currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
-    gearMeta$: BehaviorSubject<GearMetaData> = new BehaviorSubject(null);
-    clans: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
+    currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
+    gearMeta$: BehaviorSubject<GearMetaData | null> = new BehaviorSubject<GearMetaData | null>(null);
+    clans: BehaviorSubject<ClanRow[]> = new BehaviorSubject<ClanRow[]>([]);
     membership: BungieMembership;
     promptForPlatform = false;
 }
@@ -515,7 +515,7 @@ export class BungieGroupMember {
     destinyUserInfo: UserInfo;
     bungieNetUserInfo: BungieNetUserInfo;
     joinDate: string;
-    player$: BehaviorSubject<Player> = new BehaviorSubject(null);
+    player$: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
     errorMsg: string;
 
     currentPlayer(): Player | null {
@@ -532,8 +532,8 @@ export class BungieGroupMember {
 
 export class FriendListEntry {
     user: UserInfo;
-    player$: BehaviorSubject<Player> = new BehaviorSubject(null);
-    errorMsg$: BehaviorSubject<string> = new BehaviorSubject(null);
+    player$: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
+    errorMsg$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
     currentPlayer(): Player | null {
         return this.player$.getValue();
@@ -1022,7 +1022,7 @@ export class MilestoneStatus {
         this.phases = phases;
         this.locked = locked;
         this.tooLowPower = tooLowPower;
-        this.readyToCollect = readyToCollect;
+        this.readyToCollect = readyToCollect!;
     }
 }
 
@@ -1182,8 +1182,8 @@ export class NameDesc {
     constructor(name: string, desc: string, icon?: string, hash?: string) {
         this.name = name;
         this.desc = desc;
-        this.icon = icon;
-        this.hash = hash;
+        this.icon = icon!;
+        this.hash = hash!;
     }
 }
 
@@ -1411,7 +1411,7 @@ export class Const {
                 min: -3,
                 max: 0
             },
-            afterHardCap: null,
+            afterHardCap: null!,
             cappedAt: Const.SEASON_HARD_CAP
         },
         'BOOST_SEASON_PASS': {
@@ -1536,7 +1536,7 @@ export class InventoryStat {
         this.desc = desc;
         this.value = value;
         this.index = index;
-        this.fromArchetype = fromArchetype;
+        this.fromArchetype = fromArchetype!;
     }
 }
 
@@ -1559,7 +1559,7 @@ export class InventorySocket {
         this.plugWhitelist = plugWhitelist;
         this.empty = false;
         this.empty = this.plugs.every(plug => plug.empty);
-        this.active = this.plugs.find(plug => plug.active);
+        this.active = this.plugs.find(plug => plug.active)!;
         this.isWeaponPerk = socketCategoryHash == '4241085061';
         this.isArmorMod = socketCategoryHash == '590099826';
         this.isWeaponMod = socketCategoryHash == '2685412949';
@@ -1609,7 +1609,7 @@ export class InventoryPlug {
         this.desc = desc;
         this.icon = icon;
         this.active = active;
-        this.enabled = enabled;
+        this.enabled = enabled!;
         if (itemTypeDisplayName == 'Enhanced Trait') {
             this.enhanced = true;
             // remove " Enhanced" suffix

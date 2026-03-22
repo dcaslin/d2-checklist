@@ -252,7 +252,7 @@ export class VendorService {
     // filter to be unique by hash
     return returnMe.filter((a, b) => {
       const first = returnMe.find(x => x.hash === a.hash);
-      return returnMe.indexOf(first) === b;
+      return returnMe.indexOf(first!) === b;
     });
   }
 
@@ -274,7 +274,7 @@ export class VendorService {
       console.log(`Found ${shaders.length} shaders for ${v}`)
       if (shaders.length > 0) {
         returnMe.push({
-          vendor: shaders[0].vendorItemInfo.vendor,
+          vendor: shaders[0].vendorItemInfo!.vendor,
           data: shaders
         });
       }
@@ -288,7 +288,7 @@ export class VendorService {
       const armor = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Armor);
       if (armor.length > 0) {
         returnMe.push({
-          vendor: armor[0].vendorItemInfo.vendor,
+          vendor: armor[0].vendorItemInfo!.vendor,
           data: armor
         });
       }
@@ -302,7 +302,7 @@ export class VendorService {
       const weapons = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Weapon);
       if (weapons.length > 0) {
         returnMe.push({
-          vendor: weapons[0].vendorItemInfo.vendor,
+          vendor: weapons[0].vendorItemInfo!.vendor,
           data: weapons
         });
       }
@@ -314,10 +314,10 @@ export class VendorService {
     let targetCost: VendorCost;
     // if it has one cost, use it
     // otherwise find the redeemable
-    if (v.saleItem.vendorItemInfo.costs.length == 1) {
-      targetCost = v.saleItem.vendorItemInfo.costs[0];
+    if (v.saleItem.vendorItemInfo!.costs!.length == 1) {
+      targetCost = v.saleItem.vendorItemInfo!.costs![0];
     } else {
-      targetCost = v.saleItem.vendorItemInfo.costs.find(c => c.desc.itemTypeDisplayName == 'Redeemable');
+      targetCost = v.saleItem.vendorItemInfo!.costs!.find(c => c.desc.itemTypeDisplayName == 'Redeemable')!;
     }
     if (!targetCost) {
       // these are items that unlock via progression, ignore them
@@ -355,7 +355,7 @@ export class VendorService {
 
     const costs: { [key: string]: number; } = {};
     for (const g of rahoolCurrency.concat(bansheeConsumables)) {
-      for (const c of g.vendorItemInfo.costs) {
+      for (const c of g!.vendorItemInfo!.costs) {
         costs[c.desc.hash] = 0;
       }
     }
@@ -379,7 +379,7 @@ export class VendorService {
       // }
       const targetHash = VendorService.getCostHash(g.name, g.hash);
       const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(targetHash);
-      let targetCount;
+      let targetCount: number;
       if (targetHash == '1022552290' || targetHash == '3159615086') { // legendary shards or glimmer
         const currency = player.currencies.find(x => x.hash == targetHash);
         if (currency != null) {
@@ -391,9 +391,9 @@ export class VendorService {
       const v: VendorCurrency = {
         saleItem: g,
         target: targetDesc,
-        targetCount,
-        cost: null,
-        costCount: null
+        targetCount: targetCount!,
+        cost: null!,
+        costCount: null!
       };
 
       VendorService.setCost(costs, v);
@@ -401,7 +401,7 @@ export class VendorService {
     }
     if (rahoolItems.length > 0) {
       returnMe.push({
-        vendor: rahoolItems[0].saleItem.vendorItemInfo.vendor,
+        vendor: rahoolItems[0].saleItem.vendorItemInfo!.vendor,
         data: rahoolItems
       });
     }
@@ -412,9 +412,9 @@ export class VendorService {
       const v: VendorCurrency = {
         saleItem: g,
         target: targetDesc,
-        targetCount,
-        cost: null,
-        costCount: null
+        targetCount: targetCount!,
+        cost: null!,
+        costCount: null!
       };
       VendorService.setCost(costs, v);
       if (v.cost != null) {
@@ -423,7 +423,7 @@ export class VendorService {
     }
     if (bansheeItems.length > 0) {
       returnMe.push({
-        vendor: bansheeItems[0].saleItem.vendorItemInfo.vendor,
+        vendor: bansheeItems[0].saleItem.vendorItemInfo!.vendor,
         data: bansheeItems
       });
     }
@@ -548,11 +548,11 @@ export class VendorService {
 
   private async parseVendorData(char: Character, responses: { [key: string]: any }): Promise<InventoryItem[]> {
     // make sure we have all the data we need
-    if (responses == null) { return null; }
+    if (responses == null) { return null!; }
     for (const key of Object.keys(responses)) {
       const resp = responses[key];
       if (resp == null) {
-        return null;
+        return null!;
       }
     }
     let returnMe: InventoryItem[] = [];
@@ -618,9 +618,9 @@ export class VendorService {
 
 
   private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem> {
-    if (i.itemHash == null && i.itemHash === 0) { return null; }
+    if (i.itemHash == null && i.itemHash === 0) { return null!; }
     const iDesc: any = await this.destinyCacheService.getInventoryItem(i.itemHash);
-    if (iDesc == null) { return null; }
+    if (iDesc == null) { return null!; }
     let vendorSearchText = '';
     // calculate costs
     const costs: VendorCost[] = [];
@@ -645,7 +645,7 @@ export class VendorService {
     if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
       for (const oHash of iDesc.objectives.objectiveHashes) {
         const oDesc: any = await this.destinyCacheService.getObjective(oHash);
-        let progDescText = VendorService.dynamicVendorStringReplace(oDesc.progressDescription, null, dynamicStrings)
+        let progDescText = VendorService.dynamicVendorStringReplace(oDesc.progressDescription, null!, dynamicStrings)
         if (oDesc != null) {
           objectives.push({
             total: oDesc.completionValue,
@@ -701,11 +701,11 @@ export class VendorService {
     i.owner = char;
     // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
     if (!data) {
-      return null;
+      return null!;
     }
     // these are unlockable rewards, not things for sale
     if (costs.length === 0) {
-      return null;
+      return null!;
     }
     vendorSearchText += data.searchText;
     data.vendorItemInfo = {
@@ -734,7 +734,7 @@ export class VendorService {
 
   private async parseSaleItemStatus(vendorHash: string, failureIndexes: number[]): Promise<string> {
     if (failureIndexes == null || failureIndexes.length == 0) {
-      return null;
+      return null!;
     }
     const index = failureIndexes[0];
     const vDesc: any = await this.destinyCacheService.getVendor(vendorHash);
@@ -766,7 +766,7 @@ export class VendorService {
             this.bungieService.apiDown = true;
           }
           this.notificationService.fail(j.Message);
-          return null;
+          return null!;
         }
       }
       console.dir(err);

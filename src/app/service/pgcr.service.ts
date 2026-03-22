@@ -14,7 +14,7 @@ function sortEntries(a: Entry, b: Entry): number {
   if (scoreComp !== 0) {
     return scoreComp;
   }
-  return b.values.kills - a.values.kills;
+  return b!.values!.kills - a!.values!.kills;
 }
 
 @Injectable({
@@ -33,11 +33,11 @@ export class PgcrService extends StreamingService {
 
   private async mapGame(instanceId: string, resp: any): Promise<Game> {
     if (!resp?.activityDetails?.referenceId) {
-      return null;
+      return null!;
     }
     const desc: any = await this.destinyCacheService.getActivity(resp.activityDetails.referenceId);
     if (!desc) {
-      return null;
+      return null!;
     }
     const mode = SimpleParseService.lookupMode(resp.activityDetails.mode);
     const modes = resp.activityDetails.modes;
@@ -73,8 +73,8 @@ export class PgcrService extends StreamingService {
     teams.sort( (a, b) => {
       return a.standing - b.standing;
     });
-    const maxDuration = entries.map(e => e?.values?.activityDurationSeconds > 0 ? e.values.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
-    const minCompletionValue = entries.map(e => e?.values?.completionReason > 0 ? e.values.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
+    const maxDuration = entries.map(e => e?.values?.activityDurationSeconds! > 0 ? e!.values!.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
+    const minCompletionValue = entries.map(e => e?.values?.completionReason! > 0 ? e!.values!.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
 
     let pveTeamScore: number | null = null;
     let pveTotalTeamScore: number | null = null;
@@ -85,7 +85,7 @@ export class PgcrService extends StreamingService {
       } else if (minCompletionValue < 255) {
         pveSuccess = false;
       }
-      pveTeamScore = entries.map(e => e?.values?.teamScore > 0 ? e.values.teamScore : 0).reduce((a, b) => Math.max(a, b), 0);
+      pveTeamScore = entries.map(e => e?.values?.teamScore! > 0 ? e!.values!.teamScore : 0).reduce((a, b) => Math.max(a, b), 0);
       pveTotalTeamScore = entries.map(e => e?.info?.score > 0 ? e.info.score : 0).reduce((a, b) => a + b, 0);
     }
     const longestEntry = entries.find(e => e.values?.activityDurationSeconds == maxDuration);
@@ -94,8 +94,8 @@ export class PgcrService extends StreamingService {
       activityHash: resp.activityDetails.referenceId,
       activityName: desc.displayProperties.name,
       activityLocation: desc.displayProperties.description,
-      activityDurationSeconds: longestEntry ? longestEntry.values.activityDurationSeconds : 0,
-      activityDurationSecondsText: longestEntry ? longestEntry.values.activityDurationSecondsText : '',
+      activityDurationSeconds: longestEntry ? longestEntry!.values!.activityDurationSeconds : 0,
+      activityDurationSecondsText: longestEntry ? longestEntry!.values!.activityDurationSecondsText : '',
       pveSuccess,
       pveTeamScore,
       pveTotalTeamScore,
@@ -237,7 +237,7 @@ export class PgcrService extends StreamingService {
     entries.sort(sortEntries);
     const grouped: { [key: string]: Entry[] } = {};
     for (const e of entries) {
-      const group = e.values.fireteamId;
+      const group = e!.values!.fireteamId;
       if (!grouped[group]) {
         grouped[group] = [];
       }

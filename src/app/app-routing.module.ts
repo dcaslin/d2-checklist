@@ -113,7 +113,7 @@ export class MyInfoGuard implements CanActivate {
       , {
       path: 'home',
       pathMatch: 'full',
-      canActivate: searchBot ? null : [ManifestLoadedGuard],
+      canActivate: searchBot ? undefined : [ManifestLoadedGuard],
       component: searchBot ? RobotHomeComponent : HomeComponent
     },
     {

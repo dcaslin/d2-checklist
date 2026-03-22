@@ -4,7 +4,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 
 **Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
-- Zero test coverage, 5 of 7 TypeScript strict flags enabled
+- Zero test coverage, 6 of 7 TypeScript strict flags enabled (strictNullChecks now on)
 - `parse.service.ts` is 4,385 lines
 - No bundle size budgets
 - CI modernized: rsync deploys, Node 20.x, npm audit
@@ -18,7 +18,7 @@ Enable strict type checking incrementally to catch bugs at compile time instead 
 - [x] Enable `noImplicitAny`, fix resulting errors
 - [x] Enable `noImplicitReturns` and `noFallthroughCasesInSwitch`
 - [x] Enable `strictBindCallApply` and `strictFunctionTypes`
-- [ ] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~722 errors)
+- [x] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~632 errors across 60+ files)
 - [ ] Enable `strictPropertyInitialization` (requires `strictNullChecks`)
 - [ ] Enable `strictTemplates` in `angularCompilerOptions`
 - [ ] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning
@@ -130,9 +130,17 @@ Angular migrations must go one major version at a time:
 
 ---
 
+## Execution Order
+
+1. ~~Phase 5: CI/CD Hardening~~ — Done
+2. ~~Phase 6: Standardize Service Providers~~ — Done
+3. **Phase 1: TypeScript Strictness** — In progress (`strictNullChecks` is the last big flag)
+4. **Phase 3: Break Up parse.service.ts** — Next. Easier to split before adding tests.
+5. **Phase 2: Unit Tests** — After the split, each parser file is small enough to test meaningfully.
+6. **Phase 4: Bundle Budgets** — Low risk, can slot in anytime.
+7. **Phase 7: Angular 18 Migration** — Last. Benefits from all prior phases.
+
 ## Notes
 
 - Each phase should be its own PR (or set of PRs for large phases).
-- Phases 1–5 are independent of each other and can be worked in parallel.
-- Phase 6 is low risk and can happen anytime.
-- Phase 7 depends on Phases 1–2 for safety, and benefits from Phase 3 for reduced merge conflicts.
+- Phase 3 before Phase 2 is intentional: testing a 4,385-line monolith is painful and the tests would need rewriting after the split anyway.

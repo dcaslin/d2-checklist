@@ -30,7 +30,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   membershipId: string;
   characterId: string;
 
-  public _player: BehaviorSubject<Player> = new BehaviorSubject(null);
+  public _player: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
 
   database = new SortFilterDatabase([]);
   dataSource: SortFilterDataSource | null;

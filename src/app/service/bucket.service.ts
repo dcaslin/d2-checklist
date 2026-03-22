@@ -50,7 +50,7 @@ export class Bucket {
                 }
             }
         }
-        return null;
+        return null!;
     }
 }
 

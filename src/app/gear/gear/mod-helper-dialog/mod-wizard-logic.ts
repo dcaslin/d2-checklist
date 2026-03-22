@@ -166,14 +166,14 @@ function chooseWeaponPlug(socket: InventorySocket, primaryTargetTypeEnum: Energy
     const primaryTargetType = getEnergyApproachString(primaryTargetTypeEnum);
     const secondaryTargetType = getEnergyApproachString(secondaryTargetTypeEnum);
     const primaryFilterName = cookTargetPlugName(`${prefix}${primaryTargetType}${suffix}`, socket.sourcePlugs);
-    const secondaryFilterName = secondaryTargetType == null ? null : cookTargetPlugName(secondaryTargetType ? `${prefix}${secondaryTargetType}${suffix}` : null, socket.sourcePlugs);
+    const secondaryFilterName = secondaryTargetType == null ? null : cookTargetPlugName(secondaryTargetType ? `${prefix}${secondaryTargetType}${suffix}` : null!, socket.sourcePlugs);
     // we care about Finder, did we already equip our primary weapon finder?
-    let target: ManifestInventoryItem = null;
+    let target: ManifestInventoryItem | null = null;
     const isAlreadyPickedPrimary = previousChoices.find(x => x.displayProperties.name == primaryFilterName) != null;
     const sourcePlugs = socket.sourcePlugs.slice();
     // sort source plugs by cost ascending
     sourcePlugs.sort((a, b) => a.plug?.energyCost?.energyCost - b.plug?.energyCost?.energyCost);
-    target = sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
+    target = sourcePlugs.find(x => x.displayProperties.name == primaryFilterName)!;
     if (!isAlreadyPickedPrimary && target) {
         return target;
     }
@@ -181,7 +181,7 @@ function chooseWeaponPlug(socket: InventorySocket, primaryTargetTypeEnum: Energy
     if (secondaryFilterName) {
         const isAlreadyPickedSecondary = previousChoices.find(x => x.displayProperties.name == secondaryFilterName) != null;
         if (!isAlreadyPickedSecondary) {
-            target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
+            target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName)!;
             // if yes, then try to equip its finder
             if (target) {
                 return target;
@@ -189,29 +189,29 @@ function chooseWeaponPlug(socket: InventorySocket, primaryTargetTypeEnum: Energy
         }
     }
     if (nodupes) {
-        return null;
+        return null!;
     }
     // check again, not worrying if we're duping the mod
-    target = sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
+    target = sourcePlugs.find(x => x.displayProperties.name == primaryFilterName)!;
     if (target) {
         return target;
     }
     if (secondaryFilterName) {
-        target = sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
+        target = sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName)!;
         if (target) {
             return target;
         }
     }
-    return null;
+    return null!;
 }
 
 function chooseStatEnhancementTarget(item: InventoryItem, socket: InventorySocket, choices: ModChoices): ManifestInventoryItem {
     if (!(isSocketInteresting(socket))) {
-        return null;
+        return null!;
     }
     const socketSlotType = getSocketSlotType(socket);
     if (socketSlotType !== SocketSlotType.StatEnhancement) {
-        return null;
+        return null!;
     }
     const preferredStatString = PreferredStat[choices.preferredStat];
     const options = socket.sourcePlugs.filter(x => x.displayProperties.name.includes(preferredStatString));
@@ -226,16 +226,16 @@ function chooseStatEnhancementTarget(item: InventoryItem, socket: InventorySocke
             return target;
         }
     }
-    return null;
+    return null!;
 }
 
 function chooseModTarget(item: InventoryItem, socket: InventorySocket, choices: ModChoices, previousChoices: ManifestInventoryItem[]): ManifestInventoryItem {
     if (!(isSocketInteresting(socket))) {
-        return null;
+        return null!;
     }
     const socketSlotType = getSocketSlotType(socket);
     if (socketSlotType !== SocketSlotType.Mod) {
-        return null;
+        return null!;
     }
     const primaryTargetType = choices.priorityEnergy;
     const secondaryTargetType = choices.secondaryEnergy;
@@ -254,7 +254,7 @@ function chooseModTarget(item: InventoryItem, socket: InventorySocket, choices: 
 
     } else if (item.inventoryBucket.displayProperties.name == 'Chest Armor') {
         if (choices.pve) {
-            return null;
+            return null!;
         }
        
         // if (choices.pve) {
@@ -273,7 +273,7 @@ function chooseModTarget(item: InventoryItem, socket: InventorySocket, choices: 
         return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, 'Unflinching ', ' Aim');
     } else if (item.inventoryBucket.displayProperties.name == 'Leg Armor') {
         if (choices.pve) {
-            let target: ManifestInventoryItem = null;
+            let target: ManifestInventoryItem | null = null;
             target = chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Scavenger', true);        
             if (target) {
                 return target;
@@ -291,9 +291,9 @@ function chooseModTarget(item: InventoryItem, socket: InventorySocket, choices: 
         }
     } else if (item.inventoryBucket.displayProperties.name == 'Class Armor') {
         // TODO later        
-        return null;
+        return null!;
     }
-    return null;
+    return null!;
 }
 
 function isSocketInteresting(socket: InventorySocket): boolean {

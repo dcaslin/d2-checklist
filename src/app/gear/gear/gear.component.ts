@@ -44,7 +44,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   // show thinking while gear filtering is occurring
   public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  private shortcutInfo$: BehaviorSubject<ShortcutInfo|null> = new BehaviorSubject(null);
+  private shortcutInfo$: BehaviorSubject<ShortcutInfo|null | null> = new BehaviorSubject<ShortcutInfo|null | null>(null);
 
   @ViewChild('paginator')
   public paginator: MatPaginator;
@@ -56,8 +56,8 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
 
-  selectedUser: SelectedUser = null;
-  public player$: BehaviorSubject<Player> = new BehaviorSubject(null);
+  selectedUser: SelectedUser | null = null;
+  public player$: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
   public filterKeyUp$: Subject<string> = new Subject();
 
   @ViewChild('filter')
@@ -66,7 +66,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   options: TabOption[];
   option: TabOption;
 
-  public gearToShow$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  public gearToShow$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
 
   pageInfo$: BehaviorSubject<PageInfo> = new BehaviorSubject<PageInfo>({
     page: 0,
@@ -127,7 +127,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   async moveAllVisible(target: Target, progressTracker$: Subject<void>): Promise<void> {
-    await this.gearService.bulkMove(this.player$.getValue(), this.gearToShow$.getValue(), target, progressTracker$);
+    await this.gearService.bulkMove(this.player$.getValue()!, this.gearToShow$.getValue(), target, progressTracker$);
     await this.load(true);
   }
 
@@ -180,7 +180,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       { name: 'Material', type: ItemType.ExchangeMaterial, path: 'material' }];
     this.option = this.options[0];
     this.gearFilterStateService.init(this.option);
-    const savedSize = parseInt(localStorage.getItem('page-size'), 10);
+    const savedSize = parseInt(localStorage.getItem('page-size')!, 10);
     if (savedSize > 2 && savedSize < 800) {
       // set new size on pageInfo$
       this.pageInfo$.next({
@@ -189,7 +189,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       });
     }
     // selected user changed
-    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
       this.selectedUser = selectedUser;
       this.loadMarks();
       this.load(true);
@@ -231,7 +231,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
         if (this.player$.getValue() != null) {
-          this.preferredStatService.processGear(this.player$.getValue());
+          this.preferredStatService.processGear(this.player$.getValue()!);
           this.load();
         }
       });
@@ -266,7 +266,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   public async weaponGrindMode() {    
     await this.load(true);
-    await this.gearService.weaponGrindMode(this.player$.getValue(), this.gearFilterStateService.filterUpdated$);
+    await this.gearService.weaponGrindMode(this.player$.getValue()!, this.gearFilterStateService.filterUpdated$);
     await this.load(true);
     await this.syncLocks();
   }
@@ -274,7 +274,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   public async emptyVault() {
 
     await this.load(true);
-    const totalMoved = await this.gearService.emptyVault(this.player$.getValue(), this.gearFilterStateService.filterUpdated$);
+    const totalMoved = await this.gearService.emptyVault(this.player$.getValue()!, this.gearFilterStateService.filterUpdated$);
     await this.load(true);
     await this.syncLocks();
     this.notificationService.info(`Moved ${totalMoved} items from vault to idle characters.`);
@@ -282,7 +282,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   public async syncLocks() {
     await this.load();
-    await this.gearService.processGearLocks(this.player$.getValue());
+    await this.gearService.processGearLocks(this.player$.getValue()!);
   }
 
   public async pullFromPostmaster(player: Player, itm: InventoryItem) {
@@ -331,45 +331,45 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   mark(marking: string, item: InventoryItem) {
-    if (marking === item.mark) { marking = null; }
+    if (marking === item.mark) { marking = null!; }
     item.mark = marking;
     this.markService.updateItem(item);
     this.gearFilterStateService.filterUpdated$.next();
   }
 
   showCopies(i: InventoryItem) {
-    const copies = GearService.findCopies(i, this.player$.getValue());
+    const copies = GearService.findCopies(i, this.player$.getValue()!);
     this.openGearDialog(i, copies, false);
   }
 
   showSimilarArmorBySlot(i: InventoryItem) {
-    const copies = this.gearService.findSimilarArmor(i, this.player$.getValue());
+    const copies = this.gearService.findSimilarArmor(i, this.player$.getValue()!);
     this.openGearDialog(i, copies, true);
   }
 
   showSimilarWeaponsByFrame(i: InventoryItem) {
-    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue(), false, false);
+    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue()!, false, false);
     this.openGearDialog(i, copies, true);
   }
 
   showSimilarWeaponsByFrameAndSlot(i: InventoryItem) {
-    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue(), true, false);
+    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue()!, true, false);
     this.openGearDialog(i, copies, true);
   }
 
 
   showSimilarWeaponsBySlot(i: InventoryItem) {
-    const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue(), true, false);
+    const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue()!, true, false);
     this.openGearDialog(i, copies, true);
   }
 
   showSimilarWeaponsBySlotAndEnergy(i: InventoryItem) {
-    const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue(), true, true);
+    const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue()!, true, true);
     this.openGearDialog(i, copies, true);
   }
 
   showSimilarWeaponsByFrameSlotAndEnergy(i: InventoryItem) {
-    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue(), true, true);
+    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue()!, true, true);
     this.openGearDialog(i, copies, true);
   }
 
@@ -417,7 +417,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   filterGear() {
     if (this.player$.getValue() == null) { return; }
     console.log(`Filtering gear...`);
-    let tempGear = this.player$.getValue().gear.filter(i => i.type == this.option.type);
+    let tempGear = this.player$.getValue()!.gear.filter(i => i.type == this.option.type);
     tempGear = this.gearFilterStateService.filterGear(tempGear);
     GearService.sortGear(this.gearFilterStateService.sortBy$.getValue(), this.gearFilterStateService.sortDesc$.getValue(), tempGear);
     if (this.gearFilterStateService.hideDupes$.getValue()) {
@@ -464,7 +464,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   public async clearInv(itemType?: ItemType) {
     await this.load(true);
-    await this.gearService.clearInv(this.player$.getValue(), this.gearFilterStateService.filterUpdated$, itemType);
+    await this.gearService.clearInv(this.player$.getValue()!, this.gearFilterStateService.filterUpdated$, itemType);
   }
 
   public async load(quiet?: boolean) {
@@ -477,7 +477,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       if (this.selectedUser == null) {
         this.player$.next(null);
       } else {
-        const p = await this.gearService.loadGear(this.selectedUser, this.player$.getValue());
+        const p = await this.gearService.loadGear(this.selectedUser, this.player$.getValue()!);
         // stale response, ignore it
         if (p==null) {
           return;
@@ -508,7 +508,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       }
       if (this.player$.getValue() != null) {
         const player = this.player$.getValue();
-        this.markService.processItems(player.gear, player.unparseableGearIds);
+        this.markService.processItems(player!.gear, player!.unparseableGearIds);
       }
     }
   }

@@ -10,6 +10,7 @@
     "noFallthroughCasesInSwitch": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
+    "strictNullChecks": true,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "sourceMap": true,

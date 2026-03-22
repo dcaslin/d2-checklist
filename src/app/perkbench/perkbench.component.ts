@@ -190,10 +190,10 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   public showOutOfDateOnly = false;
   public showWrongOnly = false;
   public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
-  public completeRolls$: BehaviorSubject<CompleteGodRolls | null> = new BehaviorSubject(null);
+  public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject<MappedRoll[]>([]);
+  public completeRolls$: BehaviorSubject<CompleteGodRolls | null> = new BehaviorSubject<CompleteGodRolls | null>(null);
   public customGodRollsApplied$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public filteredRolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject(
+  public filteredRolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject<MappedRoll[]>(
     []
   );
   public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -247,7 +247,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           );
         }
         showMe.sort((a, b) => {
-          let aV, bV;
+          let aV: any, bV: any;
           if (this.sortBy == 'name') {
             aV =
               a.info.desc.displayProperties.name != null
@@ -265,9 +265,9 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
             bV = b.info.season != null ? b.info.season : '';
           }
 
-          if (aV < bV) {
+          if (aV! < bV!) {
             return this.sortDesc ? 1 : -1;
-          } else if (aV > bV) {
+          } else if (aV! > bV!) {
             return this.sortDesc ? -1 : 1;
           } else {
             return 0;
@@ -395,11 +395,11 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     const file = files[0];
     const sJson = await MarkService.readFileAsString(file);
     this.loadPandaJson(
-      sJson,
+      sJson!,
       this.weapons,
       false
     );
-    this.currentTitle = this.completeRolls$.getValue().title;
+    this.currentTitle = this.completeRolls$.getValue()!.title;
   }
 
   loadPandaJson(sGodRolls: string, weapons: GunInfo[], custom: boolean): void {
@@ -444,28 +444,28 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       const name = PerkbenchComponent.cookNameForRolls(
         w.desc.displayProperties.name
       );
-      let controllerRoll: GunRolls = null;
-      let mnkRoll: GunRolls = null;
+      let controllerRoll: GunRolls | null = null;
+      let mnkRoll: GunRolls | null = null;
       // get all the rolls, if something for mnk vs controller use the other
       // always clone rolls serving double duty
       const doubleRoll = gunRolls.find((x) => x.name == name && x.controller && x.mnk);
       if (doubleRoll) {
         controllerRoll = JSON.parse(JSON.stringify(doubleRoll));
-        controllerRoll.mnk = false;
+        controllerRoll!.mnk = false;
         mnkRoll = JSON.parse(JSON.stringify(doubleRoll));
-        mnkRoll.controller = false;
+        mnkRoll!.controller = false;
       } else {
-        controllerRoll = gunRolls.find((x) => x.name == name && x.controller);
-        mnkRoll = gunRolls.find((x) => x.name == name && x.mnk);
+        controllerRoll = gunRolls.find((x) => x.name == name && x.controller)!;
+        mnkRoll = gunRolls.find((x) => x.name == name && x.mnk)!;
         if (controllerRoll == null && mnkRoll != null) {
           controllerRoll = JSON.parse(JSON.stringify(mnkRoll));
-          controllerRoll.mnk = false;
-          controllerRoll.controller = true;
+          controllerRoll!.mnk = false;
+          controllerRoll!.controller = true;
         }
         if (mnkRoll == null && controllerRoll != null) {
           mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
-          mnkRoll.mnk = true;
-          mnkRoll.controller = false;
+          mnkRoll!.mnk = true;
+          mnkRoll!.controller = false;
         }
       }
       const addMe = {
@@ -477,8 +477,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         missingPerks: [] as any[],
         defunctPerks: [] as any[]
       };
-      PerkbenchComponent.checkRolls(addMe);
-      returnMe.push(addMe);
+      PerkbenchComponent.checkRolls(addMe as any);
+      returnMe.push(addMe as any);
     }
     return returnMe;
   }
@@ -645,7 +645,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           }
           if (possiblePlugs.length > 0) {
             sockets.push(
-              new InventorySocket(jCat.socketCategoryHash, [], [], possiblePlugs, index, null)
+              new InventorySocket(jCat.socketCategoryHash, [], [], possiblePlugs, index, null!)
             );
           }
         }

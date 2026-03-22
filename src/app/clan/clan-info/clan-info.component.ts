@@ -19,7 +19,7 @@ export class ClanInfoComponent extends ChildComponent {
     ascending: true
   };
 
-  public members: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
+  public members: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
 
   private static sortMembers(members: BungieGroupMember[], sort: Sort) {
     const modifier = sort.ascending ? 1 : -1;

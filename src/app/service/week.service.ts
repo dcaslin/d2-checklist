@@ -58,19 +58,19 @@ export class WeekService {
       hash: 2009562460,
       topic: 'Caretaker',
       desc: 'TBD',
-      video: null
+      video: null!
     },
     3434393250: {
       hash: 3434393250,
       topic: 'Exhibition',
       desc: 'TBD',
-      video: null
+      video: null!
     },
     1988156672: {
       hash: 1988156672,
       topic: 'Rhulk, Disciple of the Witness',
       desc: 'TBD',
-      video: null
+      video: null!
     }
   };
 
@@ -133,7 +133,7 @@ export class WeekService {
   }
 
   private getCurrWeek(publicMilestones: PublicMilestonesAndActivities): Week {
-    let currWeek: Week;
+    let currWeek: Week | undefined = undefined;
     if (publicMilestones && publicMilestones.weekStart) {
       const weekEpoch = parseISO('2021-11-23T17:00:00.000Z'); // 4/2/2019
       const thisWeek = publicMilestones.weekStart;
@@ -146,17 +146,17 @@ export class WeekService {
         curseStrength: ascInfo.curseStrength
       };
     }
-    return currWeek;
+    return currWeek!;
   }
 
   private async buildLostSectorActivity(info: LostSectorInstance, ll: number): Promise<LegendLostSectorActivity> {
     if (!info) {
       console.log(`No Data for index ${ll}`);
-      return null;
+      return null!;
     }
     const desc: any = await this.destinyCacheService.getActivity(info.hash);
     if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
-      return null;
+      return null!;
     }
     const modifiers: NameDesc[] = [];
     for (const mod of desc.modifiers) {
@@ -228,12 +228,12 @@ export class WeekService {
 
   private getWeeklyDungeon(publicMilestones: PublicMilestonesAndActivities): string {
     const ms = publicMilestones.publicMilestones.find(x => x.weeklyDungeon);
-    return ms ? ms.name: null;
+    return ms ? ms.name: null!;
   }
-  
+
   private getWeeklyRaid(publicMilestones: PublicMilestonesAndActivities): string {
     const ms = publicMilestones.publicMilestones.find(x => x.weeklyRaid);
-    return ms ? ms.name: null;
+    return ms ? ms.name: null!;
   }
 
 
@@ -318,11 +318,11 @@ export class WeekService {
     const weeklyRaid = this.getWeeklyRaid(publicMilestones);
     return {
       week: currWeek,
-      raidChallenge,
+      raidChallenge: raidChallenge!,
       publicMilestones: publicMilestones,
-      altarOfSorrowsWeapon: await this.destinyCacheService.getInventoryItem(altarWeaponKey),
+      altarOfSorrowsWeapon: await this.destinyCacheService.getInventoryItem(altarWeaponKey!),
       wellMode: `The Wellspring: ${wellMode}`,
-      wellWeapon: await this.destinyCacheService.getInventoryItem(wellWeaponKey),
+      wellWeapon: await this.destinyCacheService.getInventoryItem(wellWeaponKey!),
       lostSectors: lostSectors,
       weeklyDungeon, 
       weeklyRaid

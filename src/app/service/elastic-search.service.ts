@@ -11,7 +11,7 @@ import { NotificationService } from './notification.service';
 export class ElasticSearchService implements OnDestroy {
   public searchInput$: BehaviorSubject<string> = new BehaviorSubject('');
   private unsubscribe$: Subject<void> = new Subject<void>();
-  public filteredAutoCompleteOptions$: BehaviorSubject<ElasticSearchResult[]> = new BehaviorSubject([]);
+  public filteredAutoCompleteOptions$: BehaviorSubject<ElasticSearchResult[]> = new BehaviorSubject<ElasticSearchResult[]>([]);
 
   constructor(
     private httpClient: HttpClient,

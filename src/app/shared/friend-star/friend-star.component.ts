@@ -24,7 +24,7 @@ export class FriendStarComponent {
   async toggleFav() {
     try {
       this.loading.next(true);
-      await this.storageService.toggleFav(this.userInfo, null);
+      await this.storageService.toggleFav(this.userInfo, null!);
     } finally {
       this.loading.next(false);
     }

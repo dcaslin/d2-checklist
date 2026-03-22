@@ -34,8 +34,8 @@ const LOG_CSS = `color: royalblue`;
 export class MarkService implements OnDestroy {
     // right now we only use this for DIM-sync
     public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public currentMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject(null);
-    private cleanMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject(null); // the original marks loaded from the server
+    public currentMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject<Marks | null>(null);
+    private cleanMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject<Marks | null>(null); // the original marks loaded from the server
     // have an observable for dirty that's debounced to once every second that writes updates to server
     private marksChanged: Subject<boolean> = new Subject<boolean>();
     public dirty$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -125,11 +125,11 @@ export class MarkService implements OnDestroy {
         }
         // setup our marks header for saving to D2C
         const marks = this.currentMarks$.getValue();
-        marks.magic = 'this is magic!';
-        marks.token = await this.authService.getKey();
-        marks.apiKey = environment.bungie.apiKey;
-        marks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;
-        marks.modified = new Date().toJSON();
+        marks!.magic = 'this is magic!';
+        marks!.token = await this.authService.getKey();
+        marks!.apiKey = environment.bungie.apiKey;
+        marks!.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;
+        marks!.modified = new Date().toJSON();
         const s = JSON.stringify(marks);
         const lzSaveMe: string = LZString.compressToBase64(s);
         const postMe = {
@@ -137,13 +137,13 @@ export class MarkService implements OnDestroy {
         };
         let success;
         // if we're using DIM sync, write to both but only really worry about DIM
-        if (marks.dimSyncChoice == 'enabled') {
-            const updates = MarkService.generateDimUpdates(this.cleanMarks$.getValue(), marks);
+        if (marks!.dimSyncChoice == 'enabled') {
+            const updates = MarkService.generateDimUpdates(this.cleanMarks$.getValue()!, marks!);
             success = await this.dimSyncService.setDimTags(updates);
             try {
                 await this.httpClient.post<SaveResult>(MARK_URL, postMe).toPromise();
                 // DIM sync is incremental, so we need to reset our cleanMarks here
-                this.cleanMarks$.next(cloneMarks(marks));
+                this.cleanMarks$.next(cloneMarks(marks!));
             } catch (x) {
                 // just log an error saving to D2C, it's not our golden copy anymore
                 console.log('Error saving to D2Checklist, ignoring b/c we\'re using DIM sync');
@@ -173,24 +173,24 @@ export class MarkService implements OnDestroy {
     public async restoreMarksFromFile(file: File): Promise<boolean> {
         const sText = await MarkService.readFileAsString(file);
         try {
-            const marks: Marks = JSON.parse(sText);
+            const marks: Marks = JSON.parse(sText!);
             if (marks.memberId == null) {
                 throw new Error('File is invalid, no memberId included');
             }
             if (marks.marked == null || Object.keys(marks.marked).length == 0) {
                 throw new Error('File is invalid, no marks included');
             }
-            if (marks.memberId != this.currentMarks$.getValue().memberId) {
+            if (marks.memberId != this.currentMarks$.getValue()!.memberId) {
                 throw new Error(
                     'Marks don\'t match. Current member id: ' +
-                    this.currentMarks$.getValue().memberId +
+                    this.currentMarks$.getValue()!.memberId +
                     ' but file used ' +
                     marks.memberId
                 );
             }
             this.currentMarks$.next(marks);
             this.notificationService.success(
-                `Successfully imported ${Object.keys(this.currentMarks$.getValue().marked).length
+                `Successfully imported ${Object.keys(this.currentMarks$.getValue()!.marked).length
                 } marks from ${file.name}`
             );
             // also save to server
@@ -253,7 +253,7 @@ export class MarkService implements OnDestroy {
             favs: {},
             dimSyncChoice: null,
             todo: {},
-            magic: null,
+            magic: null!,
             platform: platform,
             memberId: memberId,
         };
@@ -406,23 +406,23 @@ export class MarkService implements OnDestroy {
 
         const currentMarks = this.currentMarks$.getValue();
         if (item.mark == null) {
-            item.markLabel = null;
-            delete currentMarks.marked[item.id];
+            item.markLabel = null!;
+            delete currentMarks!.marked[item.id];
         } else {
             const mc: MarkChoice = this.markDict[item.mark];
             if (mc != null) {
                 item.markLabel = mc.label;
             } else {
                 console.log('%c   Ignoring mark: ' + item.mark, LOG_CSS);
-                item.mark = null;
+                item.mark = null!;
                 return;
             }
-            currentMarks.marked[item.id] = item.mark;
+            currentMarks!.marked[item.id] = item.mark;
         }
         if (item.notes == null || item.notes.trim().length == 0) {
-            delete currentMarks.notes[item.id];
+            delete currentMarks!.notes[item.id];
         } else {
-            currentMarks.notes[item.id] = item.notes;
+            currentMarks!.notes[item.id] = item.notes;
         }
         this.dirty$.next(true);
         this.marksChanged.next(true);
@@ -435,7 +435,7 @@ export class MarkService implements OnDestroy {
 
 
     async disableDimSync(setting: DimSyncChoice): Promise<void> {
-        this.currentMarks$.getValue().dimSyncChoice = setting;
+        this.currentMarks$.getValue()!.dimSyncChoice = setting;
         await this.saveMarks();
         this.notificationService.info('DIM sync disabled. D2Checklist will use its own services for syncing now.');
     }
@@ -444,7 +444,7 @@ export class MarkService implements OnDestroy {
         this.loading$.next(true);
         try {
             const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
-            const d2cMarks = await this.load(selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId);
+            const d2cMarks = await this.load(selectedUser!.userInfo.membershipType, selectedUser!.userInfo.membershipId);
             if (d2cMarks == null || this.badState) {
                 this.notificationService.info(
                     'Things don\'t look healthy right now, try again later.'
@@ -489,11 +489,11 @@ export class MarkService implements OnDestroy {
     public static readFileAsString(file: File): Promise<string | null> {
         return new Promise<string>((resolve, reject) => {
             if (!file) {
-                resolve(null);
+                resolve(null!);
             }
             const reader = new FileReader();
             reader.onload = (e) => {
-                const text = reader.result.toString();
+                const text = reader.result!.toString();
                 resolve(text);
             };
             reader.readAsText(file);

@@ -11,14 +11,14 @@ import { map } from 'rxjs/operators';
 })
 export class PlayerStateService {
 
-  public filterChar: Character|string = null;
+  public filterChar: Character|string | null = null;
 
   private _sort = 'rewardsDesc';
 
-  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
-  public trackedPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject<TriumphRecordNode[]>([]);
+  public trackedPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
 
-  private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
+  private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null!);
   public player: Observable<Player>;
 
   private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -134,7 +134,7 @@ export class PlayerStateService {
       PlayerStateService.sortMileStones(val, this.sort);
       return val;
     }));
-    this.signedOnUserService.signedOnUser$.pipe().subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe().subscribe((selectedUser: SelectedUser | null) => {
       this._isSignedOn.next(selectedUser != null);
       this.checkSignedOnCurrent(this.currPlayer());
     });
@@ -177,7 +177,7 @@ export class PlayerStateService {
     this._loading.next(true);
     if (!refresh) {
       this.filterChar = null;
-      this._player.next(null);
+      this._player.next(null!);
     }
     try {
       const x = await this.bungieService.getChars(platform.type, memberId,

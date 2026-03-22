@@ -21,8 +21,8 @@ export class DestinyCacheService {
   public readonly checkingCache: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly percent: BehaviorSubject<number> = new BehaviorSubject(0);
   public readonly unzipping: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public readonly error: BehaviorSubject<string> = new BehaviorSubject(null);
-  public readonly errorDetails: BehaviorSubject<any> = new BehaviorSubject(null);
+  public readonly error: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  public readonly errorDetails: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
   public readonly searchBot: boolean = isSearchBot();
 
   constructor(private http: HttpClient,
@@ -173,7 +173,7 @@ export class DestinyCacheService {
     if (this.memCache[tableName] != null) {
       return this.memCache[tableName];
     }
-    let t0: number = null;
+    let t0: number | null = null;
     const key = `table-${tableName}-${env.versions.manifest}`;
     const cached = await get(key);
     let returnMe = null;

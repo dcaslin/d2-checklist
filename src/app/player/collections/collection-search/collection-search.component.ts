@@ -15,7 +15,7 @@ import { PlayerStateService } from '../../player-state.service';
 })
 export class CollectionSearchComponent extends ChildComponent implements OnInit {
   public searchSubject: Subject<void> = new Subject<void>();
-  public filteredCollection: BehaviorSubject<TriumphCollectibleNode[]> = new BehaviorSubject([]);
+  public filteredCollection: BehaviorSubject<TriumphCollectibleNode[]> = new BehaviorSubject<TriumphCollectibleNode[]>([]);
   public filterText = '';
 
   constructor(storageService: StorageService,

@@ -15,7 +15,7 @@ interface DimSyncOption {
 
 export class InstantMatcher implements ErrorStateMatcher {
   isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    return control && control.invalid;
+    return !!(control && control.invalid);
   }
 }
 
@@ -55,14 +55,14 @@ export class GearUtilitiesDialogComponent {
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    this.dimSyncChoice = this.markService.currentMarks$.getValue()?.dimSyncChoice;
+    this.dimSyncChoice = this.markService.currentMarks$.getValue()?.dimSyncChoice!;
     this.dimSyncOption = this.getOptionFromValue();
     this.parent = data.parent;
     this.data = data;
   }
 
   private getOptionFromValue(): DimSyncOption {
-    return this.dimSyncChoices.find(x => x.value == this.dimSyncChoice);
+    return this.dimSyncChoices.find(x => x.value == this.dimSyncChoice)!;
   }
 
   async importTagsFromFile(fileInputEvent: any) {

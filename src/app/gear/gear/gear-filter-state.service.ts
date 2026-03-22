@@ -52,7 +52,7 @@ const OPERATORS = [
 // tagVal might be stat:handling>=42
 function _processStats(tagVal: string, stats: InventoryStat[], statChoiceMap: Map<string, number>): boolean {
   // get the part after > or < or = sign
-  const statName: string = null;
+  const statName: string | null = null;
   let prefix = null;
   for (const op of OPERATORS) {
     const index = tagVal.indexOf(op);
@@ -62,28 +62,28 @@ function _processStats(tagVal: string, stats: InventoryStat[], statChoiceMap: Ma
     }
   }
   if (!prefix) {
-    return null;
+    return null!;
   }
   // prefix would be stat:handling
   // tagVal would be stat:handling>=42
   const shortName = prefix.substring(`stat:`.length);
   const statKey = statChoiceMap.get(shortName);
   if (!statKey) {
-    return null;
+    return null!;
   }
   const stat = stats.find(x => x.hash == statKey);
   if (stat == null) {
-    return null;
+    return null!;
   }
   return _processComparison(prefix, tagVal, stat.value);
 }
 
 function _processComparison(prefix: string, tagVal: string, gearVal: number): boolean {
   if (!tagVal.startsWith(prefix)) {
-    return null;
+    return null!;
   }
   let val = tagVal.substring(prefix.length);
-  let comp: NumComparison = null;
+  let comp: NumComparison | null = null;
   if (val.startsWith('<=')) {
     val = val.substring(2);
     comp = NumComparison.lte;
@@ -100,10 +100,10 @@ function _processComparison(prefix: string, tagVal: string, gearVal: number): bo
     val = val.substring(1);
     comp = NumComparison.e;
   } else {
-    return null;
+    return null!;
   }
   if (!NUMBER_REGEX.test(val)) {
-    return null;
+    return null!;
   }
   const iVal = +val;
   switch (comp) {
@@ -123,7 +123,7 @@ function _processComparison(prefix: string, tagVal: string, gearVal: number): bo
       return gearVal == iVal;
     }
     default: {
-      return null;
+      return null!;
     }
   }
 }
@@ -144,7 +144,7 @@ function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<
   if (compResult != null) {
     return compResult;
   }
-  compResult = _processComparison('is:similar', actual, i.dupesTaggedToKeep);
+  compResult = _processComparison('is:similar', actual, i.dupesTaggedToKeep!);
   if (compResult != null) {
     return compResult;
   }
@@ -268,8 +268,8 @@ export class GearFilterStateService implements OnDestroy {
   public toggleData: ToggleData;
   public toggleDataArray: BehaviorSubject<ToggleState>[];
   public autoCompleteOptions: AutoCompleteOption[];
-  public filteredAutoCompleteOptions$: BehaviorSubject<AutoCompleteOption[]> = new BehaviorSubject([]);
-  private filterTags$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public filteredAutoCompleteOptions$: BehaviorSubject<AutoCompleteOption[]> = new BehaviorSubject<AutoCompleteOption[]>([]);
+  private filterTags$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public sortBy$: BehaviorSubject<string> = new BehaviorSubject('power');
   public hideDupes$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public sortDesc$: BehaviorSubject<boolean> = new BehaviorSubject(true);
@@ -277,7 +277,7 @@ export class GearFilterStateService implements OnDestroy {
   public filtersDirty$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public filterUpdated$: Subject<void> = new Subject<void>();
-  public visibleFilterText: string = null;
+  public visibleFilterText: string | null = null;
   private orMode = false;
 
   private weaponStatChoices: AutoCompleteOption[] = [];
@@ -348,7 +348,7 @@ export class GearFilterStateService implements OnDestroy {
               hideDupes: this.hideDupes$.getValue(),
               sortBy: this.sortBy$.getValue(),
               sortDesc: this.sortDesc$.getValue(),
-              filterText: this.visibleFilterText,
+              filterText: this.visibleFilterText!,
               deselectedChoices: {}
             };
             for (const key of Object.keys(this.toggleData)) {
@@ -554,7 +554,7 @@ export class GearFilterStateService implements OnDestroy {
   }
 
   public parseWildcardFilter(visibleItemType: TabOption) {
-    const val: string = this.visibleFilterText;
+    const val: string = this.visibleFilterText!;
     if (val == null || val.trim().length === 0) {
       this.filteredAutoCompleteOptions$.next([]);
       this.filterTags$.next([]);
@@ -809,7 +809,7 @@ export class GearFilterStateService implements OnDestroy {
       title: 'Owner',
       debugKey: 'Owner',
       icon: iconService.fasUsers,
-      displayTabs: null,
+      displayTabs: null!,
       grabValue: (x: InventoryItem) => x.owner.getValue().id
     };
     const powerCapsConfig: ToggleConfig = {
@@ -823,7 +823,7 @@ export class GearFilterStateService implements OnDestroy {
       title: 'Rarity',
       debugKey: 'Rarity/Tier',
       icon: iconService.fasBalanceScale,
-      displayTabs: null,
+      displayTabs: null!,
       grabValue: (x: InventoryItem) => x.tier
     };
     const classTypeConfig: ToggleConfig = {
@@ -837,14 +837,14 @@ export class GearFilterStateService implements OnDestroy {
       title: 'Equipped',
       debugKey: 'Equipped',
       icon: iconService.fasTShirt,
-      displayTabs: null,
+      displayTabs: null!,
       grabValue: (x: InventoryItem) => x.equipped.getValue()
     };
     const postmasterConfig: ToggleConfig = {
       title: 'Postmaster',
       debugKey: 'Postmaster',
       icon: iconService.fasEnvelope,
-      displayTabs: null,
+      displayTabs: null!,
       grabValue: (x: InventoryItem) => x.postmaster
     };
     const returnMe: ToggleData = {

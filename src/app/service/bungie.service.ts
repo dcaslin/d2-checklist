@@ -20,7 +20,7 @@ const MAX_PAGE_SIZE = 250;
 
 @Injectable({ providedIn: 'root' })
 export class BungieService implements OnDestroy {
-    private publicMilestonesAndActivities: PublicMilestonesAndActivities = null;
+    private publicMilestonesAndActivities: PublicMilestonesAndActivities | null = null;
     private unsubscribe$: Subject<void> = new Subject<void>();
     apiDown = false;
 
@@ -68,7 +68,7 @@ export class BungieService implements OnDestroy {
             return returnMe;
         } catch (err) {
             this.handleError(err);
-            return null;
+            return null!;
         }
     }
 
@@ -80,7 +80,7 @@ export class BungieService implements OnDestroy {
             return await this.parseService.parseClanInfo(resp.detail);
         } catch (err) {
             this.handleError(err);
-            return null;
+            return null!;
         }
     }
 
@@ -124,7 +124,7 @@ export class BungieService implements OnDestroy {
         const key = BungieService.getAgghistoryCacheKey(player);
         const cache = await idbGet(key) as AggHistoryCache;
         if (cache == null) {
-            return null;
+            return null!;
         }
         if (cache.membershipId == player.profile.userInfo.membershipId && cache.membershipType == player.profile.userInfo.membershipType) {
             if (history.length > 0) {
@@ -135,7 +135,7 @@ export class BungieService implements OnDestroy {
                 return cache;
             }
         }
-        return null;
+        return null!;
     }
 
     public setCachedAggHistoryForPlayer(player: Player): Promise<void> {
@@ -388,7 +388,7 @@ export class BungieService implements OnDestroy {
             return reply;
         } catch (err) {
             this.handleError(err);
-            return null;
+            return null!;
         }
     }
 
@@ -489,7 +489,7 @@ export class BungieService implements OnDestroy {
                 return player;
             }
         }
-        return null;
+        return null!;
 
     }
 
@@ -499,24 +499,24 @@ export class BungieService implements OnDestroy {
             const sComp = components.join();
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' +
                 membershipId + '/?components=' + sComp);
-            let ms: PublicMilestone[] = null;
+            let ms: PublicMilestone[] | null = null;
             if (components.includes('CharacterProgressions')) {
                 const publicInfo = await this.getPublicMilestones();
                 if (publicInfo != null) {
                     ms = publicInfo.publicMilestones;
                 }
             }
-            return await this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
+            return await this.parseService.parsePlayer(resp, ms!, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
         } catch (err) {
             if (err.error != null && err.error.ErrorStatus == 'DestinyAccountNotFound') {
-                return null;
+                return null!;
             }
             if (!ignoreErrors) {
                 this.handleError(err);
             } else {
                 console.log(err);
             }
-            return null;
+            return null!;
         }
     }
 
@@ -531,20 +531,20 @@ export class BungieService implements OnDestroy {
                     }
                 }
             }
-            return null;
+            return null!;
         } catch (err) {
             this.handleError(err);
-            return null;
+            return null!;
         }
     }
 
     public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' + membershipId + '/LinkedProfiles/');
-            return SimpleParseService.parseLinkedProfiles(resp);
+            return SimpleParseService.parseLinkedProfiles(resp)!;
         } catch (err) {
             this.handleError(err);
-            return null;
+            return null!;
         }
     }
 

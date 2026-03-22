@@ -36,12 +36,12 @@ export class SimpleParseService {
 
 
   public static parseBungieMember(r: PrivBungieMember): BungieMember {
-    if (r.isDeleted === true) { return null; }
-    let xbl: BungieMemberPlatform;
-    let psn: BungieMemberPlatform;
-    let bnet: BungieMemberPlatform;
-    let steam: BungieMemberPlatform;
-    let epic: BungieMemberPlatform;
+    if (r.isDeleted === true) { return null!; }
+    let xbl: BungieMemberPlatform | undefined = undefined;
+    let psn: BungieMemberPlatform | undefined = undefined;
+    let bnet: BungieMemberPlatform | undefined = undefined;
+    let steam: BungieMemberPlatform | undefined = undefined;
+    let epic: BungieMemberPlatform | undefined = undefined;
     if (r.xboxDisplayName != null) {
         xbl = new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM);
     }
@@ -58,13 +58,13 @@ export class SimpleParseService {
     if (r.steamDisplayName != null) {
         steam = new BungieMemberPlatform(r.steamDisplayName, Const.STEAM_PLATFORM);
     }
-    if (xbl == null && psn == null && bnet == null && steam == null && epic == null) { return null; }
-    return new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet, steam, epic);
+    if (xbl == null && psn == null && bnet == null && steam == null && epic == null) { return null!; }
+    return new BungieMember(r.displayName, r.membershipId, xbl!, psn!, bnet!, steam!, epic!);
 
 }
 
 public static parseBungieMembers(results: PrivBungieMember[]): BungieMember[] {
-    if (results == null) { return null; }
+    if (results == null) { return null!; }
     const returnMe: BungieMember[] = [];
     results.forEach(r => {
         const mem = this.parseBungieMember(r);

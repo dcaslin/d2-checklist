@@ -36,8 +36,8 @@ import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog
   styleUrls: ['./pgcr2.component.scss']
 })
 export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy {
-  public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject(null);
-  public game$: BehaviorSubject<Game | null> = new BehaviorSubject(null);
+  public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  public game$: BehaviorSubject<Game | null> = new BehaviorSubject<Game | null>(null);
   public ViewMode = ViewMode;
   public Object = Object;
 
@@ -52,7 +52,7 @@ export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy 
 
   public findGeneralStat(entry: Entry, stat: string): number {
     const statVal = entry?.general?.find(x => x.statName == stat);
-    return statVal?.value;
+    return statVal?.value!;
   }
 
 

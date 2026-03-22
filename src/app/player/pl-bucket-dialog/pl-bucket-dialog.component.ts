@@ -15,7 +15,7 @@ import { PlayerStateService } from '../player-state.service';
   styleUrls: ['./pl-bucket-dialog.component.scss']
 })
 export class PlBucketDialogComponent extends ChildComponent {
-  public character$: BehaviorSubject<Character> = new BehaviorSubject<Character>(null);
+  public character$: BehaviorSubject<Character> = new BehaviorSubject<Character>(null!);
   private characterId: string;
   public BUCKETS_ALL_POWER = BUCKETS_ALL_POWER;
   public boosts: BoostInfo[];
@@ -87,9 +87,9 @@ export class PlBucketDialogComponent extends ChildComponent {
     ).subscribe(player => {
       if (player && player.characters && player.characters.length > 0) {
         const char = player.characters.find(c => c.characterId === this.characterId);
-        this.character$.next(char);
+        this.character$.next(char!);
         for (const bucketHash of BUCKETS_ALL_POWER) {
-          const best = char.bestPlGear[bucketHash];
+          const best = char!.bestPlGear[bucketHash];
           if (!best) {
             continue;
           }

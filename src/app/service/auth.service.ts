@@ -9,7 +9,7 @@ import { NotificationService } from './notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private authSub = new ReplaySubject(null);
+    private authSub = new ReplaySubject(null!);
     public authFeed: Observable<AuthInfo>;
 
     token: Token;
@@ -43,7 +43,7 @@ export class AuthService {
                     segments.push(u.toString());
                 }
             }
-            target = target.firstChild;
+            target = target.firstChild!;
         }
         return segments;
     }
@@ -64,7 +64,7 @@ export class AuthService {
         console.log('Signing out, deleting authorization');
         localStorage.removeItem('authorization');
         localStorage.removeItem('D2STATE-preferredPlatform');
-        this.token = null;
+        this.token = null!;
         this.emit();
     }
 
@@ -96,7 +96,7 @@ export class AuthService {
                 }
             }
             // no tokens found or they were completely invalid
-            return Promise.resolve(null);
+            return Promise.resolve(null!);
         } catch (exc) {
             let msg = 'Unknown error';
             if (exc.error && exc.error.error_description) {
@@ -106,7 +106,7 @@ export class AuthService {
             }
             this.notificationService.fail('Error authorizing to Bungie, please sign on again: ' + msg);
             this.signOut();
-            return null;
+            return null!;
         }
     }
 
@@ -119,7 +119,7 @@ export class AuthService {
                 // on initial logon confirm that we got no logons
                 this.emit();
             }
-            return null;
+            return null!;
         }
         return x.membership_id;
     }
@@ -127,7 +127,7 @@ export class AuthService {
     // called by lots of things
     public async getKey(): Promise<string> {
         const x = await this.getToken();
-        if (x == null) { return null; }
+        if (x == null) { return null!; }
         return x.access_token;
     }
 
@@ -154,7 +154,7 @@ export class AuthService {
     // called by Auth page on redirect from logon
     // returns a msg, not the key
     public async fetchTokenFromCode(code: string, state: string): Promise<void> {
-        const nonce: string = localStorage.getItem('nonce');
+        const nonce: string | null = localStorage.getItem('nonce');
         if (nonce != null) {
             if (nonce !== state) {
                 localStorage.removeItem('nonce');
@@ -205,7 +205,7 @@ export class AuthService {
             localStorage.removeItem('authorization');
             console.dir(err);
         }
-        return null;
+        return null!;
     }
 
 

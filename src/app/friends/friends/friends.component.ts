@@ -16,7 +16,7 @@ import { ChildComponent } from '../../shared/child.component';
   styleUrls: ['./friends.component.scss']
 })
 export class FriendsComponent extends ChildComponent {
-  public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject([]);
+  public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject<FriendListEntry[]>([]);
   modelPlayer: Player;
   playerCntr: 0;
 
@@ -89,7 +89,7 @@ export class FriendsComponent extends ChildComponent {
 
   public load() {
     this.loading.next(true);
-    this.modelPlayer = null;
+    this.modelPlayer = null!;
     this.playerCntr = 0;
     for (const m of this.members.value) {
       m.player$.next(null);

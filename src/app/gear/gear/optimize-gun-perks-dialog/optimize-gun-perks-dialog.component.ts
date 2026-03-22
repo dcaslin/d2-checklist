@@ -19,8 +19,8 @@ import { takeUntil } from 'rxjs/operators';
 export class OptimizeGunPerksDialogComponent extends ChildComponent {
   parent: GearComponent;
   totalGuns$: BehaviorSubject<number> = new BehaviorSubject(0);
-  fixMe$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
-  log$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  fixMe$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
+  log$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
 
   constructor(public iconService: IconService,
@@ -34,7 +34,7 @@ export class OptimizeGunPerksDialogComponent extends ChildComponent {
     this.parent.player$.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(player => {
-      const fixMe = player.gear.filter(item => item.searchText.indexOf('is:fixme') > 0);
+      const fixMe = player!.gear.filter(item => item.searchText.indexOf('is:fixme') > 0);
       this.fixMe$.next(fixMe);
     });
   }
