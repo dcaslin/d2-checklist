@@ -13,10 +13,10 @@ export class DealsComponent {
   // @Input() player: Player;
   // @Input() vendorData: CharacterVendorData[];
 
-  @Input() debugmode: boolean;
-  @Input() loading: boolean;
-  @Input() vendorsLoading: boolean;
-  @Input() vendorDeals: VendorDeals;
+  @Input() debugmode!: boolean;
+  @Input() loading!: boolean;
+  @Input() vendorsLoading!: boolean;
+  @Input() vendorDeals!: VendorDeals;
 
   @Output() refresh = new EventEmitter<void>();
 

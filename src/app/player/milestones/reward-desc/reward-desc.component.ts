@@ -11,10 +11,10 @@ import { IconService } from '@app/service/icon.service';
 export class RewardDescComponent implements OnInit {
   public Const = Const;
 
-  @Input() maxPl: number;
-  @Input() boost: BoostInfo;
-  @Input() rewards: string;
-  @Input() sort: string;
+  @Input() maxPl!: number;
+  @Input() boost!: BoostInfo;
+  @Input() rewards!: string;
+  @Input() sort!: string;
 
 
   @Output() sortClick = new EventEmitter<void>();

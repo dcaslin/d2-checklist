@@ -12,7 +12,7 @@ import { WeaponCompareDialogComponent } from '../weapon-compare-dialog/weapon-co
   styleUrls: ['./weapon-deals.component.scss']
 })
 export class WeaponDealsComponent {
-  @Input() vendorDeals: VendorDeals;
+  @Input() vendorDeals!: VendorDeals;
 
   constructor(
     public dialog: MatDialog,

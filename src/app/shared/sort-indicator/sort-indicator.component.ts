@@ -9,9 +9,9 @@ import { IconService } from '@app/service/icon.service';
 })
 export class SortIndicatorComponent {
 
-  @Input() field: string;
-  @Input() currVal: string;
-  @Input() descending: boolean;
+  @Input() field!: string;
+  @Input() currVal!: string;
+  @Input() descending!: boolean;
 
   constructor(public iconService: IconService) { }
 

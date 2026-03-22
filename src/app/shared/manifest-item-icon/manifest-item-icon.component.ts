@@ -9,6 +9,6 @@ import { ManifestInventoryItem, SimpleInventoryItem } from '@app/service/destiny
   styleUrls: ['./manifest-item-icon.component.scss']
 })
 export class ManifestItemIconComponent {
-  @Input() desc: SimpleInventoryItem;
+  @Input() desc!: SimpleInventoryItem;
 
 }

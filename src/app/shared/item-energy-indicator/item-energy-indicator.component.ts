@@ -13,7 +13,7 @@ export class ItemEnergyIndicatorComponent{
   ItemType = ItemType;
   DamageType = DamageType;
 
-  @Input() i: InventoryItem;
+  @Input() i!: InventoryItem;
 
   constructor(public iconService: IconService) { }
 }

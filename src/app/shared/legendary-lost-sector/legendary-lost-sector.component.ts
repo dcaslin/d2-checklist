@@ -16,7 +16,7 @@ import { ChildComponent } from '@app/shared/child.component';
 export class LegendaryLostSectorComponent extends ChildComponent {
 
   @Input()
-  ls: LostSector;
+  ls!: LostSector;
 
   constructor(
     storageService: StorageService,

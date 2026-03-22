@@ -20,7 +20,7 @@ export class PandaGodrollsService implements OnDestroy {
   public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public meta$: BehaviorSubject<RollMeta | null> = new BehaviorSubject<RollMeta | null>(null);
 
-  private data: { [name: string]: GunInfo };
+  private data!: { [name: string]: GunInfo };
   public isController = true;
   public matchLastTwoSockets = false;
   constructor(

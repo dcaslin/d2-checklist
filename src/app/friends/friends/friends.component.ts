@@ -17,8 +17,8 @@ import { ChildComponent } from '../../shared/child.component';
 })
 export class FriendsComponent extends ChildComponent {
   public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject<FriendListEntry[]>([]);
-  modelPlayer: Player;
-  playerCntr: 0;
+  modelPlayer!: Player;
+  playerCntr!: 0;
 
   constructor(storageService: StorageService, private bungieService: BungieService, public iconService: IconService,
     private router: Router,

@@ -4,7 +4,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 
 **Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
-- Zero test coverage, 6 of 7 TypeScript strict flags enabled (strictNullChecks now on)
+- Zero test coverage, 7 of 7 TypeScript strict flags enabled
 - `parse.service.ts` is 4,385 lines
 - No bundle size budgets
 - CI modernized: rsync deploys, Node 20.x, npm audit
@@ -19,7 +19,7 @@ Enable strict type checking incrementally to catch bugs at compile time instead 
 - [x] Enable `noImplicitReturns` and `noFallthroughCasesInSwitch`
 - [x] Enable `strictBindCallApply` and `strictFunctionTypes`
 - [x] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~632 errors across 60+ files)
-- [ ] Enable `strictPropertyInitialization` (requires `strictNullChecks`)
+- [x] Enable `strictPropertyInitialization`, fix resulting errors (~211 errors across 47 files)
 - [ ] Enable `strictTemplates` in `angularCompilerOptions`
 - [ ] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning
 

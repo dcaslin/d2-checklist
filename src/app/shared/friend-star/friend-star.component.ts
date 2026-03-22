@@ -14,8 +14,8 @@ export class FriendStarComponent {
   public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   @Input() title = false;
-  @Input() userInfo: UserInfo;
-  @Input() favoritesMap: { [id: string]: UserInfo };
+  @Input() userInfo!: UserInfo;
+  @Input() favoritesMap!: { [id: string]: UserInfo };
 
   constructor(public storageService: StorageService,
     public iconService: IconService) { }

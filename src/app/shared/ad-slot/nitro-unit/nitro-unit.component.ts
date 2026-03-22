@@ -8,10 +8,10 @@ import { environment } from '@env/environment';
   styleUrls: ['./nitro-unit.component.scss']
 })
 export class NitroUnitComponent implements AfterViewInit {
-  @Input() title: string;
-  @Input() unitId: string;
-  @Input() width: number;
-  @Input() height: number;
+  @Input() title!: string;
+  @Input() unitId!: string;
+  @Input() width!: number;
+  @Input() height!: number;
 
   ngAfterViewInit(): void {
     // Do stuff

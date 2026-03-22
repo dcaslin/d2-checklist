@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   styleUrls: ['./vendors.component.scss']
 })
 export class VendorsComponent implements OnInit, OnDestroy {
-  @ViewChild('filter', { static: true }) filter: ElementRef;
+  @ViewChild('filter', { static: true }) filter!: ElementRef;
 
 
   public options: VendorChoice[] = [
@@ -37,13 +37,13 @@ export class VendorsComponent implements OnInit, OnDestroy {
   ItemType = ItemType;
   ClassAllowed = ClassAllowed;
 
-  private _player: Player;
+  private _player!: Player;
 
 
-  @Input() debugmode: boolean;
-  @Input() currUser: SelectedUser;
-  @Input() loading: boolean;
-  @Input() vendorsLoading: boolean;
+  @Input() debugmode!: boolean;
+  @Input() currUser!: SelectedUser;
+  @Input() loading!: boolean;
+  @Input() vendorsLoading!: boolean;
 
   @Output() toggleVendorBounty = new EventEmitter<string>();
   @Output() charIdSelect = new EventEmitter<string>();

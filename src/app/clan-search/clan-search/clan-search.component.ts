@@ -14,7 +14,7 @@ import { ChildComponent } from '../../shared/child.component';
   styleUrls: ['./clan-search.component.scss']
 })
 export class ClanSearchComponent extends ChildComponent implements OnInit, OnDestroy {
-  name: string;
+  name!: string;
   public clan: BehaviorSubject<ClanInfo | null> = new BehaviorSubject<ClanInfo | null>(null);
 
   constructor(storageService: StorageService,

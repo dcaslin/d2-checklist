@@ -12,11 +12,11 @@ import { ClipboardService } from 'ngx-clipboard';
 })
 export class GodRollPlugComponent {
 
-  @Input() plug: InventoryPlug;
+  @Input() plug!: InventoryPlug;
 
-  @Input() debugmode: boolean;
+  @Input() debugmode!: boolean;
   
-  @Input() currentLevel: number|null;
+  @Input() currentLevel!: number|null;
 
   constructor(
     public iconService: IconService,

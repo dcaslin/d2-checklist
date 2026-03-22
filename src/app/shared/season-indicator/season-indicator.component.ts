@@ -8,7 +8,7 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./season-indicator.component.scss']
 })
 export class SeasonIndicatorComponent {
-  @Input() season: number|null;
+  @Input() season!: number|null;
 
   constructor(public iconService: IconService) { }
 

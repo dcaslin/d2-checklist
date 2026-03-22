@@ -12,7 +12,7 @@ import { generateState, ToggleState } from '../gear-filter-state.service';
 })
 export class GearToggleComponent {
 
-  @Input() state$: BehaviorSubject<ToggleState>;
+  @Input() state$!: BehaviorSubject<ToggleState>;
 
   constructor(public iconService: IconService) { }
 

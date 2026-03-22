@@ -39,7 +39,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   dealsExpanded = 'false' !== localStorage.getItem('expand-deals');
 
   selectedPlatform: Platform;
-  gamerTag: string;
+  gamerTag!: string;
   showMoreInfo = false;
   today: Today | null = null;
 

@@ -15,7 +15,7 @@ import { ClanTriumphItemDialogComponent } from '../clan-triumph-item-dialog/clan
 export class ClanTriumphItemComponent extends ChildComponent {
 
   @Input()
-  triumph: ClanSearchableTriumph;
+  triumph!: ClanSearchableTriumph;
 
 
   constructor(storageService: StorageService, public state: ClanStateService,

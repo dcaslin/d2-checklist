@@ -15,7 +15,7 @@ import { ClanCollectionItemDialogComponent } from '../clan-collection-item-dialo
 export class ClanCollectionItemComponent extends ChildComponent {
 
   @Input()
-  item: ClanSearchableCollection;
+  item!: ClanSearchableCollection;
 
 
   constructor(storageService: StorageService, public state: ClanStateService,

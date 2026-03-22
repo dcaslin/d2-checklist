@@ -12,10 +12,10 @@ export class GodRollMwComponent {
   ItemType = ItemType;
 
   @Input()
-  item: InventoryItem;
+  item!: InventoryItem;
 
   @Input()
-  debugmode: boolean;
+  debugmode!: boolean;
 
   constructor(public iconService: IconService) { }
 

@@ -27,7 +27,7 @@ export class Pile {
 }
 
 export class Bucket {
-    equipped: InventoryItem;
+    equipped!: InventoryItem;
     readonly items: InventoryItem[] = [];
     readonly desc: ApiInventoryBucket;
 
@@ -57,11 +57,11 @@ export class Bucket {
 @Injectable({ providedIn: 'root' })
 export class BucketService {
     // owner id -> bucket hash -> item[]
-    private buckets:  { [key: string]: { [key: string]: Bucket } };
+    private buckets!:  { [key: string]: { [key: string]: Bucket } };
 
     // these are global groups across bucket type for weapons and armor
     // key is classallowed + bucketHash
-    private piles: {[key: string]: Pile};
+    private piles!: {[key: string]: Pile};
 
     getBucket(target: Target, desc: ApiInventoryBucket): Bucket {
         let returnMe = this.buckets[target.id][desc.hash];

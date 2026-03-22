@@ -11,8 +11,8 @@ const LOG_CSS = `color: orangered`;
 
 @Injectable({ providedIn: 'root' })
 export class DestinyCacheService {
-  public cache: Cache;
-  public cacheLite: CacheLite;
+  public cache!: Cache;
+  public cacheLite!: CacheLite;
   private memCache: { [key: string]: any } = {};
   private observableMap: { [key: string]: ReplaySubject<any> } = {};
 

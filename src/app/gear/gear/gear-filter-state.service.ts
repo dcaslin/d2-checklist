@@ -265,9 +265,9 @@ const GEAR_FILTER_KEY = 'D2C-GEAR-FILTER';
 })
 export class GearFilterStateService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
-  public toggleData: ToggleData;
-  public toggleDataArray: BehaviorSubject<ToggleState>[];
-  public autoCompleteOptions: AutoCompleteOption[];
+  public toggleData!: ToggleData;
+  public toggleDataArray!: BehaviorSubject<ToggleState>[];
+  public autoCompleteOptions!: AutoCompleteOption[];
   public filteredAutoCompleteOptions$: BehaviorSubject<AutoCompleteOption[]> = new BehaviorSubject<AutoCompleteOption[]>([]);
   private filterTags$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public sortBy$: BehaviorSubject<string> = new BehaviorSubject('power');
