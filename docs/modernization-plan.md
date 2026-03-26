@@ -4,7 +4,7 @@ Tracking document for incremental improvements to the d2-checklist codebase. Wor
 
 **Current state (as of 2026-03-21):**
 - Angular 14.2.12, TypeScript 4.8.4, RxJS 6.6.6
-- 88 unit tests across 3 spec files, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
+- 185 unit tests across 6 spec files, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
 - `parse.service.ts` split into 6 files (was 4,385 lines)
 - No bundle size budgets
 - CI modernized: rsync deploys, Node 20.x, npm audit
@@ -36,9 +36,9 @@ Add test infrastructure and cover the highest-risk code paths.
 - [x] Add unit tests for `gear-parser.service.ts` — 24 tests for static methods (cookDamageType, isDamageTypeEnergy, getPlugName)
 - [x] Add unit tests for `history-parser.service.ts` — 13 tests for mergeAggHistory2
 - [x] Add a CI step to run tests on every push/PR (`ci.yml` for PRs, test step in deploy workflows)
-- [ ] Add unit tests for `auth.service.ts`
-- [ ] Add unit tests for `bungie.service.ts` (mock HTTP calls)
-- [ ] Add unit tests for remaining `parse.service.ts` methods
+- [x] Add unit tests for `auth.service.ts` — 34 tests for static methods (cookToken, isValid, isValidRefresh, randomString, parseError)
+- [x] Add unit tests for `bungie.service.ts` — 38 tests for parsePlatform, getActivityModes, parseBungieResponse
+- [x] Add unit tests for `parse.service.ts` — 25 tests for static delegation methods and calculateMaxLight
 - [ ] Set a coverage floor (e.g., 30% for critical services) and enforce in CI
 
 **Done when:** Critical services have tests running in CI with a coverage gate.
