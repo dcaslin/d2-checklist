@@ -39,9 +39,9 @@ Add test infrastructure and cover the highest-risk code paths.
 - [x] Add unit tests for `auth.service.ts` — 34 tests for static methods (cookToken, isValid, isValidRefresh, randomString, parseError)
 - [x] Add unit tests for `bungie.service.ts` — 38 tests for parsePlatform, getActivityModes, parseBungieResponse
 - [x] Add unit tests for `parse.service.ts` — 25 tests for static delegation methods and calculateMaxLight
-- [ ] Set a coverage floor (e.g., 30% for critical services) and enforce in CI
+- [x] Set a coverage floor and enforce in CI — global thresholds: 10% statements, 7% branches, 12% functions, 10% lines (current: ~13/10/15/13%)
 
-**Done when:** Critical services have tests running in CI with a coverage gate.
+**Done.** Critical services have 185 tests running in CI with a coverage gate.
 
 ---
 

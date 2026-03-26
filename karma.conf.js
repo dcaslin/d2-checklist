@@ -23,7 +23,15 @@ module.exports = function (config) {
         { type: 'html' },
         { type: 'text-summary' },
         { type: 'lcovonly' }
-      ]
+      ],
+      check: {
+        global: {
+          statements: 10,
+          branches: 7,
+          functions: 12,
+          lines: 10
+        }
+      }
     },
     reporters: ['spec', 'kjhtml'],
     port: 9876,
