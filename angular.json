@@ -122,6 +122,12 @@
                 "inject": true
               }
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src",
+                "src/themes"
+              ]
+            },
             "assets": [
               "src/assets",
               "src/favicon.ico",

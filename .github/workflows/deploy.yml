@@ -18,6 +18,9 @@ jobs:
         cache: 'npm'
     - run: npm install
     - run: npm audit --audit-level=moderate || true
+    - name: Create placeholder keys for tests
+      run: cp src/environments/keys.example.ts src/environments/keys.ts
+    - run: npm run test:ci
     - run: npm run stage-prod-keys
       env:
         PROD_API_KEY: ${{ secrets.API_KEY }}
