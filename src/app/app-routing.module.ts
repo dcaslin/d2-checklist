@@ -503,7 +503,7 @@ export class MyInfoGuard implements CanActivate {
       path: '**',
       redirectTo: 'home'
     }
-    ], { useHash: false, relativeLinkResolution: 'legacy' })],
+    ], { useHash: false })],
   exports: [RouterModule],
   providers: [ManifestLoadedGuard, MyInfoGuard]
 })
