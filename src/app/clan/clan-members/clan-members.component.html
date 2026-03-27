@@ -137,7 +137,7 @@
                 </ng-container>
                 <ng-template #noPlayer>
                     <td colspan="10">
-                        <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"
+                        <fa-icon [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"
                             *ngIf="!member.errorMsg"></fa-icon>
                         <span class="simple-caption" *ngIf="member.errorMsg">{{member.errorMsg}}</span>
                     </td>
@@ -158,7 +158,7 @@
 
 <ng-template #loadingModel>
     <h1>
-        <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
+        <fa-icon [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon>
     </h1>
 </ng-template>
 <br>

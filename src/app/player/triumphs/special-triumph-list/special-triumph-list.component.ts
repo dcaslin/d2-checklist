@@ -130,7 +130,7 @@ export class SpecialTriumphListComponent extends ChildComponent {
     if (this.craftedWildCardFilter == '') {
       return true;
     }
-    var found = false
+    let found = false
     for (const [_, value] of this.craftedWildCardFilter.toLowerCase().split(',').entries()) {
       if (value != '' && t.name.toLowerCase().includes(value)) {
         found = true

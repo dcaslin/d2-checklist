@@ -1,8 +1,8 @@
 <div class="fixed-spinner">
   <fa-icon *ngIf="(loading|async)===true || (gearService.loading|async)===true" [icon]="iconService.farSpinner"
-    [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
+    animation="spin" size="3x" [fixedWidth]="true"></fa-icon>
   <fa-icon *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)"
-    [icon]="iconService.fasCog" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
+    [icon]="iconService.fasCog" animation="spin" size="3x" [fixedWidth]="true"></fa-icon>
 </div>
 <ng-container *ngIf="(loading|async)===false && selectedUser==null">
   <d2c-sign-in-required></d2c-sign-in-required>

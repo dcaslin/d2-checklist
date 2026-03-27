@@ -398,7 +398,7 @@ export class ParseService {
                         }
                         if (challenge.objective != null) {
                             const obj = challenge.objective;
-                            let oDesc = await this.destinyCacheService.getObjective(obj.objectiveHash);
+                            const oDesc = await this.destinyCacheService.getObjective(obj.objectiveHash);
                             if (oDesc != null) {
                                 if (!oDesc.redacted) {
                                     if (obj.complete === true) {
@@ -716,8 +716,8 @@ export class ParseService {
         }
         const _art = resp.profileProgression.data.seasonalArtifact;
 
-        let pointProg = _art.pointProgression;
-        let powerProg = _art.powerBonusProgression;
+        const pointProg = _art.pointProgression;
+        const powerProg = _art.powerBonusProgression;
 
         const pointProgDesc = await this.destinyCacheService.getProgression(pointProg.progressionHash);
         let parsedProg: Progression = parseProgression(pointProg,

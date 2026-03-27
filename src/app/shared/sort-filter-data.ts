@@ -62,9 +62,8 @@ export class SortFilterDataSource extends DataSource<any> {
       // sort if needed
       if (this._sort.active && this._sort.direction !== '') {
         data = data.sort((a, b) => {
-          let propertyA: number | string;
-          let propertyB: number | string;
-          [propertyA, propertyB] = [a[this._sort.active], b[this._sort.active]];
+          const propertyA: number | string = a[this._sort.active];
+          const propertyB: number | string = b[this._sort.active];
           let returnMe = 0;
           if (propertyA == null && propertyB != null) {
             returnMe = -1;

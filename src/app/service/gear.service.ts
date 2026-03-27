@@ -447,7 +447,7 @@ export class GearService {
             if (target.characterId == notTarget.characterId) continue;
 
             const vaultStatus = { isFull: false };
-            let charMoved = await this.clearVaultToCharacter(target, player, isJunk, vaultStatus, progressTracker$);
+            const charMoved = await this.clearVaultToCharacter(target, player, isJunk, vaultStatus, progressTracker$);
             totalMoved += charMoved;
 
         }
