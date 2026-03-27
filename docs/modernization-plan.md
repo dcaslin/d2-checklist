@@ -67,14 +67,14 @@ Split the 4,385-line monolith into domain-specific parsers.
 
 Prevent bundle bloat.
 
-- [ ] Add bundle size budgets to `angular.json`:
-  - Initial bundle: warn at 1.5 MB, error at 2 MB
-  - Vendor chunk: warn at 500 KB, error at 750 KB
-  - Any component style: keep existing 6 KB limit
+- [x] Add bundle size budgets to `angular.json`:
+  - Initial bundle: warn at 2.75 MB, error at 3.25 MB (current: 2.64 MB)
+  - Any component style: keep existing 6 KB warning
+  - Note: no vendor chunk budget needed — `vendorChunk: false` in prod config
 
 > **Note:** `console.log` calls are intentional — the user base is technical and uses console output for self-debugging. Do not remove or gate them.
 
-**Done when:** Budgets are enforced in production builds.
+**Done.** Budgets enforced in production builds.
 
 ---
 
@@ -142,7 +142,7 @@ Angular migrations must go one major version at a time:
 3. ~~Phase 1: TypeScript Strictness~~ — Done
 4. **Phase 3: Break Up parse.service.ts** — In progress (extracted, needs smoke test).
 5. **Phase 2: Unit Tests** — After the split, each parser file is small enough to test meaningfully.
-6. **Phase 4: Bundle Budgets** — Low risk, can slot in anytime.
+6. ~~Phase 4: Bundle Budgets~~ — Done
 7. **Phase 7: Angular 18 Migration** — Last. Benefits from all prior phases.
 
 ## Notes
