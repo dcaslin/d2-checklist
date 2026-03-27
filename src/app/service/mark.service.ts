@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/pro-solid-svg-icons';
 import { format } from 'date-fns';
 import * as LZString from 'lz-string';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { DimSyncService } from './dim-sync.service';
@@ -71,7 +71,7 @@ export class MarkService implements OnDestroy {
 
     private async load(platform: number, memberId: string): Promise<Marks> {
         const requestUrl = `${MARK_URL}/${20 + platform}/${memberId}`;
-        let marks = await this.httpClient.get<Marks>(requestUrl).toPromise();
+        let marks = await firstValueFrom(this.httpClient.get<Marks>(requestUrl));
         if (marks.memberId == null) {
             marks = MarkService.buildEmptyMarks(platform, memberId);
         }
@@ -141,7 +141,7 @@ export class MarkService implements OnDestroy {
             const updates = MarkService.generateDimUpdates(this.cleanMarks$.getValue()!, marks!);
             success = await this.dimSyncService.setDimTags(updates);
             try {
-                await this.httpClient.post<SaveResult>(MARK_URL, postMe).toPromise();
+                await firstValueFrom(this.httpClient.post<SaveResult>(MARK_URL, postMe));
                 // DIM sync is incremental, so we need to reset our cleanMarks here
                 this.cleanMarks$.next(cloneMarks(marks!));
             } catch (x) {
@@ -151,7 +151,7 @@ export class MarkService implements OnDestroy {
             }
         } else {
             // if we're using D2C, its success drives us
-            const result = await this.httpClient.post<SaveResult>(MARK_URL, postMe).toPromise();
+            const result = await firstValueFrom(this.httpClient.post<SaveResult>(MARK_URL, postMe));
             success = result.status && result.status === 'success';
         }
 

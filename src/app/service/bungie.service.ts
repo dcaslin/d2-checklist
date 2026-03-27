@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
@@ -650,21 +650,21 @@ export class BungieService implements OnDestroy {
     }
 
     private async makeFakeReq(url: string): Promise<any> {
-        const hResp = await this.httpClient.get<any>(url).toPromise();
+        const hResp = await firstValueFrom(this.httpClient.get<any>(url));
         const resp = this.parseBungieResponse(hResp);
         return resp;
     }
 
     private async makeReq(uri: string): Promise<any> {
         const opt = await this.buildReqOptions();
-        const hResp = await this.httpClient.get<any>(API_ROOT + uri, opt).toPromise();
+        const hResp = await firstValueFrom(this.httpClient.get<any>(API_ROOT + uri, opt));
         const resp = this.parseBungieResponse(hResp);
         return resp;
     }
 
     private async postReq(uri: string, payload: any): Promise<any> {
         const opt = await this.buildReqOptions();
-        const hResp = await this.httpClient.post<any>(API_ROOT + uri, payload, opt).toPromise();
+        const hResp = await firstValueFrom(this.httpClient.post<any>(API_ROOT + uri, payload, opt));
         const resp = this.parseBungieResponse(hResp);
         return resp;
     }

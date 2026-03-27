@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { DestinyCacheService } from './destiny-cache.service';
 import { NotificationService } from './notification.service';
@@ -60,7 +60,7 @@ export class ElasticSearchService implements OnDestroy {
   private async searchPlayer(platform: number, gt: string): Promise<ElasticSearchResult[]> {
     try {
       const url = `https://elastic.destinytrialsreport.com/players/${platform}/${encodeURIComponent(gt)}`;
-      const resp = await this.httpClient.get<ElasticSearchResult[]>(url).toPromise();
+      const resp = await firstValueFrom(this.httpClient.get<ElasticSearchResult[]>(url));
       return resp;
     } catch (err) {
       console.dir(err);

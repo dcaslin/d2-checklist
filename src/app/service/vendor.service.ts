@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { currentXur } from '@d2api/date';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { forkJoin, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { forkJoin, from, Observable, of, ReplaySubject, Subject, firstValueFrom} from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
@@ -98,7 +98,7 @@ export class VendorService {
       requests.push(this.streamReq('loadVendors', socketVendorUrl))
     }
     // fork join all the requests
-    const resps = await forkJoin(requests).toPromise();
+    const resps = await firstValueFrom(forkJoin(requests));
     let cntr = 0;
     const responseHolder: { [key: string]: any } = {};
     for (const r of resps) {

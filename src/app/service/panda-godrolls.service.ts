@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
 import { isUndefined } from 'util';
 import { Const, InventoryItem, InventorySocket, ItemType, SelectedUser } from './model';
 import { NotificationService } from './notification.service';
@@ -400,11 +400,10 @@ export class PandaGodrollsService implements OnDestroy {
           del(k);
         }
       }
-      completeGodRolls = await this.httpClient
+      completeGodRolls = await firstValueFrom(this.httpClient
         .get<CompleteGodRolls>(
           `/assets/panda-godrolls.min.json?v=${env.versions.app}`
-        )
-        .toPromise();
+        ));
       set(key, completeGodRolls);
       console.log(`'%c    ${prefix} downloaded, parsed and saved.`, LOG_CSS);
     } else {

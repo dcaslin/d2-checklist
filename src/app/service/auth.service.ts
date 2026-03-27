@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, firstValueFrom} from 'rxjs';
 import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
 
@@ -145,8 +145,8 @@ export class AuthService {
         params = params.set('client_id', environment.bungie.clientId);
         params = params.set('client_secret', environment.bungie.clientSecret);
         params = params.set('refresh_token', refreshKey);
-        const j = await this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/',
-            params, httpOptions).toPromise();
+        const j = await firstValueFrom(this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/',
+            params, httpOptions));
         this.storeToken(j, true);
         return this.token;
     }
@@ -177,7 +177,7 @@ export class AuthService {
         params = params.set('code', code);
 
         try {
-            const j = await this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/', params, httpOptions).toPromise();
+            const j = await firstValueFrom(this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/', params, httpOptions));
             this.storeToken(j, true);
             return;
         } catch (err) {
