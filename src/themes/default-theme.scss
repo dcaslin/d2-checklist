@@ -1,8 +1,8 @@
 @use '@angular/material' as mat;
-$d2c-primary: mat.define-palette(mat.$blue-grey-palette, 900);
-$d2c-accent: mat.define-palette(mat.$amber-palette, A400);
+$d2c-primary: mat.m2-define-palette(mat.$m2-blue-grey-palette, 900);
+$d2c-accent: mat.m2-define-palette(mat.$m2-amber-palette, A400);
 
-$d2c-theme: mat.define-light-theme($d2c-primary, $d2c-accent);
+$d2c-theme: mat.m2-define-light-theme($d2c-primary, $d2c-accent);
 
 @mixin default-gear-tags($theme) {
     $primary: map-get($theme, primary);
@@ -60,23 +60,23 @@ $d2c-theme: mat.define-light-theme($d2c-primary, $d2c-accent);
     }
 
     .nitro-consent-link button {
-        color: mat.get-color-from-palette($primary, lighter);
+        color: mat.m2-get-color-from-palette($primary, lighter);
         &:hover {
-            color: mat.get-color-from-palette($accent);
+            color: mat.m2-get-color-from-palette($accent);
         }
     }
 
     .footer {
-        color: mat.get-color-from-palette($primary, lighter);
-        background-color: mat.get-color-from-palette($primary, darker);
+        color: mat.m2-get-color-from-palette($primary, lighter);
+        background-color: mat.m2-get-color-from-palette($primary, darker);
 
         .links,
         .signature {
-            color: mat.get-color-from-palette($primary, lighter);
+            color: mat.m2-get-color-from-palette($primary, lighter);
             a {
-                color: mat.get-color-from-palette($primary, lighter);
+                color: mat.m2-get-color-from-palette($primary, lighter);
                 &:hover {
-                    color: mat.get-color-from-palette($accent);
+                    color: mat.m2-get-color-from-palette($accent);
                 }
             }
         }
