@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { BurnDialogComponent } from '@app/home/burn-dialog/burn-dialog.component';
 import { IconService } from '@app/service/icon.service';
 import { LostSector, MilestoneActivity } from '@app/service/model';

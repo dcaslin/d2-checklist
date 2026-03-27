@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { IconService } from '@app/service/icon.service';
 import { InventoryItem } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
