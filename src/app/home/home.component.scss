@@ -49,15 +49,15 @@
   margin: 0px !important;
 }
 
-::ng-deep .mat-card-header-text {
+::ng-deep .mat-mdc-card-header-text {
   text-align: left;
 }
 
-::ng-deep .mat-card-subtitle {
+::ng-deep .mat-mdc-card-subtitle {
   margin-bottom: 0px !important;
 }
 
-::ng-deep .mat-list-item-content {
+::ng-deep .mdc-list-item__content {
   text-align: left;
 }
 
@@ -174,7 +174,7 @@ a.underline:link {
 }
 
 
-.mat-card {
+.mat-mdc-card {
   margin-bottom: 20px;
 }
 

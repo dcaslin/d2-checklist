@@ -280,31 +280,31 @@
 
 
   @media screen and (max-width: map-get($grid-breakpoints, mxl)) {
-    .mat-tab-label {
+    .mat-mdc-tab {
       min-width: 100px;
     }
 
-    .mat-tab-link {
+    .mat-mdc-tab-link {
       min-width: 100px;
     }
   }
 
   @media screen and (max-width: map-get($grid-breakpoints, md)) {
-    .mat-tab-label {
+    .mat-mdc-tab {
       min-width: 100px;
     }
 
-    .mat-tab-link {
+    .mat-mdc-tab-link {
       min-width: 100px;
     }
   }
 
   @media screen and (max-width: 650px) {
-    .mat-tab-label {
+    .mat-mdc-tab {
       min-width: 50px;
     }
 
-    .mat-tab-link {
+    .mat-mdc-tab-link {
       min-width: 50px;
     }
   }

@@ -11,7 +11,7 @@ $d2c-black-theme: mat.m2-define-dark-theme((
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
 
-    .mat-input-element {
+    .mat-mdc-input-element {
         caret-color: white;
     }
 

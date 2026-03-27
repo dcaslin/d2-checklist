@@ -129,12 +129,12 @@
   padding-left: 24px;
   font-size: 20px;
 }
-.mat-tab-label{
+.mat-mdc-tab{
   padding-left: 10px !important;
   padding-right: 10px  !important;
 }
 
-.mat-tab-link{
+.mat-mdc-tab-link{
   padding-left: 10px !important;
   padding-right: 10px  !important;
 }
@@ -147,15 +147,15 @@
   text-align: left !important;
 }
 
-.mat-table {
+.mat-mdc-table {
   display: table;
 
-  > .mat-header-row, > .mat-row {
+  > .mat-mdc-header-row, > .mat-mdc-row {
     display: table-row;
     padding: 5px;
     border: none;
 
-    > .mat-header-cell, > .mat-cell {
+    > .mat-mdc-header-cell, > .mat-mdc-cell {
       display: table-cell;
       height: 48px;
       padding: 5px;
@@ -225,7 +225,7 @@
   line-height: 32px !important;
 }
 
-mat-form-field.full-width .mat-form-field-infix{
+mat-form-field.full-width .mat-mdc-form-field-infix{
     min-width: 0;
     width: 100% !important;
 }
@@ -436,24 +436,24 @@ mat-form-field.full-width .mat-form-field-infix{
   grid-row-gap: 10px;
   grid-auto-flow: row dense;
 
-  .mat-card {
+  .mat-mdc-card {
     display: flex;
     flex-direction: column;
   }
   
-  .mat-card-header {
+  .mat-mdc-card-header {
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
   }
   
-  .mat-card-actions {
+  .mat-mdc-card-actions {
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
   }
   
-  .mat-card-content{
+  .mat-mdc-card-content{
     flex-grow: 1;
     // outline: 1px solid red; // uncomment to see test outlines
   }
