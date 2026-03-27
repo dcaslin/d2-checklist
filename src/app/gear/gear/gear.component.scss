@@ -2,16 +2,18 @@
 
 
 .tag-icon-button {
-  width: 30px;
-  height: 30px;
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
   line-height: 14px;
 }
 
 .tag-square-button {
-  width: 30px;
-  height: 30px;
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
   line-height: 14px;
-  min-width: 30px;
+  min-width: 30px !important;
   border-radius: 2px;
 }
 
