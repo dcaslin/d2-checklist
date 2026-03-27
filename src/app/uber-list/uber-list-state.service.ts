@@ -104,7 +104,7 @@ export class UberListStateService implements OnDestroy {
         const rowData: { [key: string]: MilestoneRow | PursuitRow } = {};
         for (const char of player!.characters) {
           const vendors = charVendors.find((x) => x?.char?.id == char.id);
-          if (vendors) {
+          if (vendors?.data) {
             for (const vi of vendors.data) {
               if (vi.type == ItemType.Bounty) {
                 // create empty pursuit row
