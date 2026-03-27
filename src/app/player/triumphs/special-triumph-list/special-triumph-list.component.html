@@ -24,7 +24,7 @@
                         <mat-label>Search Patterns By Name (single or comma separated names)</mat-label>
                         <input matInput [(ngModel)]="craftedWildCardFilter" [matAutocomplete]="auto" type="text"
                             placeholder="Search Patterns By Name (single or comma separated names)">
-                        <button mat-button *ngIf="craftedWildCardFilter" matSuffix mat-icon-button aria-label="Clear"
+                        <button *ngIf="craftedWildCardFilter" matSuffix mat-icon-button aria-label="Clear"
                             (click)="craftedWildCardFilter=''">
                             <mat-icon>close</mat-icon>
                         </button>

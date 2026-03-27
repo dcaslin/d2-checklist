@@ -72,13 +72,13 @@
 }
 
 .light-theme {
-  @include mat.all-component-themes($d2c-light-theme);
+  @include mat.all-component-colors($d2c-light-theme);
   @include custom-components-theme($d2c-light-theme);
   @include default-gear-tags($d2c-light-theme);
 }
 
 .black-theme {
-  @include mat.all-component-themes($d2c-black-theme);
+  @include mat.all-component-colors($d2c-black-theme);
   @include custom-components-theme($d2c-black-theme);
   @include black-gear-tags($d2c-black-theme);
 }

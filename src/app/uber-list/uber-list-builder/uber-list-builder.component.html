@@ -18,7 +18,7 @@
                 <mat-label>Search</mat-label>
                 <input matInput #filter [(ngModel)]="state.visibleFilterText" placeholder="Search"
                   (keyup)="state.filterKeyUp$.next()">
-                <button mat-button *ngIf="state.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
+                <button *ngIf="state.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
                   (click)="state.visibleFilterText='';state.filterKeyUp$.next()">
                   <mat-icon>close</mat-icon>
                 </button>

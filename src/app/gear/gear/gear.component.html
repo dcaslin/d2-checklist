@@ -100,11 +100,11 @@
         <mat-label>Search</mat-label>
         <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="gearFilterStateService.visibleFilterText"
           placeholder="Name, perk or is:goodroll" (keyup)="filterKeyUp$.next($any($event.target).value)">
-        <button mat-button *ngIf="gearFilterStateService.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
+        <button *ngIf="gearFilterStateService.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
           (click)="gearFilterStateService.visibleFilterText=null;filterKeyUp$.next('')">
           <mat-icon>close</mat-icon>
         </button>
-        <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
+        <button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
           <mat-icon>help_outline</mat-icon>
         </button>
         <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="autoCompleteSelected()">
