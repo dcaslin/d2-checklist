@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { WeekService } from '@app/service/week.service';

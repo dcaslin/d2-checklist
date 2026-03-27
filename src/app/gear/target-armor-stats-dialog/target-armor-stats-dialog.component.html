@@ -11,8 +11,9 @@
 
               <div class="responsive-row" *ngFor="let c of preferredStatService.choices">
                 <div>
-                  <mat-slider [max]="100" [min]="0" [step]="5" [thumbLabel]="true" [tickInterval]="10"
-                    [(ngModel)]="preferred.stats[destinyClass][c]"></mat-slider>
+                  <mat-slider [max]="100" [min]="0" [step]="5" [discrete]="true" showTickMarks>
+                    <input matSliderThumb [(ngModel)]="preferred.stats[destinyClass][c]">
+                  </mat-slider>
                 </div>
                 <div>
                   {{c}} {{preferred.stats[destinyClass][c]}}%
