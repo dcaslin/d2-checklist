@@ -9,7 +9,7 @@
 
 @include mat.all-component-typographies();
 @include mat.core();
-@include mat.all-component-densities(0);
+@include mat.all-component-densities(-2);
 
 
 .upgrade-color {
@@ -222,7 +222,7 @@
   margin-left: 0.30em !important;
 }
 
-.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
+.mat-button-toggle-appearance-standard .mat-mdc-button-toggle-label-content{
   line-height: 32px !important;
 }
 
