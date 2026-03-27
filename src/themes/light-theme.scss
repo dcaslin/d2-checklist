@@ -3,9 +3,7 @@ $d2c-light-primary: mat.m2-define-palette(mat.$m2-pink-palette, 500);
 $d2c-light-accent: mat.m2-define-palette(mat.$m2-deep-purple-palette, 200);
 $d2c-light-warn: mat.m2-define-palette(mat.$m2-deep-orange-palette, 200);
 
-$d2c-light-theme: mat.m2-define-light-theme(
-    $d2c-light-primary,
-    $d2c-light-accent,
-    $d2c-light-warn
-);
+$d2c-light-theme: mat.m2-define-light-theme((
+  color: (primary: $d2c-light-primary, accent: $d2c-light-accent, warn: $d2c-light-warn)
+));
 

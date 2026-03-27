@@ -771,7 +771,7 @@ export class GearParserService {
                 }
             }
             const locked: boolean = (itm.state & ItemState.Locked) > 0;
-            const masterworked = (itm.state & ItemState.Masterwork) > 0 || mw?.tier >= 10;
+            const masterworked = (itm.state & ItemState.Masterwork) > 0 || (mw?.tier ?? 0) >= 10;
             const tracked = (itm.state & ItemState.Tracked) > 0;
             const crafted = (itm.state & ItemState.Crafted) > 0;
             if (crafted && mw==null) {

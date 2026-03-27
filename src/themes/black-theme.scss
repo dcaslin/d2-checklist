@@ -3,7 +3,9 @@ $d2c-black-primary: mat.m2-define-palette(mat.$m2-grey-palette, 900);
 $d2c-black-accent: mat.m2-define-palette(mat.$m2-amber-palette, 600);
 $d2c-black-warn: mat.m2-define-palette(mat.$m2-red-palette, A200);
 
-$d2c-black-theme: mat.m2-define-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-black-warn);
+$d2c-black-theme: mat.m2-define-dark-theme((
+  color: (primary: $d2c-black-primary, accent: $d2c-black-accent, warn: $d2c-black-warn)
+));
 
 @mixin black-gear-tags($theme) {
     $primary: map-get($theme, primary);
