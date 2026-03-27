@@ -1,5 +1,5 @@
 import { Injectable, NgModule } from '@angular/core';
-import { CanActivate, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AboutComponent } from './about';
@@ -69,7 +69,7 @@ import { VendorsContainerComponent } from './vendors/vendors-container/vendors-c
 const searchBot = isSearchBot();
 
 @Injectable()
-export class ManifestLoadedGuard implements CanActivate {
+export class ManifestLoadedGuard  {
   public loader$ = new Subject<boolean>();
 
   constructor(private destinyCacheService: DestinyCacheService) {
@@ -81,7 +81,7 @@ export class ManifestLoadedGuard implements CanActivate {
 }
 
 @Injectable()
-export class MyInfoGuard implements CanActivate {
+export class MyInfoGuard  {
   public loader$ = new Subject<boolean>();
 
   constructor(private router: Router, private signedOnUserService: SignedOnUserService) {

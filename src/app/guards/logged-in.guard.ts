@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild } from '@angular/router';
+
 import { AuthService } from '@app/service/auth.service';
 import { NotificationService } from '@app/service/notification.service';
 import { Destroyable } from '@app/util/destroyable';
@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Injectable()
-export class LoggedInGuard extends Destroyable implements CanActivate, CanActivateChild {
+export class LoggedInGuard extends Destroyable  {
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   public loggedIn: boolean = false;
 
