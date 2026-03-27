@@ -748,7 +748,7 @@ export class VendorService {
     return from(this.bungieService.buildReqOptions()).pipe(
       map(opt => this.httpClient.get<any>(API_ROOT + uri, opt)),
       concatAll(),
-      map(this.bungieService.parseBungieResponse),
+      map((j) => this.bungieService.parseBungieResponse(j)),
       catchError(this.handleError<any>(operation, null)),
     );
   }
