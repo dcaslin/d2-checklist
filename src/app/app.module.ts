@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -61,46 +61,37 @@ import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dia
 
 
 
-@NgModule({
-  imports: [
-    // angular
-    BrowserAnimationsModule,
-    BrowserModule,
-    HttpClientModule,
-
-    SharedModule,
-
-    AboutModule,
-    FriendsModule,
-    GearModule,
-    SettingsModule,
-    PlayerModule,
-    HistoryModule,
-    RecentPlayersModule,
-    BungieSearchModule,
-    ClanSearchModule,
-    ClanModule,
-    PGCRModule,
-    AuthModule,
-
-    // app
-    AppRoutingModule,
-
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
-  ],
-  declarations: [
-    AppComponent,
-    ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
-    SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
-    HomeComponent, BurnDialogComponent,
-    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ArmorDealsComponent,
-    ArmorCompareDialogComponent, WeaponDealsComponent, WeaponCompareDialogComponent,
-    PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
-  ],
-  providers: [
-    LoggedInGuard
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        ChildComponent,
+        SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
+        SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
+        HomeComponent, BurnDialogComponent,
+        DealsContainerComponent, DealsComponent, CollectionDealsComponent, ArmorDealsComponent,
+        ArmorCompareDialogComponent, WeaponDealsComponent, WeaponCompareDialogComponent,
+        PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
+    ],
+    bootstrap: [AppComponent], imports: [
+        // angular
+        BrowserAnimationsModule,
+        BrowserModule,
+        SharedModule,
+        AboutModule,
+        FriendsModule,
+        GearModule,
+        SettingsModule,
+        PlayerModule,
+        HistoryModule,
+        RecentPlayersModule,
+        BungieSearchModule,
+        ClanSearchModule,
+        ClanModule,
+        PGCRModule,
+        AuthModule,
+        // app
+        AppRoutingModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })], providers: [
+        LoggedInGuard,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
