@@ -1,7 +1,7 @@
 <ng-container *ngIf="signedOnUserService.signedOnUser$|async as currUser; else notSignedIn">
   <ng-container *ngIf="signedOnUserService.player$|async as player; else noPlayerYet">
 
-    <nav mat-tab-nav-bar color="accent">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" color="accent">
       <a mat-tab-link routerLink="builder" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
         <fa-icon [icon]="iconService.fasUsers"></fa-icon><span class="pad-left">Builder</span>
       </a>
@@ -9,10 +9,11 @@
         <fa-icon [icon]="iconService.fasUsers"></fa-icon><span class="pad-left">View</span>
       </a>
     </nav>
-
-    <div class="body">
-      <router-outlet></router-outlet>
-    </div>
+    <mat-tab-nav-panel #tabPanel>
+      <div class="body">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-tab-nav-panel>
   </ng-container>
 </ng-container>
 
