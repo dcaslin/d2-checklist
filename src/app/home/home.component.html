@@ -139,14 +139,14 @@
       <mat-card-content>
         <mat-list>
           <mat-list-item *ngFor="let n of nightfall.activities" class="fake-link" (click)="showBurns(n)">
-            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+            <span matListItemIcon class="list-icon" [class.invert]="n.icon.endsWith('png')"
               [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
               [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-            <div mat-line>
+            <div matListItemLine>
               <span class="underline">{{removeActivityPrefixes(n.name)}}</span>
               <span class="tiny" *ngIf="debugmode|async"> {{n.hash}}</span>
             </div>
-            <div mat-line>
+            <div matListItemLine>
               <!-- {{n.ll}}  -->
               <span class="left simple-caption-darker-no-margin">{{n.modifiers.length}} modifiers</span>
             </div>
@@ -237,10 +237,10 @@
     <mat-card-content>
       <mat-list role="list">
         <mat-list-item *ngFor="let b of milestone.modifiers" [matTooltip]="b.desc">
-          <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
+          <span matListItemIcon class="list-icon" [class.invert]="b.icon.endsWith('png')"
             [class.brighten]="b.icon.endsWith('jpg')"
             [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-          <div mat-line>{{b.name}}</div>
+          <div matListItemLine>{{b.name}}</div>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
