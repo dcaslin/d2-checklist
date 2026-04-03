@@ -231,6 +231,15 @@ mat-form-field.full-width .mat-mdc-form-field-infix{
     width: 100% !important;
 }
 
+// MDC icon buttons default to 48px (40px at density -2). In form field suffixes
+// they should be compact to match legacy Material sizing.
+mat-form-field button[matSuffix].mat-mdc-icon-button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 18px;
+}
+
 .preserve-white-space{
   white-space: pre-wrap;
 }
