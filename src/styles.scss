@@ -246,6 +246,8 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
   .mdc-text-field--filled {
     background-color: transparent;
     border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.42);
 
     &:hover {
