@@ -240,6 +240,30 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
   font-size: 18px;
 }
 
+// MDC fill form fields render as rounded rectangles with hidden labels.
+// Override to match legacy Material styling: bottom border only, visible label.
+.mat-mdc-form-field.mat-form-field-appearance-fill {
+  .mdc-text-field--filled {
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+
+    &:hover {
+      border-bottom-color: rgba(255, 255, 255, 0.87);
+    }
+  }
+
+  .mdc-line-ripple::before,
+  .mdc-line-ripple::after {
+    border-bottom-color: currentColor;
+  }
+
+  // Always show the floating label in resting position when field is empty
+  .mat-mdc-floating-label {
+    display: block !important;
+  }
+}
+
 .preserve-white-space{
   white-space: pre-wrap;
 }
