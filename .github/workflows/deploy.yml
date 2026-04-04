@@ -10,16 +10,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        lfs: true
     - uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: '22.x'
         cache: 'npm'
     - run: npm install
     - run: npm audit --audit-level=moderate || true
     - name: Create placeholder keys for tests
       run: cp src/environments/keys.example.ts src/environments/keys.ts
+    - name: Cache manifest data
+      uses: actions/cache@v4
+      with:
+        path: |
+          tools/manifest/.cache
+          src/assets/destiny2-*.json
+        key: manifest-v1-${{ hashFiles('src/assets/destiny2-version.json') }}
+        restore-keys: manifest-v1-
+    - name: Fetch Bungie manifest
+      run: npm run manifest:fetch
+      env:
+        BUNGIE_API_KEY: ${{ secrets.API_KEY }}
     - run: npm run test:ci
     - run: npm run stage-prod-keys
       env:

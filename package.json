@@ -1,7 +1,7 @@
 {
   "name": "d2-checklist",
-  "version": "29.0.0",
-  "manifest": "242705.26.03.12.1931-4-bnet.64400",
+  "version": "29.0.1",
+  "manifest": "242999.26.03.25.2000-1-bnet.64463",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -15,11 +15,11 @@
     "test:ci": "ng test --no-watch --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint",
     "build:prod": "ng build --configuration production",
-    "clean": "rm -rf ./dist/",
+    "clean": "rm -rf ./dist/ ./tools/manifest/.cache/ && find src/assets -name 'destiny2-*.json' ! -name '*energytype*' ! -name '*equipmentslot*' ! -name '*pursuittags*' ! -name '*recordseasons*' -delete",
     "server": "cd dist && http-server -S -p 4200 -C ../dev-certs/localhost.crt -K ../dev-certs/localhost.key",
     "prod": "npm run clean && npm run build:prod && npm run server",
-    "prepare": "git lfs install",
-    "manifest": "manifest.bat"
+    "manifest:fetch": "npx ts-node --project tools/manifest/tsconfig.json tools/manifest/index.ts",
+    "manifest:force": "MANIFEST_FORCE=1 npx ts-node --project tools/manifest/tsconfig.json tools/manifest/index.ts"
   },
   "private": true,
   "dependencies": {
@@ -65,7 +65,7 @@
     "@angular/language-service": "^18.2.14",
     "@destinyitemmanager/dim-api-types": "1.23.0",
     "@types/jasmine": "~4.3.0",
-    "@types/node": "14.18.36",
+    "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
     "bungie-api-ts": "4.21.0",
@@ -77,6 +77,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "karma-spec-reporter": "^0.0.36",
+    "jszip": "3.10.1",
+    "sql.js": "^1.14.1",
     "ts-node": "10.9.1",
     "typescript": "5.4.5"
   }

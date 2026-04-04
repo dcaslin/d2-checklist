@@ -196,10 +196,23 @@ export class DestinyCacheService {
       if ('cache-lite' == tableName) {
         this.notificationService.info(`New Manifest found!`);
       }
-      const remote = await firstValueFrom(this.http.get<any>(`/assets/destiny2-${tableName.toLowerCase()}.json?v=${env.versions.manifest}`));
+      if (tableName === 'InventoryItem') {
+        // InventoryItem is sharded into 8 files for faster parallel loading
+        const SHARD_COUNT = 8;
+        const shardPromises = Array.from({ length: SHARD_COUNT }, (_, i) =>
+          firstValueFrom(this.http.get<any>(
+            `/assets/destiny2-inventoryitem-${i}.json?v=${env.versions.manifest}`
+          ))
+        );
+        const shards = await Promise.all(shardPromises);
+        returnMe = Object.assign({}, ...shards);
+      } else {
+        returnMe = await firstValueFrom(this.http.get<any>(
+          `/assets/destiny2-${tableName.toLowerCase()}.json?v=${env.versions.manifest}`
+        ));
+      }
       // cache it, but don't wait on that
-      set(key, remote);
-      returnMe = remote;
+      set(key, returnMe);
     }
     this.memCache[tableName] = returnMe;
     if (!this.observableMap[tableName]) {

@@ -1,0 +1,724 @@
+{
+  "CORRUPTED_EGGS": {
+    "displayProperties": {
+      "description": "Don't put them all in one basket.",
+      "name": "Corrupted Eggs",
+      "hasIcon": false
+    },
+    "viewActionString": "View Corrupted Eggs",
+    "scope": 0,
+    "entries": [
+      {
+        "hash": 1101252171,
+        "displayProperties": {
+          "description": "",
+          "name": "1. Erebus (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252168,
+        "displayProperties": {
+          "description": "",
+          "name": "2. Erebus (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252169,
+        "displayProperties": {
+          "description": "",
+          "name": "3. Eleusinia (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252174,
+        "displayProperties": {
+          "description": "",
+          "name": "4. The Descent (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252175,
+        "displayProperties": {
+          "description": "",
+          "name": "5. The Descent (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252172,
+        "displayProperties": {
+          "description": "",
+          "name": "6. The Descent (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252173,
+        "displayProperties": {
+          "description": "",
+          "name": "7. Eleusinia (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252162,
+        "displayProperties": {
+          "description": "",
+          "name": "8. Eleusinia (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1101252163,
+        "displayProperties": {
+          "description": "",
+          "name": "9. Eleusinia (Shattered Throne)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029885,
+        "displayProperties": {
+          "description": "",
+          "name": "10. Kalli, the Corrupted (Last Wish Raid)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029884,
+        "displayProperties": {
+          "description": "",
+          "name": "11. Shuro Chi (Last Wish Raid)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029887,
+        "displayProperties": {
+          "description": "",
+          "name": "12. Morgeth (Last Wish Raid)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029886,
+        "displayProperties": {
+          "description": "",
+          "name": "13. Hall of Two Souls, after Morgeth (Last Wish Raid)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029881,
+        "displayProperties": {
+          "description": "",
+          "name": "14. Hall of Two Souls, Vault encounter (Last Wish Raid)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029880,
+        "displayProperties": {
+          "description": "",
+          "name": "15. Temple of Illyn (The Corrupted Strike)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029883,
+        "displayProperties": {
+          "description": "",
+          "name": "16. Temple of Illyn (The Corrupted Strike)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029882,
+        "displayProperties": {
+          "description": "",
+          "name": "17. Harbinger's Seclude (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029877,
+        "displayProperties": {
+          "description": "",
+          "name": "18. Harbinger's Seclude (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1118029876,
+        "displayProperties": {
+          "description": "",
+          "name": "19. Harbinger's Seclude (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696996,
+        "displayProperties": {
+          "description": "",
+          "name": "20. Gardens of Esila (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696997,
+        "displayProperties": {
+          "description": "",
+          "name": "21. Gardens of Esila (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696998,
+        "displayProperties": {
+          "description": "",
+          "name": "22. Divalian Mists (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696999,
+        "displayProperties": {
+          "description": "",
+          "name": "23. Spine of Keres (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696992,
+        "displayProperties": {
+          "description": "",
+          "name": "24. Spine of Keres (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696993,
+        "displayProperties": {
+          "description": "",
+          "name": "25. Spine of Keres (Patrol)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696994,
+        "displayProperties": {
+          "description": "",
+          "name": "26. Cimmerian Garrison (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067696995,
+        "displayProperties": {
+          "description": "",
+          "name": "27. Cimmerian Garrison (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067697004,
+        "displayProperties": {
+          "description": "",
+          "name": "28. Cimmerian Garrison (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1067697005,
+        "displayProperties": {
+          "description": "",
+          "name": "29. Shattered Ruins (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474583,
+        "displayProperties": {
+          "description": "",
+          "name": "30. Shattered Ruins (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474582,
+        "displayProperties": {
+          "description": "",
+          "name": "31. Agonarch Abyss (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474581,
+        "displayProperties": {
+          "description": "",
+          "name": "32. Agonarch Abyss (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474580,
+        "displayProperties": {
+          "description": "",
+          "name": "33. Agonarch Abyss (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474579,
+        "displayProperties": {
+          "description": "",
+          "name": "34. Keep of Honed Edges (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474578,
+        "displayProperties": {
+          "description": "",
+          "name": "35. Keep of Honed Edges (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474577,
+        "displayProperties": {
+          "description": "",
+          "name": "36. Ouroborea (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474576,
+        "displayProperties": {
+          "description": "",
+          "name": "37. Ouroborea (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474591,
+        "displayProperties": {
+          "description": "",
+          "name": "38. Ouroborea (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1084474590,
+        "displayProperties": {
+          "description": "",
+          "name": "39. Forfeit Shrine (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1034141726,
+        "displayProperties": {
+          "description": "",
+          "name": "40. Forfeit Shrine (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      }
+    ],
+    "hash": 2609997025,
+    "index": 9,
+    "blacklisted": false
+  },
+  "AHAMKARA_BONES": {
+    "displayProperties": {
+      "description": "I guess they won't be needing these anymore.",
+      "name": "Ahamkara Bones",
+      "hasIcon": false
+    },
+    "viewActionString": "View Ahamkara Bones",
+    "scope": 0,
+    "entries": [
+      {
+        "hash": 1370818871,
+        "displayProperties": {
+          "description": "",
+          "name": "1. \"Archiloquy\" - Shattered Throne (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818868,
+        "displayProperties": {
+          "description": "",
+          "name": "2. \"Brephos 1\" - Shattered Throne (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818869,
+        "displayProperties": {
+          "description": "",
+          "name": "3. \"Brephos II\" - Patrol (All Curse Levels)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818866,
+        "displayProperties": {
+          "description": "",
+          "name": "4. \"Brephos III\" - Cimmerian Garrison (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818867,
+        "displayProperties": {
+          "description": "",
+          "name": "5. \"Cosmogyre I\" - Patrol (All Curse Levels)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818864,
+        "displayProperties": {
+          "description": "",
+          "name": "6. \"Cosmogyre II\" - Shattered Throne (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818865,
+        "displayProperties": {
+          "description": "",
+          "name": "7. \"Cosmogyre III\" - Patrol (All Curse Levels)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818878,
+        "displayProperties": {
+          "description": "",
+          "name": "8. \"Cosmogyre II\" - Agonarch Abyss (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1370818879,
+        "displayProperties": {
+          "description": "",
+          "name": "9. \"Ecstasiate I\" - Shattered Ruins (Medium Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596457,
+        "displayProperties": {
+          "description": "",
+          "name": "10. \"Ecstastiate II\" - Keep of Honed Edges (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596456,
+        "displayProperties": {
+          "description": "",
+          "name": "11. \"Ecstasiate III\" - Dark Monastery Mission (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596459,
+        "displayProperties": {
+          "description": "",
+          "name": "12. \"Fidecide I\" - Shattered Throne (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596458,
+        "displayProperties": {
+          "description": "",
+          "name": "13. \"Fideicide II\" - Queen's Court (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596461,
+        "displayProperties": {
+          "description": "",
+          "name": "14. \"Fidecide III\" - Patrol (All Curse Levels)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596460,
+        "displayProperties": {
+          "description": "",
+          "name": "15. \"Heresiology\" - Forfeit Shrine (Weak Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1387596463,
+        "displayProperties": {
+          "description": "",
+          "name": "16. \"Imponent I\" - Ouroborea (Strong Curse)",
+          "hasIcon": false
+        },
+        "scope": 0
+      }
+    ],
+    "hash": 1297424116,
+    "index": 10,
+    "blacklisted": false
+  },
+  "RABBITS": {
+    "displayProperties": {
+      "description": "Be vewy vewy qwiet when hunting wabbits on the Moon.",
+      "name": "Jade Rabbits",
+      "hasIcon": false
+    },
+    "viewActionString": "View Jade Rabbits",
+    "scope": 1,
+    "entries": [
+      {
+        "hash": 4062796495,
+        "displayProperties": {
+          "description": "",
+          "name": "1. Anchor of Light",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 269847098,
+        "displayProperties": {
+          "description": "",
+          "name": "2. Hellmouth",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 957600697,
+        "displayProperties": {
+          "description": "",
+          "name": "3. Archer's Line",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 2293092716,
+        "displayProperties": {
+          "description": "",
+          "name": "4. Sorrow's Harbor",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 2779900411,
+        "displayProperties": {
+          "description": "",
+          "name": "5. K1 Logistics Lost Sector",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 3728157446,
+        "displayProperties": {
+          "description": "",
+          "name": "6. K1 Revelation Lost Sector",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 3977481189,
+        "displayProperties": {
+          "description": "",
+          "name": "7. Circle of Bones",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 1568227000,
+        "displayProperties": {
+          "description": "",
+          "name": "8. Chamber of Night",
+          "hasIcon": false
+        },
+        "scope": 1
+      },
+      {
+        "hash": 2115406343,
+        "displayProperties": {
+          "description": "",
+          "name": "9. Shrine of Oryx",
+          "hasIcon": false
+        },
+        "scope": 1
+      }
+    ],
+    "hash": 1912364094,
+    "index": 11,
+    "blacklisted": false
+  },
+  "CATS": {
+    "displayProperties": {
+      "description": "So I guess there's cats now.",
+      "name": "Cat Statues",
+      "hasIcon": false
+    },
+    "viewActionString": "View Cat Statues",
+    "scope": 0,
+    "entries": [
+      {
+        "hash": 2576690974,
+        "displayProperties": {
+          "description": "",
+          "name": "1. The Strand",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 2420371297,
+        "displayProperties": {
+          "description": "",
+          "name": "2. Gardens of Esilia",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 2253687296,
+        "displayProperties": {
+          "description": "",
+          "name": "3. Spine of Keres, Crystal Wall",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 1159650715,
+        "displayProperties": {
+          "description": "",
+          "name": "4. Spine of Keres, Observatory",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 2853314242,
+        "displayProperties": {
+          "description": "",
+          "name": "5. Rheasilvia",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 56362725,
+        "displayProperties": {
+          "description": "",
+          "name": "6. Harbinger's Seclude I, Spiral Tree ",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 4262976548,
+        "displayProperties": {
+          "description": "",
+          "name": "7. Harbinger's Seclude II, Temple",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 3629051903,
+        "displayProperties": {
+          "description": "",
+          "name": "8. Divalian Mists",
+          "hasIcon": false
+        },
+        "scope": 0
+      },
+      {
+        "hash": 3255812950,
+        "displayProperties": {
+          "description": "",
+          "name": "9. Rheasilvia",
+          "hasIcon": false
+        },
+        "scope": 0
+      }
+    ],
+    "hash": 2726513366,
+    "index": 8,
+    "blacklisted": false
+  }
+}
