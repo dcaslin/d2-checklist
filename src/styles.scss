@@ -135,6 +135,7 @@
   padding-right: 10px  !important;
   flex-grow: 0 !important;
   min-width: 160px !important;
+  letter-spacing: normal !important;
 }
 
 .mat-mdc-tab-link{
@@ -142,6 +143,13 @@
   padding-right: 10px  !important;
   flex-grow: 0 !important;
   min-width: 160px !important;
+  letter-spacing: normal !important;
+}
+
+// MDC buttons use 1.25px letter-spacing per Material Design spec,
+// but legacy Material used normal. Reset to match prod appearance.
+.mdc-button {
+  letter-spacing: normal !important;
 }
 
 .tiny {
