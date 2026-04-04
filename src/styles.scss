@@ -226,8 +226,12 @@
   margin-left: 0.30em !important;
 }
 
-.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
-  line-height: 32px !important;
+.mat-button-toggle-appearance-standard {
+  font-size: inherit !important;
+
+  .mat-button-toggle-label-content {
+    line-height: 32px !important;
+  }
 }
 
 mat-form-field.full-width .mat-mdc-form-field-infix{
