@@ -248,16 +248,14 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
 // Override to match legacy Material styling: bottom border only, visible label,
 // and compact sizing to match the legacy ~53px total height.
 .mat-mdc-form-field.mat-form-field-appearance-fill {
+  font-size: inherit;
+
   .mdc-text-field--filled {
     background-color: transparent;
     border-radius: 0;
     padding-left: 0;
     padding-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.42);
-
-    &:hover {
-      border-bottom-color: rgba(255, 255, 255, 0.87);
-    }
+    font-size: inherit;
   }
 
   .mat-mdc-form-field-infix {
@@ -268,13 +266,7 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
 
   .mat-mdc-floating-label {
     display: block !important;
-    font-size: 13px;
     top: 22px;
-  }
-
-  .mdc-line-ripple::before,
-  .mdc-line-ripple::after {
-    border-bottom-color: currentColor;
   }
 
   // Hide the subscript/hint area that MDC always reserves
@@ -282,9 +274,9 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
     display: none;
   }
 
-  input.mat-mdc-input-element {
-    font-size: 13px;
-    line-height: 15px;
+  // Let form field text inherit font-size from context instead of MDC's fixed 16px
+  .mdc-text-field__input {
+    font-size: inherit !important;
   }
 }
 
