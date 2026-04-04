@@ -133,11 +133,15 @@
 .mat-mdc-tab{
   padding-left: 10px !important;
   padding-right: 10px  !important;
+  flex-grow: 0 !important;
+  min-width: 160px !important;
 }
 
 .mat-mdc-tab-link{
   padding-left: 10px !important;
   padding-right: 10px  !important;
+  flex-grow: 0 !important;
+  min-width: 160px !important;
 }
 
 .tiny {
