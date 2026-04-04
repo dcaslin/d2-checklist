@@ -51,3 +51,16 @@ src/environments/keys-prod.ts
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# Generated manifest JSON files (fetched at build time via tools/manifest/)
+src/assets/destiny2-*.json
+!src/assets/destiny2-energytype.json
+!src/assets/destiny2-equipmentslot.json
+!src/assets/destiny2-pursuittags.json
+!src/assets/destiny2-recordseasons.json
+
+# Manifest tool cache
+tools/manifest/.cache/
+
+# Context directory
+.context/
