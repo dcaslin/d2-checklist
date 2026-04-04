@@ -4,7 +4,7 @@
             <h4>
                 {{char.className}} - {{char.basePLString}}
                 <span class="fake-link pad-left-more" (click)="playerStateService.requestRefresh()">
-                    <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(playerStateService.loading|async)!"></fa-icon>
+                    <fa-icon [icon]="iconService.fasSyncAlt" [animation]="(playerStateService.loading|async)! ? 'spin' : undefined"></fa-icon>
                 </span>
             </h4>
         </div>

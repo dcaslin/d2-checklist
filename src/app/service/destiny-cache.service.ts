@@ -4,7 +4,7 @@ import { isSearchBot, safeStringifyError } from '@app/shared/utilities';
 import { NotificationService } from './notification.service';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom} from 'rxjs';
 import { DestinyObjectiveUiStyle } from './model';
 
 const LOG_CSS = `color: orangered`;
@@ -196,7 +196,7 @@ export class DestinyCacheService {
       if ('cache-lite' == tableName) {
         this.notificationService.info(`New Manifest found!`);
       }
-      const remote = await this.http.get<any>(`/assets/destiny2-${tableName.toLowerCase()}.json?v=${env.versions.manifest}`).toPromise();
+      const remote = await firstValueFrom(this.http.get<any>(`/assets/destiny2-${tableName.toLowerCase()}.json?v=${env.versions.manifest}`));
       // cache it, but don't wait on that
       set(key, remote);
       returnMe = remote;

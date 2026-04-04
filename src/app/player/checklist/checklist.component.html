@@ -55,7 +55,7 @@
                     <span *ngIf="debugmode|async">
                       &ensp;[{{check.hash}}] &ensp;
                       <span class="fake-link" (click)="state.requestRefresh()">
-                        <fa-icon [icon]="iconService.fasSync" [spin]="(state.loading|async)!" [fixedWidth]="true">
+                        <fa-icon [icon]="iconService.fasSync" [animation]="(state.loading|async)! ? 'spin' : undefined" [fixedWidth]="true">
                         </fa-icon>
                       </span>
                     </span>
@@ -116,7 +116,7 @@
                   <span *ngIf="debugmode|async">
                     &ensp;[{{check.hash}}] &ensp;
                     <span class="fake-link" (click)="state.requestRefresh()">
-                      <fa-icon [icon]="iconService.fasSync" [spin]="(state.loading|async)!" [fixedWidth]="true">
+                      <fa-icon [icon]="iconService.fasSync" [animation]="(state.loading|async)! ? 'spin' : undefined" [fixedWidth]="true">
                       </fa-icon>
                     </span>
                   </span>

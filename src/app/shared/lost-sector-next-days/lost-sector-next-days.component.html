@@ -1,8 +1,9 @@
 <div mat-dialog-title>
-    <nav mat-tab-nav-bar>
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
         <a mat-tab-link *ngFor="let link of links" (click)="activeLink = link" [active]="activeLink == link"> {{link}}
         </a>
     </nav>
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 </div>
 <mat-dialog-content>
     <div *ngIf="days$|async as days" class="center">

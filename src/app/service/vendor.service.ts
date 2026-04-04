@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { currentXur } from '@d2api/date';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { forkJoin, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { forkJoin, from, Observable, of, ReplaySubject, Subject, firstValueFrom} from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
@@ -92,13 +92,13 @@ export class VendorService {
 
     const bulkResp = this.streamReq('loadVendors', bulkUrl);
 
-    let requests = [bulkResp];
+    const requests = [bulkResp];
     for (const key of SOCKET_VENDORS) {
       const socketVendorUrl = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' + c.characterId + '/Vendors/' + key + '?components=' + components.join(',');
       requests.push(this.streamReq('loadVendors', socketVendorUrl))
     }
     // fork join all the requests
-    const resps = await forkJoin(requests).toPromise();
+    const resps = await firstValueFrom(forkJoin(requests));
     let cntr = 0;
     const responseHolder: { [key: string]: any } = {};
     for (const r of resps) {
@@ -557,7 +557,7 @@ export class VendorService {
     }
     let returnMe: InventoryItem[] = [];
 
-    for (let responseKey in responses) {
+    for (const responseKey in responses) {
       const resp = responses[responseKey];
       const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
       if (responseKey == BULK_VENDORS_KEY) {
@@ -645,7 +645,7 @@ export class VendorService {
     if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
       for (const oHash of iDesc.objectives.objectiveHashes) {
         const oDesc: any = await this.destinyCacheService.getObjective(oHash);
-        let progDescText = VendorService.dynamicVendorStringReplace(oDesc.progressDescription, null!, dynamicStrings)
+        const progDescText = VendorService.dynamicVendorStringReplace(oDesc.progressDescription, null!, dynamicStrings)
         if (oDesc != null) {
           objectives.push({
             total: oDesc.completionValue,
@@ -695,7 +695,7 @@ export class VendorService {
     // vendorIndex acts as psuedo instance id, so just set it ahead of processing
     i.itemInstanceId = i.vendorItemIndex;
     // single vendor will have this directly, all vendors will require a lookup
-    let itmComp = resp.itemComponents[vendor.hash] ? resp.itemComponents[vendor.hash] : resp.itemComponents;
+    const itmComp = resp.itemComponents[vendor.hash] ? resp.itemComponents[vendor.hash] : resp.itemComponents;
     // last arg is item progressions, which will always be empty from a vendor
     const data: InventoryItem = await this.parseService.parseInvItem(i, char, itmComp, true, [], null);
     i.owner = char;
@@ -748,7 +748,7 @@ export class VendorService {
     return from(this.bungieService.buildReqOptions()).pipe(
       map(opt => this.httpClient.get<any>(API_ROOT + uri, opt)),
       concatAll(),
-      map(this.bungieService.parseBungieResponse),
+      map((j) => this.bungieService.parseBungieResponse(j)),
       catchError(this.handleError<any>(operation, null)),
     );
   }

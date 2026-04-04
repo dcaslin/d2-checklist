@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestDialogComponent } from '@app/player/pursuits/pursuit-list/quest-dialog/quest-dialog.component';
 import { IconService } from '@app/service/icon.service';
 import { Questline } from '@app/service/model';

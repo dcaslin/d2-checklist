@@ -4,7 +4,7 @@ import { MatTooltipModule, MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { MilestoneCheckComponent } from './milestone-check.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressBarModule as MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @NgModule({

@@ -69,7 +69,7 @@
                                     <td colspan="3">
                                         {{p.searchResult.displayName}}
                                         <ng-container *ngIf="p.errMsg == null">
-                                            <fa-icon [icon]="iconService.farSpinner" [pulse]="true"
+                                            <fa-icon [icon]="iconService.farSpinner" animation="spin-pulse"
                                                 [fixedWidth]="true"></fa-icon>
                                         </ng-container>
                                         <ng-container *ngIf="p.errMsg != null">

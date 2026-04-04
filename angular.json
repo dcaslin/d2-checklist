@@ -10,7 +10,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
-          "options": {            
+          "options": {
             "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
@@ -75,7 +75,7 @@
               ],
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
-            }, 
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": {
@@ -94,22 +94,22 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "d2-checklist:build",
             "ssl": true,
             "sslCert": "dev-certs/localhost.crt",
             "sslKey": "dev-certs/localhost.key",
-            "proxyConfig": "src/proxy.www.conf.json"
+            "proxyConfig": "src/proxy.www.conf.json",
+            "buildTarget": "d2-checklist:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "d2-checklist:build:production"
+              "buildTarget": "d2-checklist:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "d2-checklist:build"
+            "buildTarget": "d2-checklist:build"
           }
         },
         "test": {
@@ -162,6 +162,12 @@
     },
     "@schematics/angular:directive": {
       "prefix": "d2c"
+    },
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
     }
   },
   "cli": {

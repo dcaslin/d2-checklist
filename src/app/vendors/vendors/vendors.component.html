@@ -22,7 +22,7 @@
         <mat-form-field>
             <mat-label>Search</mat-label>
             <input autocomplete="off" matInput #filter [(ngModel)]="visibleFilterText" placeholder="Name, vendor, stat">
-            <button mat-button *ngIf="visibleFilterText?.length! > 0" matSuffix mat-icon-button aria-label="Clear"
+            <button *ngIf="visibleFilterText?.length! > 0" matSuffix mat-icon-button aria-label="Clear"
                 (click)="visibleFilterText='';filterText$.next(null)">
                 <mat-icon>close</mat-icon>
             </button>

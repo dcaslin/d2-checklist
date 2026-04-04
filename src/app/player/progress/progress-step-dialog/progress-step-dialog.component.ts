@@ -1,5 +1,5 @@
 import { Component, Inject, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

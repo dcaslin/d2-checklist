@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';

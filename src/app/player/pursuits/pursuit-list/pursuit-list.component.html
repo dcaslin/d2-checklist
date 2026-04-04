@@ -1,7 +1,7 @@
 <ng-container *ngIf="state.player|async as player">
 
   <div class="left" style="margin: 10px">
-    <mat-form-field style="margin-right: 10px" appearance="standard">
+    <mat-form-field style="margin-right: 10px" appearance="outline">
       <!-- <mat-label>Character</mat-label> -->
       <mat-select [(ngModel)]="state.filterChar" placeholder="Show all characters"
         (selectionChange)="filterAndSortPursuits()">
@@ -13,7 +13,7 @@
     <mat-form-field class="searchField">
       <mat-label>Search</mat-label>
       <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText" placeholder="Search">
-      <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async)!.length>0" matSuffix
+      <button *ngIf="(realFilterText|async)!=null && (realFilterText|async)!.length>0" matSuffix
         mat-icon-button aria-label="Clear" (click)="displayFilterText=null;searchSubject.next()">
         <mat-icon>close</mat-icon>
       </button>

@@ -673,7 +673,7 @@ export class MilestoneParserService {
             nfScore.desc = 'Complete Nightfalls until your total score reaches 200K';
         }
         const rootOfNightmares = milestoneList.find(x => x.key == '3699252268');
-        if (rootOfNightmares!?.name?.indexOf('###') > -1) {
+        if ((rootOfNightmares?.name?.indexOf('###') ?? -1) > -1) {
             rootOfNightmares!.name = 'Root of Nightmares Raid';
         }
         // weekly ritual

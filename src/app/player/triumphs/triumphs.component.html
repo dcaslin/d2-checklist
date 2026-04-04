@@ -1,5 +1,5 @@
 <ng-container *ngIf="state.player|async as player">
-  <nav mat-tab-nav-bar color="accent">    
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" color="accent">    
     <a mat-tab-link routerLink="tree" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
       <fa-icon [icon]="iconService.farTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
     </a>   
@@ -23,5 +23,7 @@
     </a>
     
   </nav>
-  <router-outlet></router-outlet>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
 </ng-container>

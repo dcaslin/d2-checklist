@@ -1,6 +1,6 @@
 import { Injectable, ApplicationRef } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
-import { first, catchError } from 'rxjs/operators';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import { first, filter } from 'rxjs/operators';
 import { interval, concat } from 'rxjs';
 import { NotificationService } from './notification.service';
 
@@ -25,16 +25,13 @@ export class PwaService {
                     console.log('Checking for update...');
                     updates.checkForUpdate();
                 });
-                updates.available.subscribe(event => {
-                    console.log('current version is', event.current);
-                    console.log('available version is', event.available);
+                updates.versionUpdates.pipe(
+                    filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY')
+                ).subscribe(event => {
+                    console.log('current version is', event.currentVersion);
+                    console.log('available version is', event.latestVersion);
                     this.notificationService.success('A new update is available, refreshing');
                     window.location.reload();
-
-                });
-                updates.activated.subscribe(event => {
-                    console.log('old version was', event.previous);
-                    console.log('new version is', event.current);
                 });
             }
         } catch (e) {

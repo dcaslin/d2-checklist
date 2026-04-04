@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';

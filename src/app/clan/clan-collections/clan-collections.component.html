@@ -1,4 +1,4 @@
-<nav mat-tab-nav-bar color="accent">
+<nav mat-tab-nav-bar [tabPanel]="tabPanel" color="accent">
     <a mat-tab-link routerLink="badges" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
         <fa-icon [icon]="iconService.farBadgeCheck"></fa-icon><span class="d-none d-md-inline">&ensp;Badges</span>
     </a>
@@ -6,11 +6,13 @@
         <fa-icon [icon]="iconService.farSearch"></fa-icon><span class="d-none d-md-inline">&ensp;Search</span>
     </a>
 </nav>
-<ng-container *ngIf="state.allLoaded|async; else notLoaded">
-    <router-outlet></router-outlet>
-</ng-container>
+<mat-tab-nav-panel #tabPanel>
+  <ng-container *ngIf="state.allLoaded|async; else notLoaded">
+      <router-outlet></router-outlet>
+  </ng-container>
+</mat-tab-nav-panel>
 
 <ng-template #notLoaded>
     <br>
-    <h1><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></h1>
+    <h1><fa-icon [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon></h1>
 </ng-template>

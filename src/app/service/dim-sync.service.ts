@@ -9,7 +9,7 @@ import {
   ProfileUpdateRequest,
   ProfileUpdateResponse
 } from '@destinyitemmanager/dim-api-types';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom} from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
@@ -72,13 +72,12 @@ export class DimSyncService {
       environment.bungie.dimApiKey
     );
     console.log('%cGetting DIM token', LOG_CSS);
-    const resp = await this.httpClient
+    const resp = await firstValueFrom(this.httpClient
       .post<CustomAuthTokenResponse>(
         'https://api.destinyitemmanager.com/auth/token',
         req,
         { headers }
-      )
-      .toPromise();
+      ));
     if (resp.accessToken) {
       resp.expiration = new Date(
         1000 * (new Date().getTime() / 1000 + resp.expiresInSeconds - 100)
@@ -119,9 +118,8 @@ export class DimSyncService {
       const url = `https://api.destinyitemmanager.com/profile`;
       console.log('%cSetting DIM tags', LOG_CSS);
       this.logUpdates(updates);
-      await this.httpClient
-        .post<ProfileUpdateResponse>(url, body, { headers })
-        .toPromise();
+      await firstValueFrom(this.httpClient
+        .post<ProfileUpdateResponse>(url, body, { headers }));
       return true;
     } catch (x) {
       this.notificationService.fail('Failed to set DIM sync tags');
@@ -139,9 +137,8 @@ export class DimSyncService {
       console.log('%cGetting DIM tags', LOG_CSS);
       const headers = await this.buildHeaders();
       const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser!.userInfo.membershipId}&components=tags`;
-      const hResp = await this.httpClient
-        .get<ProfileResponse>(url, { headers })
-        .toPromise();
+      const hResp = await firstValueFrom(this.httpClient
+        .get<ProfileResponse>(url, { headers }));
       // this.notificationService.success('Got latest DIM-sync tags');
       return hResp.tags!;
     } catch (x) {

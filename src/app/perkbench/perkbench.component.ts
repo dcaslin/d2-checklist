@@ -21,7 +21,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { environment as env } from '@env/environment';
 import { format } from 'date-fns';
 import { del, set } from 'idb-keyval';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom} from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -347,9 +347,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   async fetchGodrolls(): Promise<CompleteGodRolls> {
-    return await this.httpClient
-      .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json?v=${env.versions.app}`)
-      .toPromise();
+    return await firstValueFrom(this.httpClient
+      .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json?v=${env.versions.app}`));
   }
 
   async loadOfficialRolls() {

@@ -1,3 +1,4 @@
+import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -113,7 +114,7 @@ export class PgcrService extends StreamingService {
 
   public async loadPGCR(instanceId: string): Promise<Game> {
     const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/';
-    const resp = await this.streamReq('loadVendors', url).toPromise();
+    const resp = await firstValueFrom(this.streamReq('loadVendors', url));
     return await this.mapGame(instanceId, resp);
   }
 

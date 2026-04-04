@@ -7,9 +7,9 @@
 
 @import 'styles-reset';
 
-@import '@angular/material/theming';
-
+@include mat.all-component-typographies();
 @include mat.core();
+@include mat.all-component-densities(-2);
 
 
 .upgrade-color {
@@ -73,13 +73,13 @@
 }
 
 .light-theme {
-  @include mat.all-component-themes($d2c-light-theme);
+  @include mat.all-component-colors($d2c-light-theme);
   @include custom-components-theme($d2c-light-theme);
   @include default-gear-tags($d2c-light-theme);
 }
 
 .black-theme {
-  @include mat.all-component-themes($d2c-black-theme);
+  @include mat.all-component-colors($d2c-black-theme);
   @include custom-components-theme($d2c-black-theme);
   @include black-gear-tags($d2c-black-theme);
 }
@@ -130,14 +130,26 @@
   padding-left: 24px;
   font-size: 20px;
 }
-.mat-tab-label{
+.mat-mdc-tab{
   padding-left: 10px !important;
   padding-right: 10px  !important;
+  flex-grow: 0 !important;
+  min-width: 160px !important;
+  letter-spacing: normal !important;
 }
 
-.mat-tab-link{
+.mat-mdc-tab-link{
   padding-left: 10px !important;
   padding-right: 10px  !important;
+  flex-grow: 0 !important;
+  min-width: 160px !important;
+  letter-spacing: normal !important;
+}
+
+// MDC buttons use 1.25px letter-spacing per Material Design spec,
+// but legacy Material used normal. Reset to match prod appearance.
+.mdc-button {
+  letter-spacing: normal !important;
 }
 
 .tiny {
@@ -148,15 +160,15 @@
   text-align: left !important;
 }
 
-.mat-table {
+.mat-mdc-table {
   display: table;
 
-  > .mat-header-row, > .mat-row {
+  > .mat-mdc-header-row, > .mat-mdc-row {
     display: table-row;
     padding: 5px;
     border: none;
 
-    > .mat-header-cell, > .mat-cell {
+    > .mat-mdc-header-cell, > .mat-mdc-cell {
       display: table-cell;
       height: 48px;
       padding: 5px;
@@ -222,13 +234,62 @@
   margin-left: 0.30em !important;
 }
 
-.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
-  line-height: 32px !important;
+.mat-button-toggle-appearance-standard {
+  font-size: inherit !important;
+
+  .mat-button-toggle-label-content {
+    line-height: 32px !important;
+  }
 }
 
-mat-form-field.full-width .mat-form-field-infix{
+mat-form-field.full-width .mat-mdc-form-field-infix{
     min-width: 0;
     width: 100% !important;
+}
+
+// MDC icon buttons default to 48px (40px at density -2). In form field suffixes
+// they should be compact to match legacy Material sizing.
+mat-form-field button[matSuffix].mat-mdc-icon-button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 18px;
+}
+
+// MDC fill form fields render as rounded rectangles with hidden labels.
+// Override to match legacy Material styling: bottom border only, visible label,
+// and compact sizing to match the legacy ~53px total height.
+.mat-mdc-form-field.mat-form-field-appearance-fill {
+  font-size: inherit;
+
+  .mdc-text-field--filled {
+    background-color: transparent;
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: inherit;
+  }
+
+  .mat-mdc-form-field-infix {
+    padding-top: 16px;
+    padding-bottom: 6px;
+    min-height: unset;
+  }
+
+  .mat-mdc-floating-label {
+    display: block !important;
+    top: 22px;
+  }
+
+  // Hide the subscript/hint area that MDC always reserves
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  // Let form field text inherit font-size from context instead of MDC's fixed 16px
+  .mdc-text-field__input {
+    font-size: inherit !important;
+  }
 }
 
 .preserve-white-space{
@@ -437,24 +498,24 @@ mat-form-field.full-width .mat-form-field-infix{
   grid-row-gap: 10px;
   grid-auto-flow: row dense;
 
-  .mat-card {
+  .mat-mdc-card {
     display: flex;
     flex-direction: column;
   }
   
-  .mat-card-header {
+  .mat-mdc-card-header {
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
   }
   
-  .mat-card-actions {
+  .mat-mdc-card-actions {
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
   }
   
-  .mat-card-content{
+  .mat-mdc-card-content{
     flex-grow: 1;
     // outline: 1px solid red; // uncomment to see test outlines
   }

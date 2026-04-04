@@ -32,7 +32,7 @@ export class StreamingService {
     return from(this.bungieService.buildReqOptions()).pipe(
       map((opt) => this.httpClient.get<any>(url, opt)),
       concatAll(),
-      map(this.bungieService.parseBungieResponse),
+      map((j) => this.bungieService.parseBungieResponse(j)),
       catchError(this.handleError<any>(operation, null)),
       tap((x) => this.loading.next(false))
     );

@@ -21,7 +21,7 @@
             <div class="col-sm-12 col-md-6">
                 <div class="clan-progress-row">
                     <button mat-stroked-button [disabled]="(state.allLoaded|async) === false" (click)="state.downloadCsvReport()">
-                        <fa-icon [hidden]="state.allLoaded|async" [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
+                        <fa-icon [hidden]="state.allLoaded|async" [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon>
                         <fa-icon [icon]="iconService.falDownload"></fa-icon> Download CSV Report</button>
                 </div>
             </div>
@@ -109,5 +109,5 @@
 
 <ng-template #loadingModel>
     <br>
-    <h1><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></h1>
+    <h1><fa-icon [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon></h1>
 </ng-template>

@@ -5,7 +5,7 @@
     // justify-content: space-between;
 }
 
-.mat-radio-group {
+.mat-mdc-radio-group {
     display: flex;
     flex-direction: column;
 }
@@ -18,18 +18,18 @@ table.responsive-table{
 }
   
 
-.mat-radio-button {
+.mat-mdc-radio-button {
     margin: 3px;
 }
 
 @media(min-width:768px) {
-    .mat-radio-group {
+    .mat-mdc-radio-group {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
     }
 
-    .mat-radio-button ~ .mat-radio-button {
+    .mat-mdc-radio-button ~ .mat-mdc-radio-button {
         margin-left: 10px;
     }
 }

@@ -45,10 +45,10 @@
     }
 
 }
-:host::ng-deep.mat-checkbox-layout{
+:host::ng-deep .mdc-form-field{
     white-space: normal !important;
     }
-    
-    :host::ng-deep.mat-checkbox-inner-container{
+
+    :host::ng-deep .mdc-checkbox{
         margin-top: 4px;
     }
