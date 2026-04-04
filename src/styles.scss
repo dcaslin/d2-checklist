@@ -241,7 +241,8 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
 }
 
 // MDC fill form fields render as rounded rectangles with hidden labels.
-// Override to match legacy Material styling: bottom border only, visible label.
+// Override to match legacy Material styling: bottom border only, visible label,
+// and compact sizing to match the legacy ~53px total height.
 .mat-mdc-form-field.mat-form-field-appearance-fill {
   .mdc-text-field--filled {
     background-color: transparent;
@@ -255,14 +256,31 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
     }
   }
 
+  .mat-mdc-form-field-infix {
+    padding-top: 16px;
+    padding-bottom: 6px;
+    min-height: unset;
+  }
+
+  .mat-mdc-floating-label {
+    display: block !important;
+    font-size: 13px;
+    top: 22px;
+  }
+
   .mdc-line-ripple::before,
   .mdc-line-ripple::after {
     border-bottom-color: currentColor;
   }
 
-  // Always show the floating label in resting position when field is empty
-  .mat-mdc-floating-label {
-    display: block !important;
+  // Hide the subscript/hint area that MDC always reserves
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  input.mat-mdc-input-element {
+    font-size: 13px;
+    line-height: 15px;
   }
 }
 
