@@ -1,14 +1,20 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { InventoryItem, InventorySocket } from '@app/service/model';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { ManifestItemIconComponent } from '../../../shared/manifest-item-icon/manifest-item-icon.component';
 
 @Component({
-  selector: 'd2c-select-mod-dialog',
-  templateUrl: './select-mod-dialog.component.html',
-  styleUrls: ['./select-mod-dialog.component.scss']
+    selector: 'd2c-select-mod-dialog',
+    templateUrl: './select-mod-dialog.component.html',
+    styleUrls: ['./select-mod-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgIf, FaIconComponent, NgFor, ManifestItemIconComponent, AsyncPipe]
 })
 export class SelectModDialogComponent {
   public item: InventoryItem;

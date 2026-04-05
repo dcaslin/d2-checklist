@@ -25,6 +25,16 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardSubtitle } from '@angular/material/card';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { NgIf, NgFor, AsyncPipe, TitleCasePipe, DatePipe } from '@angular/common';
+import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { SortIndicatorComponent } from '../shared/sort-indicator/sort-indicator.component';
 
 // TODO show guns with unrollable perks
 // x offer option to apply god rolls to local storage
@@ -174,9 +184,32 @@ function isIncomplete(isController: boolean, roll: MappedRoll): boolean {
 
 
 @Component({
-  selector: 'd2c-perkbench',
-  templateUrl: './perkbench.component.html',
-  styleUrls: ['./perkbench.component.scss'],
+    selector: 'd2c-perkbench',
+    templateUrl: './perkbench.component.html',
+    styleUrls: ['./perkbench.component.scss'],
+    standalone: true,
+    imports: [
+        MatCard,
+        MatCardHeader,
+        MatCardTitle,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        FormsModule,
+        MatCardContent,
+        MatButton,
+        FaIconComponent,
+        NgIf,
+        MatCardSubtitle,
+        MatButtonToggleGroup,
+        MatButtonToggle,
+        MatCheckbox,
+        SortIndicatorComponent,
+        NgFor,
+        AsyncPipe,
+        TitleCasePipe,
+        DatePipe,
+    ],
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
   public isController = true;

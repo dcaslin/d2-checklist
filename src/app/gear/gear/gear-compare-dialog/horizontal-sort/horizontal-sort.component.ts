@@ -1,5 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { NgIf } from '@angular/common';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 export interface SortEvent {
   field: string;
@@ -7,10 +9,12 @@ export interface SortEvent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-horizontal-sort',
-  templateUrl: './horizontal-sort.component.html',
-  styleUrls: ['./horizontal-sort.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-horizontal-sort',
+    templateUrl: './horizontal-sort.component.html',
+    styleUrls: ['./horizontal-sort.component.scss'],
+    standalone: true,
+    imports: [NgIf, FaIconComponent]
 })
 export class HorizontalSortComponent {
 

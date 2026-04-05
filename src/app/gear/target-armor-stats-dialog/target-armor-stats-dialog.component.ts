@@ -1,14 +1,23 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DestinyClasses } from '@app/service/model';
 import { DetailedPreferredStats, PreferredStatService } from '@app/service/preferred-stat.service';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { NgFor } from '@angular/common';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
+import { FormsModule } from '@angular/forms';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-target-armor-stats-dialog',
-  templateUrl: './target-armor-stats-dialog.component.html',
-  styleUrls: ['./target-armor-stats-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-target-armor-stats-dialog',
+    templateUrl: './target-armor-stats-dialog.component.html',
+    styleUrls: ['./target-armor-stats-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatTabGroup, NgFor, MatTab, MatSlider, MatSliderThumb, FormsModule, MatCheckbox, MatDialogActions, MatButton]
 })
 export class TargetArmorStatsDialogComponent {
   preferred: DetailedPreferredStats;

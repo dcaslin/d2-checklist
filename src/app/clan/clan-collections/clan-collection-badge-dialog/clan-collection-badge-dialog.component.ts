@@ -1,16 +1,24 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogContent } from '@angular/material/dialog';
 import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { ClanTriumphGraphComponent } from '../../clan-triumphs/clan-triumph-graph/clan-triumph-graph.component';
+import { NgTemplateOutlet, NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-collection-badge-dialog',
-  templateUrl: './clan-collection-badge-dialog.component.html',
-  styleUrls: ['./clan-collection-badge-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-collection-badge-dialog',
+    templateUrl: './clan-collection-badge-dialog.component.html',
+    styleUrls: ['./clan-collection-badge-dialog.component.scss'],
+    standalone: true,
+    imports: [CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, ClanTriumphGraphComponent, NgTemplateOutlet, NgIf, NgFor, RouterLink, AsyncPipe, DecimalPipe]
 })
 export class ClanCollectionBadgeDialogComponent  extends ChildComponent {
   sort: Sort = {

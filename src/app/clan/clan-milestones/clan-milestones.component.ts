@@ -7,12 +7,21 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgTemplateOutlet, NgFor, AsyncPipe } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
+import { FriendStarComponent } from '../../shared/friend-star/friend-star.component';
+import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-check.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-milestones',
-  templateUrl: './clan-milestones.component.html',
-  styleUrls: ['./clan-milestones.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-milestones',
+    templateUrl: './clan-milestones.component.html',
+    styleUrls: ['./clan-milestones.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButton, FaIconComponent, NgTemplateOutlet, NgFor, MatTooltip, RouterLink, FriendStarComponent, MilestoneCheckComponent, AsyncPipe]
 })
 export class ClanMilestonesComponent extends ChildComponent {  
   public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);

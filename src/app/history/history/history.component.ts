@@ -1,8 +1,8 @@
 
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { ActivityMode, Const, Player } from '@app/service/model';
@@ -11,13 +11,27 @@ import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filt
 import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatFormField } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatTable, MatHeaderCell, MatCell, MatHeaderRow, MatRow } from '@angular/material/table';
+import { CdkColumnDef, CdkHeaderCellDef, CdkCellDef, CdkHeaderRowDef, CdkRowDef } from '@angular/cdk/table';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { TimingPipe } from '../../shared/pipe/timing.pipe';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-history',
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-history',
+    templateUrl: './history.component.html',
+    styleUrls: ['./history.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, MatAnchor, MatFormField, MatSelect, FormsModule, MatOption, MatButton, MatIcon, MatTable, MatSort, CdkColumnDef, CdkHeaderCellDef, MatHeaderCell, MatSortHeader, CdkCellDef, MatCell, FaIconComponent, CdkHeaderRowDef, MatHeaderRow, CdkRowDef, MatRow, MatPaginator, TimingPipe, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class HistoryComponent extends ChildComponent implements OnInit {
 

@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { Entry, Game, PgcrService } from '@app/service/pgcr.service';
 import { takeUntil } from 'rxjs/operators';
@@ -8,12 +8,24 @@ import { BungieService } from '../../service/bungie.service';
 import { Activity, ActivityMode, Const, Player, UserInfo } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatFormField } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatIcon } from '@angular/material/icon';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { FriendStarComponent } from '../../shared/friend-star/friend-star.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-history',
-  templateUrl: './recent-players.component.html',
-  styleUrls: ['./recent-players.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-history',
+    templateUrl: './recent-players.component.html',
+    styleUrls: ['./recent-players.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, MatAnchor, MatFormField, MatSelect, FormsModule, MatOption, MatButton, MatIcon, FaIconComponent, FriendStarComponent, AsyncPipe, DatePipe]
 })
 export class RecentPlayersComponent extends ChildComponent implements OnInit {
   activityModes: ActivityMode[];

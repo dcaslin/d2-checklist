@@ -3,12 +3,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatSelect } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { TriumphNameComponent } from '../../../shared/triumph-name/triumph-name.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-objectives.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-triumph-closest',
-  templateUrl: './triumph-closest.component.html',
-  styleUrls: ['./triumph-closest.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-triumph-closest',
+    templateUrl: './triumph-closest.component.html',
+    styleUrls: ['./triumph-closest.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatSelect, FormsModule, NgFor, MatOption, MatCheckbox, MatButton, FaIconComponent, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe]
 })
 export class TriumphClosestComponent extends ChildComponent {
   maxResults: number[] = [10, 25, 50];

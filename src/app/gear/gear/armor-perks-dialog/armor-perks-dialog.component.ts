@@ -1,15 +1,20 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { GearComponent } from '../gear.component';
 import { Character, InventoryPlug, Player } from '@app/service/model';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-armor-perks-dialog',
-  templateUrl: './armor-perks-dialog.component.html',
-  styleUrls: ['./armor-perks-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-armor-perks-dialog',
+    templateUrl: './armor-perks-dialog.component.html',
+    styleUrls: ['./armor-perks-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, NgIf, CdkScrollable, MatDialogContent, MatTabGroup, NgFor, MatTab, AsyncPipe]
 })
 export class ArmorPerksDialogComponent {
   parent: GearComponent;

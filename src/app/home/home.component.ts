@@ -1,9 +1,9 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@app/service/auth.service';
 import { BungieService } from '@app/service/bungie.service';
 import { ElasticSearchResult, ElasticSearchService } from '@app/service/elastic-search.service';
@@ -19,12 +19,33 @@ import { BehaviorSubject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatBadge } from '@angular/material/badge';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatCardSubtitle } from '@angular/material/card';
+import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription } from '@angular/material/expansion';
+import { SignedOnLoadingIconComponent } from '../shared/signed-on-loading-icon/signed-on-loading-icon.component';
+import { DealsContainerComponent } from '../deals/deals-container/deals-container.component';
+import { MatList, MatListItem, MatListItemIcon, MatListItemLine } from '@angular/material/list';
+import { LegendaryLostSectorComponent } from '../shared/legendary-lost-sector/legendary-lost-sector.component';
+import { RobotHomeComponent } from './robot-home/robot-home.component';
+import { MatOption } from '@angular/material/core';
+import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatFormField, MatLabel, MatIcon, MatSuffix, MatInput, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatAnchor, FaIconComponent, MatMenuTrigger, MatBadge, MatMenu, MatMenuItem, RouterLink, NgFor, MatButton, MatTooltip, MatProgressSpinner, MatCard, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, SignedOnLoadingIconComponent, MatExpansionPanelDescription, MatCardContent, DealsContainerComponent, MatCardHeader, MatCardTitle, MatCardSubtitle, MatList, MatListItem, LegendaryLostSectorComponent, MatListItemIcon, MatListItemLine, RobotHomeComponent, MatAutocomplete, MatOption, AsyncPipe, AgoHumanizedPipe]
 })
 export class HomeComponent extends ChildComponent implements OnInit {
   readonly isSignedOn$: BehaviorSubject<boolean> = new BehaviorSubject(false);

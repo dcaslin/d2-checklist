@@ -3,6 +3,10 @@ import { IconService } from '@app/service/icon.service';
 import { IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { BehaviorSubject } from 'rxjs';
 import { MilestoneRow, PursuitRow } from '../uber-list-state.service';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 
 export function generateUberState(config: UberToggleConfig, choices: UberChoice[]): UberToggleState {
@@ -16,10 +20,12 @@ export function generateUberState(config: UberToggleConfig, choices: UberChoice[
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-uber-list-toggle',
-  templateUrl: './uber-list-toggle.component.html',
-  styleUrls: ['./uber-list-toggle.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-uber-list-toggle',
+    templateUrl: './uber-list-toggle.component.html',
+    styleUrls: ['./uber-list-toggle.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButton, MatMenuTrigger, FaIconComponent, MatMenu, MatMenuItem, NgFor, MatIconButton, AsyncPipe]
 })
 export class UberListToggleComponent {
   @Input() state$!: BehaviorSubject<UberToggleState>;

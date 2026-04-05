@@ -4,12 +4,18 @@ import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.se
 import { IconService } from '@app/service/icon.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanTriumphItemDialogComponent } from '../clan-triumph-item-dialog/clan-triumph-item-dialog.component';
+import { NgIf } from '@angular/common';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-triumph-item',
-  templateUrl: './clan-triumph-item.component.html',
-  styleUrls: ['./clan-triumph-item.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-triumph-item',
+    templateUrl: './clan-triumph-item.component.html',
+    styleUrls: ['./clan-triumph-item.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatIconButton, FaIconComponent, MatButton, MatProgressBar]
 })
 export class ClanTriumphItemComponent extends ChildComponent {
 

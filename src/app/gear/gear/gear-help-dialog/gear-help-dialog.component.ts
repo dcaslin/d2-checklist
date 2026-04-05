@@ -1,12 +1,15 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-gear-help-dialog',
-  templateUrl: './gear-help-dialog.component.html',
-  styleUrls: ['../gear.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-gear-help-dialog',
+    templateUrl: './gear-help-dialog.component.html',
+    styleUrls: ['../gear.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent]
 })
 export class GearHelpDialogComponent {
 

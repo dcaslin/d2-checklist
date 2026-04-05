@@ -7,12 +7,18 @@ import { ParseService } from '@app/service/parse.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { ClassInventoryBucket, ExoticInventoryBucket, VendorDeals } from '@app/service/vendor.service';
 import { ArmorCompareDialogComponent } from '../armor-compare-dialog/armor-compare-dialog.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-armor-deals',
-  templateUrl: './armor-deals.component.html',
-  styleUrls: ['./armor-deals.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-armor-deals',
+    templateUrl: './armor-deals.component.html',
+    styleUrls: ['./armor-deals.component.scss'],
+    standalone: true,
+    imports: [MatTooltip, FaIconComponent, NgIf, NgFor, ItemIconComponent, DecimalPipe]
 })
 export class ArmorDealsComponent {
   @Input() vendorDeals!: VendorDeals;

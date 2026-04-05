@@ -1,11 +1,20 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { UntypedFormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
+import { UntypedFormControl, FormGroupDirective, NgForm, Validators, FormsModule } from '@angular/forms';
+import { ErrorStateMatcher, MatOption } from '@angular/material/core';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogContent } from '@angular/material/dialog';
+import { MatSelectChange, MatSelect } from '@angular/material/select';
 import { IconService } from '@app/service/icon.service';
 import { DimSyncChoice, MarkService } from '@app/service/mark.service';
 import { GearComponent } from '../gear.component';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatFormField, MatError } from '@angular/material/form-field';
+import { MatButton, MatAnchor } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { RouterLink } from '@angular/router';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
 
 interface DimSyncOption {
   text: string;
@@ -20,10 +29,12 @@ export class InstantMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-gear-utilities-dialog',
-  templateUrl: './gear-utilities-dialog.component.html',
-  styleUrls: ['./gear-utilities-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-gear-utilities-dialog',
+    templateUrl: './gear-utilities-dialog.component.html',
+    styleUrls: ['./gear-utilities-dialog.component.scss'],
+    standalone: true,
+    imports: [CdkScrollable, MatDialogContent, NgIf, MatProgressSpinner, MatTabGroup, MatTab, FormsModule, MatFormField, MatSelect, NgFor, MatOption, MatError, MatButton, FaIconComponent, MatAnchor, RouterLink, MatRadioGroup, MatRadioButton, AsyncPipe, DatePipe]
 })
 export class GearUtilitiesDialogComponent {
   parent: GearComponent;

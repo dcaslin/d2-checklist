@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { GearComponent } from '@app/gear';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
@@ -9,12 +9,38 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { applyMods, clearMods, getEnergyApproachArray, getEnergyApproachString, ModChoices, PreferredStat, PreferredStats } from './mod-wizard-logic';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'd2c-mod-helper-dialog',
-  templateUrl: './mod-helper-dialog.component.html',
-  styleUrls: ['./mod-helper-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-mod-helper-dialog',
+    templateUrl: './mod-helper-dialog.component.html',
+    styleUrls: ['./mod-helper-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        MatIconButton,
+        FaIconComponent,
+        CdkScrollable,
+        MatDialogContent,
+        NgIf,
+        MatButtonToggleGroup,
+        NgFor,
+        MatButtonToggle,
+        MatRadioGroup,
+        FormsModule,
+        MatRadioButton,
+        MatDialogActions,
+        MatButton,
+        MatDialogClose,
+        AsyncPipe,
+    ],
 })
 export class ModHelperDialogComponent extends ChildComponent {
 

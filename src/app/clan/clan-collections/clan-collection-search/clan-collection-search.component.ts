@@ -4,12 +4,19 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { ClanCollectionItemComponent } from '../clan-collection-item/clan-collection-item.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-collection-search',
-  templateUrl: './clan-collection-search.component.html',
-  styleUrls: ['./clan-collection-search.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-collection-search',
+    templateUrl: './clan-collection-search.component.html',
+    styleUrls: ['./clan-collection-search.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, NgFor, ClanCollectionItemComponent, AsyncPipe]
 })
 export class ClanCollectionSearchComponent extends ChildComponent implements OnInit {
   private collectionSearchSubject: Subject<void> = new Subject<void>();

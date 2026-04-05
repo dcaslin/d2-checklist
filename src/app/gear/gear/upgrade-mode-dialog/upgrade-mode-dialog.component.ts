@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { SimpleInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
@@ -10,6 +10,13 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GearComponent } from '../gear.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ManifestItemIconComponent } from '../../../shared/manifest-item-icon/manifest-item-icon.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 
@@ -34,10 +41,12 @@ function buildEmptyData(): UpgradeModeDialogData {
   };
 }
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-upgrade-mode-dialog',
-  templateUrl: './upgrade-mode-dialog.component.html',
-  styleUrls: ['./upgrade-mode-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-upgrade-mode-dialog',
+    templateUrl: './upgrade-mode-dialog.component.html',
+    styleUrls: ['./upgrade-mode-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatButton, FaIconComponent, CdkScrollable, MatDialogContent, NgIf, MatTooltip, NgFor, ManifestItemIconComponent, MatProgressBar, MatDialogActions, MatDialogClose, AsyncPipe]
 })
 export class UpgradeModeDialogComponent extends ChildComponent {
   parent: GearComponent;

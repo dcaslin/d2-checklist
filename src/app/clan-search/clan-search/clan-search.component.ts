@@ -4,13 +4,24 @@ import { BehaviorSubject } from 'rxjs';
 import { BungieService } from '../../service/bungie.service';
 import { ClanInfo } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatMiniFabButton, MatAnchor } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { MatCard, MatCardHeader, MatCardAvatar, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions } from '@angular/material/card';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-search',
-  templateUrl: './clan-search.component.html',
-  styleUrls: ['./clan-search.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-search',
+    templateUrl: './clan-search.component.html',
+    styleUrls: ['./clan-search.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, MatFormField, MatLabel, MatInput, FormsModule, MatMiniFabButton, MatIcon, RouterLink, MatCard, MatCardHeader, MatCardAvatar, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions, MatAnchor, AsyncPipe]
 })
 export class ClanSearchComponent extends ChildComponent implements OnInit {
   name!: string;

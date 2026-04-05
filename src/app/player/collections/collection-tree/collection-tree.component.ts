@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Location } from '@angular/common';
+import { Location, NgIf, AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener, MatTree, MatTreeNodeDef, MatTreeNode, MatTreeNodeToggle, MatTreeNodePadding } from '@angular/material/tree';
 import { ActivatedRoute } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { TriumphNode } from '@app/service/model';
@@ -10,6 +10,12 @@ import { Observable, of as observableOf } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 export class TriumphFlatNode {
@@ -18,10 +24,12 @@ export class TriumphFlatNode {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-collection-tree',
-  templateUrl: './collection-tree.component.html',
-  styleUrls: ['./collection-tree.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-collection-tree',
+    templateUrl: './collection-tree.component.html',
+    styleUrls: ['./collection-tree.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatCheckbox, FormsModule, MatTree, MatTreeNodeDef, MatTreeNode, MatTreeNodeToggle, MatTreeNodePadding, MatIconButton, FaIconComponent, MatIcon, MatProgressBar, AsyncPipe]
 })
 export class CollectionTreeComponent extends ChildComponent implements OnInit {
   selectedTreeNodeHash!: string;

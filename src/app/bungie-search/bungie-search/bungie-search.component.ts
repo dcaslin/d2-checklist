@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
@@ -8,13 +8,23 @@ import { BungieMemberPlatform, BungieGlobalSearchResult, Const } from '../../ser
 import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatMiniFabButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-bungie-search',
-  templateUrl: './bungie-search.component.html',
-  styleUrls: ['./bungie-search.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-bungie-search',
+    templateUrl: './bungie-search.component.html',
+    styleUrls: ['./bungie-search.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, MatFormField, MatLabel, MatInput, FormsModule, MatMiniFabButton, MatIcon, NgFor, RouterLink, FaIconComponent, AsyncPipe]
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit {
   Const = Const;

@@ -7,13 +7,23 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { TriumphNameComponent } from '../../../shared/triumph-name/triumph-name.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-objectives.component';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-triumph-search',
-  templateUrl: './triumph-search.component.html',
-  styleUrls: ['./triumph-search.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-triumph-search',
+    templateUrl: './triumph-search.component.html',
+    styleUrls: ['./triumph-search.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, MatCheckbox, NgFor, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe]
 })
 export class TriumphSearchComponent extends ChildComponent implements OnInit {
   public MAX_RESULTS = 30;

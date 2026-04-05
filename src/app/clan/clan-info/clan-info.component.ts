@@ -6,12 +6,20 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatButton } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatTooltip } from '@angular/material/tooltip';
+import { AgoHumanizedPipe, DateFormatPipe } from '../../shared/pipe/timing.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-info',
-  templateUrl: './clan-info.component.html',
-  styleUrls: ['./clan-info.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-info',
+    templateUrl: './clan-info.component.html',
+    styleUrls: ['./clan-info.component.scss'],
+    standalone: true,
+    imports: [NgIf, NgFor, FaIconComponent, MatButton, RouterLink, MatTooltip, AgoHumanizedPipe, DateFormatPipe, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class ClanInfoComponent extends ChildComponent {
   sort: Sort = {

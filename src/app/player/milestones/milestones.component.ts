@@ -8,12 +8,21 @@ import { takeUntil } from 'rxjs/operators';
 import { PlBucketDialogComponent } from '../pl-bucket-dialog/pl-bucket-dialog.component';
 import { PlayerStateService } from '../player-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { RewardDescComponent } from './reward-desc/reward-desc.component';
+import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-check.component';
+import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-milestones',
-  templateUrl: './milestones.component.html',
-  styleUrls: ['./milestones.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-milestones',
+    templateUrl: './milestones.component.html',
+    styleUrls: ['./milestones.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButton, NgFor, MatTooltip, FaIconComponent, RewardDescComponent, MilestoneCheckComponent, AgoHumanizedPipe, AsyncPipe, DatePipe]
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {
   hideCompleteChars: string | null = null;

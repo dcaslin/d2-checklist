@@ -5,12 +5,19 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { IconService } from '@app/service/icon.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { ClanTriumphItemComponent } from '../clan-triumph-item/clan-triumph-item.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-triumph-search',
-  templateUrl: './clan-triumph-search.component.html',
-  styleUrls: ['./clan-triumph-search.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-triumph-search',
+    templateUrl: './clan-triumph-search.component.html',
+    styleUrls: ['./clan-triumph-search.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, NgFor, ClanTriumphItemComponent, AsyncPipe]
 })
 export class ClanTriumphSearchComponent extends ChildComponent implements OnInit {
   private triumphSearchSubject: Subject<void> = new Subject<void>();

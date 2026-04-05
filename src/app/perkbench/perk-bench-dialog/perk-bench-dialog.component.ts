@@ -1,10 +1,18 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { GunRoll, GunRolls } from '@app/service/panda-godrolls.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { GunInfo, MappedRoll, PerkbenchComponent } from '../perkbench.component';
+import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 const NORMAL_MW = ['Handling', 'Range', 'Reload Speed', 'Stability'];
 const BOW_MW = ['Handling', 'Reload Speed', 'Stability', 'Accuracy', 'Draw Time'];
@@ -50,9 +58,11 @@ function buildEmptyGunRolls(name: string, mnk: boolean, controller: boolean): Gu
 
 
 @Component({
-  selector: 'd2c-perk-bench-dialog',
-  templateUrl: './perk-bench-dialog.component.html',
-  styleUrls: ['./perk-bench-dialog.component.scss']
+    selector: 'd2c-perk-bench-dialog',
+    templateUrl: './perk-bench-dialog.component.html',
+    styleUrls: ['./perk-bench-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatButtonToggleGroup, FormsModule, MatButtonToggle, NgIf, FaIconComponent, NgFor, MatButton, MatTooltip, CdkScrollable, MatDialogContent, MatCheckbox, AsyncPipe]
 })
 export class PerkBenchDialogComponent extends ChildComponent {
   clickOptions = [

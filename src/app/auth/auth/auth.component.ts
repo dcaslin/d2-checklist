@@ -5,13 +5,17 @@ import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../service/auth.service';
 import { ChildComponent } from '../../shared/child.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-auth',
+    templateUrl: './auth.component.html',
+    styleUrls: ['./auth.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, AsyncPipe]
 })
 export class AuthComponent extends ChildComponent implements OnInit {
   statusMsg = 'Authorizing';

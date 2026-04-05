@@ -9,6 +9,9 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, JsonPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatTooltip } from '@angular/material/tooltip';
 
 
 
@@ -31,9 +34,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 // Invader: Guardians Defeated, Motes Denied  (not Primeval Healing, oddly includes Invader Deaths
 // Sentry: Primeval Damage (nothing on blockers)
 @Component({
-  selector: 'd2c-pgcr2',
-  templateUrl: './pgcr2.component.html',
-  styleUrls: ['./pgcr2.component.scss']
+    selector: 'd2c-pgcr2',
+    templateUrl: './pgcr2.component.html',
+    styleUrls: ['./pgcr2.component.scss'],
+    standalone: true,
+    imports: [NgIf, FaIconComponent, NgFor, NgTemplateOutlet, MatTooltip, AsyncPipe, JsonPipe, DecimalPipe, DatePipe]
 })
 export class Pgcr2Component extends ChildComponent implements OnInit {
   public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);

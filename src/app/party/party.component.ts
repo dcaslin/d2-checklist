@@ -1,7 +1,7 @@
 
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { ArmorPerksDialogComponent, PlayerMods } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
 import { PlayerComponent } from '@app/player';
 import { IconService } from '@app/service/icon.service';
@@ -11,12 +11,20 @@ import { BungieService } from '../service/bungie.service';
 import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult } from '../service/model';
 import { ChildComponent } from '../shared/child.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, DecimalPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatAnchor } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-party',
-  templateUrl: './party.component.html',
-  styleUrls: ['./party.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-party',
+    templateUrl: './party.component.html',
+    styleUrls: ['./party.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, FaIconComponent, MatAnchor, NgTemplateOutlet, MatTooltip, AsyncPipe, DecimalPipe, AgoHumanizedPipe]
 })
 export class PartyComponent extends ChildComponent implements OnInit {
   DamageType = DamageType;
