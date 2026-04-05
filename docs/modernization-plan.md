@@ -143,7 +143,13 @@ Angular migrations must go one major version at a time:
   - Removed `unsubscribe$` from 7 root services (singletons never destroy)
   - Deleted unused `StreamingChildComponent`
 - [ ] Adopt Angular signals where beneficial
-- [ ] Evaluate esbuild-based builder (`@angular-devkit/build-angular:application`)
+- [x] Evaluate esbuild-based builder (`@angular-devkit/build-angular:application`)
+  - Switched from webpack `browser` builder to esbuild `application` builder
+  - Replaced `require()` with ESM `import` for package.json in environment files
+  - Removed polyfills.ts (zone.js now specified in angular.json polyfills array)
+  - Removed webpack-only options: `vendorChunk`, `buildOptimizer`, `namedChunks`, `aot`
+  - Updated deploy workflows for new `dist/browser/` output path
+  - Updated tsconfig: `module: "ES2022"`, `moduleResolution: "bundler"`, `resolveJsonModule: true`
 
 **Done (7a+7b).** Running on Angular 18.2.14. Post-migration modernization (7c) is optional follow-up work.
 
