@@ -9,13 +9,27 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton, MatAnchor } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { AgoHumanizedPipe } from '../../../shared/pipe/timing.pipe';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-pursuit-list',
-  templateUrl: './pursuit-list.component.html',
-  styleUrls: ['./pursuit-list.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-pursuit-list',
+    templateUrl: './pursuit-list.component.html',
+    styleUrls: ['./pursuit-list.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatFormField, MatSelect, FormsModule, NgFor, MatOption, MatLabel, MatInput, MatIconButton, MatSuffix, MatIcon, MatCheckbox, FaIconComponent, MatAnchor, MatProgressBar, AgoHumanizedPipe, AsyncPipe, DecimalPipe]
 })
 export class PursuitListComponent extends ChildComponent {
   public displayFilterText: string | null = null;

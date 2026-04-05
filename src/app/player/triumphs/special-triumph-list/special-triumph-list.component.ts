@@ -9,6 +9,20 @@ import { title } from 'process';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { SortIndicatorComponent } from '../../../shared/sort-indicator/sort-indicator.component';
+import { TriumphNameComponent } from '../../../shared/triumph-name/triumph-name.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-objectives.component';
 
 
 function sortByName(x: TriumphRecordNode, y: TriumphRecordNode): number {
@@ -36,9 +50,11 @@ function sortByProgress(x: TriumphRecordNode, y: TriumphRecordNode): number {
 }
 
 @Component({
-  selector: 'd2c-special-triumph-list',
-  templateUrl: './special-triumph-list.component.html',
-  styleUrls: ['./special-triumph-list.component.scss']
+    selector: 'd2c-special-triumph-list',
+    templateUrl: './special-triumph-list.component.html',
+    styleUrls: ['./special-triumph-list.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatCheckbox, FormsModule, MatFormField, MatLabel, MatSelect, NgFor, MatOption, MatInput, MatAutocompleteTrigger, MatIconButton, MatSuffix, MatIcon, MatAutocomplete, SortIndicatorComponent, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class SpecialTriumphListComponent extends ChildComponent {
 

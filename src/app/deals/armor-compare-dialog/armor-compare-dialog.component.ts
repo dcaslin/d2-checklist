@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { GearCompareDialogComponent } from '@app/gear/gear/gear-compare-dialog/gear-compare-dialog.component';
 import { SortEvent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
 import { GearService } from '@app/service/gear.service';
@@ -7,11 +7,19 @@ import { IconService } from '@app/service/icon.service';
 import { DamageType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
+import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { HorizontalSortComponent } from '../../gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
+import { SeasonIndicatorComponent } from '../../shared/season-indicator/season-indicator.component';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
 
 @Component({
-  selector: 'd2c-armor-compare-dialog',
-  templateUrl: './armor-compare-dialog.component.html',
-  styleUrls: ['./armor-compare-dialog.component.scss']
+    selector: 'd2c-armor-compare-dialog',
+    templateUrl: './armor-compare-dialog.component.html',
+    styleUrls: ['./armor-compare-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatDialogTitle, CdkScrollable, MatDialogContent, HorizontalSortComponent, NgFor, SeasonIndicatorComponent, FaIconComponent, ItemIconComponent, NgClass, AsyncPipe]
 })
 export class ArmorCompareDialogComponent extends ChildComponent {
   sortBy = 'preferredStatPoints';

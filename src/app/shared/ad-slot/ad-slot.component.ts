@@ -3,12 +3,16 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { NitroUnitComponent } from './nitro-unit/nitro-unit.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-ad-slot',
-  templateUrl: './ad-slot.component.html',
-  styleUrls: ['./ad-slot.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-ad-slot',
+    templateUrl: './ad-slot.component.html',
+    styleUrls: ['./ad-slot.component.scss'],
+    standalone: true,
+    imports: [NgIf, NitroUnitComponent, AsyncPipe]
 })
 export class AdSlotComponent extends ChildComponent implements OnInit {
   @Input() adType = 'unknown';

@@ -1,18 +1,40 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { GearComponent } from '../gear.component';
-import { SortEvent } from './horizontal-sort/horizontal-sort.component';
+import { SortEvent, HorizontalSortComponent } from './horizontal-sort/horizontal-sort.component';
+import { NgIf, NgFor, NgClass, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { SeasonIndicatorComponent } from '../../../shared/season-indicator/season-indicator.component';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { GodRollItemComponent } from '../../god-roll-item/god-roll-item.component';
+import { ItemIconComponent } from '../../../shared/item-icon/item-icon.component';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { RouterLink } from '@angular/router';
+import { GodRollMwComponent } from '../../god-roll-mw/god-roll-mw.component';
+import { WritablePlugComponent } from '../../writable-plug/writable-plug.component';
+import { MatOption } from '@angular/material/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-gear-compare-dialog',
-  templateUrl: './gear-compare-dialog.component.html',
-  styleUrls: ['../gear.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-gear-compare-dialog',
+    templateUrl: './gear-compare-dialog.component.html',
+    styleUrls: ['../gear.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatDialogTitle, SeasonIndicatorComponent, MatIconButton, MatDialogClose, MatIcon, MatCheckbox, FormsModule, CdkScrollable, MatDialogContent, HorizontalSortComponent, NgFor, MatButton, MatTooltip, MatMenuTrigger, MatMenu, MatMenuItem, FaIconComponent, NgClass, GodRollItemComponent, ItemIconComponent, MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, MatProgressBar, RouterLink, GodRollMwComponent, WritablePlugComponent, MatAutocomplete, MatOption, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class GearCompareDialogComponent extends ChildComponent {
   sortBy = 'power';

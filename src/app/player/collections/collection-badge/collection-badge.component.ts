@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Badge, Player } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
@@ -7,12 +7,20 @@ import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-collection-badge',
-  templateUrl: './collection-badge.component.html',
-  styleUrls: ['./collection-badge.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-collection-badge',
+    templateUrl: './collection-badge.component.html',
+    styleUrls: ['./collection-badge.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButton, RouterLink, FaIconComponent, MatCheckbox, FormsModule, MatTabGroup, NgFor, MatTab, AsyncPipe]
 })
 export class CollectionBadgeComponent extends ChildComponent implements OnInit {
   private selectedBadge: string | null = null;

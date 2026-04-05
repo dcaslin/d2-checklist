@@ -2,10 +2,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angul
 import { environment } from '@env/environment';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-nitro-unit',
-  templateUrl: './nitro-unit.component.html',
-  styleUrls: ['./nitro-unit.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-nitro-unit',
+    templateUrl: './nitro-unit.component.html',
+    styleUrls: ['./nitro-unit.component.scss'],
+    standalone: true
 })
 export class NitroUnitComponent implements AfterViewInit {
   @Input() title!: string;

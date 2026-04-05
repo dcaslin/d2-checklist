@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { Bonus, BoostInfo, BUCKETS_ALL_POWER, Character, Const } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
@@ -8,11 +8,17 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../player-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'd2c-pl-bucket-dialog',
-  templateUrl: './pl-bucket-dialog.component.html',
-  styleUrls: ['./pl-bucket-dialog.component.scss']
+    selector: 'd2c-pl-bucket-dialog',
+    templateUrl: './pl-bucket-dialog.component.html',
+    styleUrls: ['./pl-bucket-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatDialogTitle, FaIconComponent, CdkScrollable, MatDialogContent, NgFor, MatProgressSpinner, AsyncPipe]
 })
 export class PlBucketDialogComponent extends ChildComponent {
   public character$: BehaviorSubject<Character> = new BehaviorSubject<Character>(null!);

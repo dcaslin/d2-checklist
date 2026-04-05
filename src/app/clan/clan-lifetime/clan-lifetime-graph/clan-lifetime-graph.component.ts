@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
 import { ChartConfiguration, ChartData, ChartType, ScatterDataPoint } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-lifetime-graph',
-  templateUrl: './clan-lifetime-graph.component.html',
-  styleUrls: ['./clan-lifetime-graph.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-lifetime-graph',
+    templateUrl: './clan-lifetime-graph.component.html',
+    styleUrls: ['./clan-lifetime-graph.component.scss'],
+    standalone: true,
+    imports: [NgChartsModule]
 })
 export class ClanLifetimeGraphComponent {
   public scatterChartType: ChartType = 'scatter';

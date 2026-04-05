@@ -1,14 +1,22 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogContent } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { Character, InventoryItem, Player } from '@app/service/model';
 import { BehaviorSubject } from 'rxjs';
 import { GearComponent } from '../gear.component';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { SeasonIndicatorComponent } from '../../../shared/season-indicator/season-indicator.component';
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-season-breakdown-dialog',
-  templateUrl: './season-breakdown-dialog.component.html',
-  styleUrls: ['./season-breakdown-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-season-breakdown-dialog',
+    templateUrl: './season-breakdown-dialog.component.html',
+    styleUrls: ['./season-breakdown-dialog.component.scss'],
+    standalone: true,
+    imports: [CdkScrollable, MatDialogContent, MatTabGroup, NgFor, MatTab, MatTooltip, FaIconComponent, NgIf, SeasonIndicatorComponent, AsyncPipe]
 })
 export class SeasonBreakdownDialogComponent {
   parent: GearComponent;

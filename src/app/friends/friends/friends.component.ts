@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { IconService } from '@app/service/icon.service';
 import { FriendListEntry, Player, UserInfo } from '@app/service/model';
@@ -8,13 +8,22 @@ import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatAnchor } from '@angular/material/button';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-check.component';
+import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-friends',
-  templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-friends',
+    templateUrl: './friends.component.html',
+    styleUrls: ['./friends.component.scss'],
+    standalone: true,
+    imports: [FaIconComponent, MatAnchor, NgIf, MatProgressSpinner, NgFor, MatTooltip, RouterLink, MilestoneCheckComponent, AgoHumanizedPipe, AsyncPipe, DecimalPipe]
 })
 export class FriendsComponent extends ChildComponent {
   public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject<FriendListEntry[]>([]);

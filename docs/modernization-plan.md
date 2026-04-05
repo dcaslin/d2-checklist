@@ -129,7 +129,13 @@ Angular migrations must go one major version at a time:
 - [x] Angular 17 → 18 (`ng update @angular/core@18 @angular/cli@18`)
 
 ### 7c: Post-migration modernization
-- [ ] Migrate key components to standalone (remove NgModule boilerplate)
+- [x] Migrate key components to standalone (remove NgModule boilerplate)
+  - Ran Angular standalone migration schematic (3 steps: convert, prune, bootstrap)
+  - All 129 components now `standalone: true` with per-component imports
+  - Deleted all 15 NgModule files (SharedModule, MilestoneCheckModule, 12 feature modules, AppRoutingModule)
+  - `main.ts` uses `bootstrapApplication()` with `provideRouter()`, `provideServiceWorker()`, `provideHttpClient()`, `provideAnimations()`
+  - Moved `MAT_TOOLTIP_DEFAULT_OPTIONS` from MilestoneCheckModule to MilestoneCheckComponent providers
+  - Deleted `Destroyable` base class (replaced with direct subscription in LoggedInGuard)
 - [x] Replace `ChildComponent` base class with `DestroyRef` + `takeUntilDestroyed`
   - Created `AppStateService` for shared state (debugmode, disableAds, favorites, hiddenMilestones)
   - `ChildComponent` now uses `inject()` — no constructor params, delegates to `AppStateService`

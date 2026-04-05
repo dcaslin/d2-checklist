@@ -5,11 +5,17 @@ import { InventoryItem } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { VendorDeals } from '@app/service/vendor.service';
 import { WeaponCompareDialogComponent } from '../weapon-compare-dialog/weapon-compare-dialog.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { NgIf, NgFor } from '@angular/common';
+import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
+import { GodRollItemComponent } from '../../gear/god-roll-item/god-roll-item.component';
 
 @Component({
-  selector: 'd2c-weapon-deals',
-  templateUrl: './weapon-deals.component.html',
-  styleUrls: ['./weapon-deals.component.scss']
+    selector: 'd2c-weapon-deals',
+    templateUrl: './weapon-deals.component.html',
+    styleUrls: ['./weapon-deals.component.scss'],
+    standalone: true,
+    imports: [MatTooltip, NgIf, NgFor, ItemIconComponent, GodRollItemComponent]
 })
 export class WeaponDealsComponent {
   @Input() vendorDeals!: VendorDeals;

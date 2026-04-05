@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { format, formatDuration, intervalToDuration, parseISO } from 'date-fns';
 import { formatDistanceStrict } from 'date-fns/esm';
 
-@Pipe({ name: 'd2cTiming' })
+@Pipe({
+    name: 'd2cTiming',
+    standalone: true
+})
 export class TimingPipe implements PipeTransform {
   // format ms into a duration
   transform(value: number, unit: string): string {
@@ -30,7 +33,10 @@ export class TimingPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'd2cDateFormat' })
+@Pipe({
+    name: 'd2cDateFormat',
+    standalone: true
+})
 export class DateFormatPipe implements PipeTransform {
   transform(value: Date | string, formatLayout: string): string {
     if (!value) {
@@ -48,7 +54,10 @@ export class DateFormatPipe implements PipeTransform {
 
 
 
-@Pipe({ name: 'd2cMinsHumanized' })
+@Pipe({
+    name: 'd2cMinsHumanized',
+    standalone: true
+})
 export class MinsHumanizedPipe implements PipeTransform {
   transform(mins: number): string {
     const duration = intervalToDuration({ start: 0, end: mins * 60 * 1000 });
@@ -58,7 +67,10 @@ export class MinsHumanizedPipe implements PipeTransform {
 
 
 
-@Pipe({ name: 'd2cAgoHumanized' })
+@Pipe({
+    name: 'd2cAgoHumanized',
+    standalone: true
+})
 export class AgoHumanizedPipe implements PipeTransform {
   transform( value: string, skipSuffix?: boolean): string {
     const today = new Date();

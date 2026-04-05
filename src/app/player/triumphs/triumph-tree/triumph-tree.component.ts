@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Location } from '@angular/common';
+import { Location, NgIf, AsyncPipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener, MatTree, MatTreeNodeDef, MatTreeNode, MatTreeNodeToggle, MatTreeNodePadding } from '@angular/material/tree';
 import { ActivatedRoute } from '@angular/router';
 import { CollectionTreeComponent, TriumphFlatNode } from '@app/player/collections/collection-tree/collection-tree.component';
 import { TriumphNode, TriumphRecordNode } from '@app/service/model';
@@ -11,12 +11,22 @@ import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-objectives.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-triumph-tree',
-  templateUrl: './triumph-tree.component.html',
-  styleUrls: ['./triumph-tree.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-triumph-tree',
+    templateUrl: './triumph-tree.component.html',
+    styleUrls: ['./triumph-tree.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButton, FaIconComponent, MatCheckbox, FormsModule, MatTree, MatTreeNodeDef, MatTreeNode, MatTreeNodeToggle, MatTreeNodePadding, MatIconButton, TriumphObjectivesComponent, MatIcon, MatTooltip, MatProgressBar, AsyncPipe, DecimalPipe]
 })
 export class TriumphTreeComponent extends ChildComponent implements OnInit {
   selectedTreeNodeHash!: string;

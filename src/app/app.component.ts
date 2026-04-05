@@ -1,9 +1,9 @@
 
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, HostBinding, HostListener, Inject, inject, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { environment as env } from '@env/environment';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -16,15 +16,31 @@ import { PwaService } from './service/pwa.service';
 import { SignedOnUserService } from './service/signed-on-user.service';
 import { StorageService } from './service/storage.service';
 import { getDefaultTheme } from './shared/utilities';
-import { Location } from '@angular/common';
+import { Location, NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIcon } from '@angular/material/icon';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatButton, MatIconButton, MatAnchor } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatSidenavContainer, MatSidenav } from '@angular/material/sidenav';
+import { MatNavList, MatListItem } from '@angular/material/list';
+import { MatDivider } from '@angular/material/divider';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
+import { SignedOnLoadingIconComponent } from './shared/signed-on-loading-icon/signed-on-loading-icon.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { PlayerCurrenciesComponent } from './player-currencies/player-currencies.component';
+import { AdSlotComponent } from './shared/ad-slot/ad-slot.component';
+import { AppStatusComponent } from './app-status/app-status.component';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [MatSidenavContainer, MatSidenav, RouterLink, MatNavList, NgIf, MatListItem, MatIcon, NgFor, MatDivider, RouterLinkActive, FaIconComponent, MatMenuTrigger, MatMenu, MatMenuItem, MatToolbar, MatToolbarRow, MatIconButton, SignedOnLoadingIconComponent, MatAnchor, MatButton, MatTooltip, PlayerCurrenciesComponent, AdSlotComponent, AppStatusComponent, RouterOutlet, AsyncPipe]
 })
 export class AppComponent implements OnInit, AfterViewInit {
   private destroyRef = inject(DestroyRef);
@@ -262,9 +278,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-success-snack',
-  templateUrl: 'snackbars/success.html'
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-success-snack',
+    templateUrl: 'snackbars/success.html',
+    standalone: true,
+    imports: [MatIcon]
 })
 export class SuccessSnackbarComponent {
   message: string;
@@ -274,9 +292,11 @@ export class SuccessSnackbarComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-info-snack',
-  templateUrl: 'snackbars/info.html'
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-info-snack',
+    templateUrl: 'snackbars/info.html',
+    standalone: true,
+    imports: [MatIcon]
 })
 export class InfoSnackbarComponent {
   message: string;
@@ -286,9 +306,11 @@ export class InfoSnackbarComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-warn-snack',
-  templateUrl: 'snackbars/warn.html'
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-warn-snack',
+    templateUrl: 'snackbars/warn.html',
+    standalone: true,
+    imports: [MatIcon]
 })
 export class WarnSnackbarComponent {
   message: string;
@@ -298,9 +320,20 @@ export class WarnSnackbarComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-select-platform-dialog',
-  templateUrl: './select-platform-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-select-platform-dialog',
+    templateUrl: './select-platform-dialog.component.html',
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        CdkScrollable,
+        MatDialogContent,
+        NgFor,
+        MatButton,
+        MatDialogClose,
+        FaIconComponent,
+        MatIcon,
+    ],
 })
 export class SelectPlatformDialogComponent {
   public const: Const = Const;

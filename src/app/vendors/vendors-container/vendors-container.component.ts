@@ -6,12 +6,18 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { VendorsComponent } from '../vendors/vendors.component';
+import { SignInRequiredComponent } from '../../shared/sign-in-required/sign-in-required.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-vendors-container',
-  templateUrl: './vendors-container.component.html',
-  styleUrls: ['./vendors-container.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-vendors-container',
+    templateUrl: './vendors-container.component.html',
+    styleUrls: ['./vendors-container.component.scss'],
+    standalone: true,
+    imports: [NgIf, VendorsComponent, SignInRequiredComponent, MatProgressSpinner, AsyncPipe]
 })
 export class VendorsContainerComponent extends ChildComponent implements OnInit {
   public charId$ = new BehaviorSubject<string|null>(null);

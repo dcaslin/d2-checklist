@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayerTriumph } from '@app/clan/clan-state.service';
 import { ChartConfiguration, ChartType } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-clan-triumph-graph',
-  templateUrl: './clan-triumph-graph.component.html',
-  styleUrls: ['./clan-triumph-graph.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-clan-triumph-graph',
+    templateUrl: './clan-triumph-graph.component.html',
+    styleUrls: ['./clan-triumph-graph.component.scss'],
+    standalone: true,
+    imports: [NgChartsModule]
 })
 export class ClanTriumphGraphComponent {
   public chartType: ChartType = 'bar';

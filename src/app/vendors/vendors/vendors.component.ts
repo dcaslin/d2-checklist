@@ -6,12 +6,29 @@ import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
 import { BehaviorSubject, combineLatest, fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIconButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { SignedOnLoadingIconComponent } from '../../shared/signed-on-loading-icon/signed-on-loading-icon.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
+import { GodRollItemComponent } from '../../gear/god-roll-item/god-roll-item.component';
+import { GodRollPlugComponent } from '../../gear/god-roll-plug/god-roll-plug.component';
+import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-vendors',
-  templateUrl: './vendors.component.html',
-  styleUrls: ['./vendors.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-vendors',
+    templateUrl: './vendors.component.html',
+    styleUrls: ['./vendors.component.scss'],
+    standalone: true,
+    imports: [MatIconButton, FaIconComponent, NgIf, MatButtonToggleGroup, NgFor, MatButtonToggle, MatFormField, MatLabel, MatInput, FormsModule, MatSuffix, MatIcon, MatCheckbox, SignedOnLoadingIconComponent, MatTooltip, ItemIconComponent, GodRollItemComponent, GodRollPlugComponent, AsyncPipe, AgoHumanizedPipe]
 })
 export class VendorsComponent implements OnInit {
   private destroyRef = inject(DestroyRef);

@@ -2,12 +2,15 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { AggHistoryEntry } from '@app/service/model';
 import { ChartConfiguration, ChartData, ChartType, ScatterDataPoint } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-player-efficiency-graph',
-  templateUrl: './player-efficiency-graph.component.html',
-  styleUrls: ['./player-efficiency-graph.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-player-efficiency-graph',
+    templateUrl: './player-efficiency-graph.component.html',
+    styleUrls: ['./player-efficiency-graph.component.scss'],
+    standalone: true,
+    imports: [NgChartsModule]
 })
 export class PlayerEfficiencyGraphComponent {
   public scatterChartType: ChartType = 'scatter';

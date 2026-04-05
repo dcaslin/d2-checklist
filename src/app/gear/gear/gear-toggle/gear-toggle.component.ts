@@ -2,13 +2,19 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
 import { generateState, ToggleState } from '../gear-filter-state.service';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-gear-toggle',
-  templateUrl: './gear-toggle.component.html',
-  styleUrls: ['../gear.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-gear-toggle',
+    templateUrl: './gear-toggle.component.html',
+    styleUrls: ['../gear.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatButton, MatMenuTrigger, FaIconComponent, MatMenu, MatMenuItem, NgFor, MatIconButton, AsyncPipe]
 })
 export class GearToggleComponent {
 

@@ -2,7 +2,7 @@
 
 ## Project overview
 
-d2-checklist is the Angular front end for [d2checklist.com](https://www.d2checklist.com), a Destiny 2 companion app. It uses Angular 14, Angular Material, and the Bungie API.
+d2-checklist is the Angular front end for [d2checklist.com](https://www.d2checklist.com), a Destiny 2 companion app. It uses Angular 18, Angular Material, and the Bungie API.
 
 ## Build and run
 
@@ -22,20 +22,19 @@ ALWAYS bump the version in package.json for each new PR. If the bungie manifest 
 
 - `src/app/` - Angular application source
   - `service/` - Core services (bungie.service, parse.service, gear.service, etc.)
-  - `shared/` - Shared module with reusable components, pipes, and utilities
-  - `player/`, `clan/`, `gear/`, `friends/`, `history/`, `vendors/`, `pgcr/` - Feature modules
-  - `app-routing.module.ts` - All routes
-  - `app.module.ts` - Root module declarations and providers
+  - `shared/` - Reusable standalone components, pipes, and utilities
+  - `player/`, `clan/`, `gear/`, `friends/`, `history/`, `vendors/`, `pgcr/` - Feature directories
+  - `app.routes.ts` - All routes and route guards
+  - `main.ts` - Bootstrap entry point (`bootstrapApplication`)
 - `src/environments/` - Environment configs; `keys.ts` (gitignored) holds Bungie API credentials
 - `src/assets/` - Static assets (JSON files tracked via git LFS)
 - `.github/workflows/` - CI/CD (deploy.yml, beta-deploy.yml)
 
 ## Key patterns
 
-- Module-based Angular architecture (not standalone components)
-- Many components extend `ChildComponent` (abstract base) for shared state/lifecycle
-- Services are provided in `app.module.ts`, not `providedIn: 'root'`
-- `SharedModule` re-exports Angular Material modules and common components
+- Standalone component architecture (no NgModules) — each component imports its own dependencies
+- Many components extend `ChildComponent` for shared state (delegates to `AppStateService`)
+- Services use `providedIn: 'root'`; route guards provided in `main.ts` bootstrap
 - `parse.service.ts` is the largest file (~4k lines) - handles Bungie API response parsing
 
 ## Git LFS

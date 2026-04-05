@@ -5,7 +5,8 @@ import { StorageService } from '../service/storage.service';
 
 @Component({
     selector: 'd2c-child',
-    template: `<div>Abstract</div>`
+    template: `<div>Abstract</div>`,
+    standalone: true
 })
 export class ChildComponent {
     storageService = inject(StorageService);

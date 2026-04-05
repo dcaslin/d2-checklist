@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { GearMetaData, InventoryItem, ItemType, Player } from '@app/service/model';
@@ -9,6 +9,13 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GearComponent } from '../gear.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButton } from '@angular/material/button';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ManifestItemIconComponent } from '../../../shared/manifest-item-icon/manifest-item-icon.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 interface Tuple {
   held: number;
@@ -38,10 +45,12 @@ function buildEmptyData(): ShardModeDialogData {
 
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-shard-mode-dialog',
-  templateUrl: './shard-mode-dialog.component.html',
-  styleUrls: ['./shard-mode-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-shard-mode-dialog',
+    templateUrl: './shard-mode-dialog.component.html',
+    styleUrls: ['./shard-mode-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatButton, FaIconComponent, CdkScrollable, MatDialogContent, NgIf, MatTooltip, ManifestItemIconComponent, MatProgressBar, MatDialogActions, MatDialogClose, AsyncPipe]
 })
 export class ShardModeDialogComponent extends ChildComponent {
   parent: GearComponent;

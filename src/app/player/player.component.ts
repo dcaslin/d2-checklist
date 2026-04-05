@@ -1,7 +1,7 @@
 
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
 import { BungieService } from '../service/bungie.service';
@@ -9,12 +9,23 @@ import { Character, Const, Player, PublicMilestonesAndActivities } from '../serv
 import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { FriendStarComponent } from '../shared/friend-star/friend-star.component';
+import { MatIconButton, MatAnchor, MatButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
+import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-player',
-  templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-player',
+    templateUrl: './player.component.html',
+    styleUrls: ['./player.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinner, FaIconComponent, FriendStarComponent, MatIconButton, NgFor, RouterLink, MatAnchor, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, MatIcon, MatTabNav, MatTabLink, RouterLinkActive, MatTabNavPanel, RouterOutlet, AgoHumanizedPipe, AsyncPipe]
 })
 export class PlayerComponent extends ChildComponent implements OnInit {
   public const: Const = Const;

@@ -1,12 +1,15 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'd2c-bulk-operations-help-dialog',
-  templateUrl: './bulk-operations-help-dialog.component.html',
-  styleUrls: ['./bulk-operations-help-dialog.component.scss']
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'd2c-bulk-operations-help-dialog',
+    templateUrl: './bulk-operations-help-dialog.component.html',
+    styleUrls: ['./bulk-operations-help-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent]
 })
 export class BulkOperationsHelpDialogComponent {
   constructor(
