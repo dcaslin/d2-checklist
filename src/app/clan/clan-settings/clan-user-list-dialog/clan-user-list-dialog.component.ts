@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanUserList } from '@app/clan/clan-state.service';
 import { BungieGroupMember } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -17,10 +16,9 @@ export class ClanUserListDialogComponent extends ChildComponent {
   public users: BungieGroupMember[];
 
   constructor(
-    storageService: StorageService,
     public dialogRef: MatDialogRef<ClanUserListDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ClanUserList) {
-      super(storageService);
+      super();
       this.title = data.title;
       this.desc = data.desc;
       this.users = data.users;

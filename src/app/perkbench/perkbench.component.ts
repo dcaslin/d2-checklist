@@ -16,7 +16,6 @@ import {
 import { NotificationService } from '@app/service/notification.service';
 import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, GUN_SUFFIXES, PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { environment as env } from '@env/environment';
 import { format } from 'date-fns';
@@ -25,6 +24,7 @@ import { BehaviorSubject, combineLatest, firstValueFrom} from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // TODO show guns with unrollable perks
 // x offer option to apply god rolls to local storage
@@ -202,7 +202,6 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialog: MatDialog,
     private signedOnUserService: SignedOnUserService,
@@ -213,11 +212,11 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router
   ) {
-    super(storageService);
+    super();
     this.init();
     this.isController = this.pandaGodrollsService.isController;
     combineLatest([this.filterChanged$, this.rolls$])
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(50))
+      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(50))
       .subscribe(([changed, rolls]) => {
         let showMe = rolls;
         if (this.showMissingOnly) {
@@ -306,7 +305,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const hash = params['hash'];
       if (hash != null) {
         this.preloadedHash = hash;

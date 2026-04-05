@@ -3,7 +3,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BurnDialogComponent } from '@app/home/burn-dialog/burn-dialog.component';
 import { IconService } from '@app/service/icon.service';
 import { LostSector, MilestoneActivity } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -19,11 +18,10 @@ export class LegendaryLostSectorComponent extends ChildComponent {
   ls!: LostSector;
 
   constructor(
-    storageService: StorageService,
     public dialog: MatDialog,
     public iconService: IconService
   ) {
-    super(storageService);
+    super();
   }
 
   

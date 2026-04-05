@@ -1,5 +1,5 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ArmorPerksDialogComponent, PlayerMods } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
@@ -9,8 +9,8 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
 import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult } from '../service/model';
-import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +18,7 @@ import { ChildComponent } from '../shared/child.component';
   templateUrl: './party.component.html',
   styleUrls: ['./party.component.scss']
 })
-export class PartyComponent extends ChildComponent implements OnInit, OnDestroy {
+export class PartyComponent extends ChildComponent implements OnInit {
   DamageType = DamageType;
   public errorMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   public _player: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
@@ -26,14 +26,13 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
 
   constructor(public bungieService: BungieService,
     public iconService: IconService,
-    storageService: StorageService,
     private route: ActivatedRoute, private router: Router,
     public dialog: MatDialog) {
-    super(storageService);
+    super();
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.init(params);
     });
   }

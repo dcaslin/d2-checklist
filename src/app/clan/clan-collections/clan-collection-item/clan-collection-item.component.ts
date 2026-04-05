@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanCollectionItemDialogComponent } from '../clan-collection-item-dialog/clan-collection-item-dialog.component';
 
@@ -18,9 +17,9 @@ export class ClanCollectionItemComponent extends ChildComponent {
   item!: ClanSearchableCollection;
 
 
-  constructor(storageService: StorageService, public state: ClanStateService,
+  constructor(public state: ClanStateService,
     public dialog: MatDialog) {
-    super(storageService);
+    super();
   }
 
   public openDialog(item: ClanSearchableCollection): void {

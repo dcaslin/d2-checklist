@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { BungieGroupMember, Sort } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,12 +77,11 @@ export class ClanInfoComponent extends ChildComponent {
     this.members.next(m);
   }
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: ClanStateService) {
-    super(storageService);
+    super();
     this.state.rawMembers.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe((rawMembers) => {
         this.applySort(rawMembers.slice(0));
       });

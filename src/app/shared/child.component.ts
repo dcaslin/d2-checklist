@@ -1,65 +1,27 @@
-
-import { Component, OnDestroy } from '@angular/core';
-import { UserInfo } from '@app/service/model';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { AppStateService } from '../service/app-state.service';
 import { StorageService } from '../service/storage.service';
-
 
 @Component({
     selector: 'd2c-child',
     template: `<div>Abstract</div>`
 })
-export class ChildComponent implements OnDestroy {
-    unsubscribe$: Subject<void> = new Subject<void>();
-    public favoritesList$: BehaviorSubject<UserInfo[]> = new BehaviorSubject<UserInfo[]>([]);
-    public favoritesMap: BehaviorSubject<{ [id: string]: UserInfo }> = new BehaviorSubject({});
-    public disableAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-    public hiddenClanMilestones: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-    storageService: StorageService;
+export class ChildComponent {
+    storageService = inject(StorageService);
+    destroyRef = inject(DestroyRef);
+    private appState = inject(AppStateService);
 
-    constructor(storageService: StorageService) {
-        this.storageService = storageService;
-        this.disableAds.next(this.storageService.getItem('disableads', false));
-        this.debugmode.next(this.storageService.getItem('debugmode', false));
-        this.storageService.settingFeed.pipe(
-            takeUntil(this.unsubscribe$))
-            .subscribe(
-                x => {
-                    if (x.disableads != null) {
-                        this.disableAds.next(x.disableads);
-                    }
-                    if (x.debugmode != null) {
-                        this.debugmode.next(x.debugmode);
-                    }
-                    if (x.friends != null) {
-                        this.favoritesMap.next(x.friends);
-                        const aFavs: UserInfo[] = [];
-                        for (const key of Object.keys(x.friends)) {
-                            aFavs.push(x.friends[key]);
-                        }
-                        this.favoritesList$.next(aFavs);
-                    }
-                    if (x.hiddenmilestones != null) {
-                        this.hiddenMilestones.next(x.hiddenmilestones);
-                    }
-                    if (x.hiddenClanMilestones != null) {
-                        this.hiddenClanMilestones.next(x.hiddenClanMilestones);
-                    }
-                });
-    }
+    public favoritesList$ = this.appState.favoritesList$;
+    public favoritesMap = this.appState.favoritesMap;
+    public disableAds = this.appState.disableAds;
+    public debugmode = this.appState.debugmode;
+    public hiddenMilestones = this.appState.hiddenMilestones;
+    public hiddenClanMilestones = this.appState.hiddenClanMilestones;
 
-    ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
-        this.loading.complete();
-    }
+    public loading = new BehaviorSubject<boolean>(false);
 
     public dump(dumpMe: any): void {
         console.log(dumpMe);
     }
-
 }

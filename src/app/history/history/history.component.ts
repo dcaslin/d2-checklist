@@ -1,16 +1,16 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { ActivityMode, Const, Player } from '@app/service/model';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss']
 })
-export class HistoryComponent extends ChildComponent implements OnInit, OnDestroy {
+export class HistoryComponent extends ChildComponent implements OnInit {
 
   readonly activityModes: ActivityMode[];
   maxResults: number[];
@@ -39,10 +39,10 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
-  constructor(storageService: StorageService, private bungieService: BungieService,
+  constructor(private bungieService: BungieService,
     public iconService: IconService,
     private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+    super();
     this.activityModes = BungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [100, 200, 500, 1000, 2000];
@@ -70,7 +70,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
 
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const platform: string = params['platform'];
 
       this.database.setData([]);

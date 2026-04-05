@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 /**
  * Created by Dave on 12/21/2016.
  */
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
@@ -19,9 +19,8 @@ export const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
 
 @Injectable({ providedIn: 'root' })
-export class BungieService implements OnDestroy {
+export class BungieService {
     private publicMilestonesAndActivities: PublicMilestonesAndActivities | null = null;
-    private unsubscribe$: Subject<void> = new Subject<void>();
     apiDown = false;
 
     constructor(private httpClient: HttpClient,
@@ -641,12 +640,6 @@ export class BungieService implements OnDestroy {
             this.handleError(err);
             return false;
         }
-    }
-
-
-    ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     private async makeFakeReq(url: string): Promise<any> {

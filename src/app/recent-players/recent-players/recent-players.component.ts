@@ -1,13 +1,13 @@
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { Entry, Game, PgcrService } from '@app/service/pgcr.service';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { Activity, ActivityMode, Const, Player, UserInfo } from '../../service/model';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +15,7 @@ import { ChildComponent } from '../../shared/child.component';
   templateUrl: './recent-players.component.html',
   styleUrls: ['./recent-players.component.scss']
 })
-export class RecentPlayersComponent extends ChildComponent implements OnInit, OnDestroy {
+export class RecentPlayersComponent extends ChildComponent implements OnInit {
   activityModes: ActivityMode[];
   maxResults: number[];
   selectedMaxResults: number;
@@ -35,12 +35,12 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
-  constructor(storageService: StorageService, private bungieService: BungieService,
+  constructor(private bungieService: BungieService,
     public iconService: IconService,
     private pgcrService: PgcrService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService);
+    super();
     this.activityModes = BungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [5, 10, 20, 50];
@@ -136,7 +136,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const platform: string = params['platform'];
       if (platform == null) { return; }
       const selPlatform = (Const.PLATFORMS_DICT as any)[platform];

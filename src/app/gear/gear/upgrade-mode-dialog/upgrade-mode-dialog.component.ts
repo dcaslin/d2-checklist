@@ -5,11 +5,11 @@ import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { GearMetaData, InventoryItem, ItemType, Player } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GearComponent } from '../gear.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 
@@ -47,16 +47,15 @@ export class UpgradeModeDialogComponent extends ChildComponent {
   gm$ = new BehaviorSubject<GearMetaData>(null!);
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<UpgradeModeDialogComponent>,
     public gearService: GearService,
     private notificationService: NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    super(storageService);
+    super();
     this.parent = data.parent;
     // subscribe to parent's filter updates
-    this.parent.player$.pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player | null) => {
+    this.parent.player$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player: Player | null) => {
       if (!player) {
         return;
       }

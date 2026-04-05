@@ -1,12 +1,12 @@
 
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, HostBinding, HostListener, Inject, inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { environment as env } from '@env/environment';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { IconService } from './service/icon.service';
@@ -17,6 +17,7 @@ import { SignedOnUserService } from './service/signed-on-user.service';
 import { StorageService } from './service/storage.service';
 import { getDefaultTheme } from './shared/utilities';
 import { Location } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -25,8 +26,8 @@ import { Location } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
-  private unsubscribe$: Subject<void> = new Subject<void>();
+export class AppComponent implements OnInit, AfterViewInit {
+  private destroyRef = inject(DestroyRef);
   navigating$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private lastPath$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
@@ -69,7 +70,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.logon(false);
 
     this.storageService.settingFeed.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
         x => {
           if (x.theme != null) {
@@ -90,7 +91,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
     this.notificationService.notifyFeed.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
         x => {
           if (x.mode === 'success') {
@@ -184,7 +185,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((selectedUser: SelectedUser | null) => {
       this.signedOnUser.next(selectedUser);
       if (selectedUser == null) { return; }
       if (selectedUser.promptForPlatform === true) {
@@ -195,7 +196,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (navEnd: NavigationEnd) => {
           try {
@@ -236,11 +237,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     if ((window as any)['__cmp']) {
       (window as any)['__cmp']('addConsentLink');
     }
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
   logon(force: boolean) {

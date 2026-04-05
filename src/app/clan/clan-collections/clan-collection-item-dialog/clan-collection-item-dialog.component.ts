@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/mater
 import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,11 +17,10 @@ export class ClanCollectionItemDialogComponent extends ChildComponent {
   };
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<ClanCollectionItemDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public item: ClanSearchableCollection) {
-    super(storageService);
+    super();
     ClanStateService.sortCollectibles(this.item, this.sort);
   }
 

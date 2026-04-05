@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/mater
 import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -30,11 +29,10 @@ export class ClanTriumphSealDialogComponent extends ChildComponent {
   }
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<ClanTriumphSealDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public seal: ClanSeal) {
-      super(storageService);
+      super();
       ClanStateService.sortSeals(this.seal, this.sort);
 
     }

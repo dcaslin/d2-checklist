@@ -16,7 +16,6 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
 import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
@@ -31,6 +30,7 @@ import { OptimizeGunPerksDialogComponent } from './optimize-gun-perks-dialog/opt
 import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
 import { ShardModeDialogComponent } from './shard-mode-dialog/shard-mode-dialog.component';
 import { UpgradeModeDialogComponent } from './upgrade-mode-dialog/upgrade-mode-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -155,8 +155,7 @@ export class GearComponent extends ChildComponent implements OnInit {
     return markdown;
   }
 
-  constructor(storageService: StorageService,
-    private signedOnUserService: SignedOnUserService,
+  constructor(private signedOnUserService: SignedOnUserService,
     public gearFilterStateService: GearFilterStateService,
     public changeDetection: ChangeDetectorRef,
     public iconService: IconService,
@@ -170,7 +169,7 @@ export class GearComponent extends ChildComponent implements OnInit {
     private playerStateService: PlayerStateService,
     private route: ActivatedRoute,
     public router: Router) {
-    super(storageService);
+    super();
     this.loading.next(true);
     this.options = [
       { name: 'Weapons', type: ItemType.Weapon, path: 'weapons' },
@@ -189,20 +188,20 @@ export class GearComponent extends ChildComponent implements OnInit {
       });
     }
     // selected user changed
-    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((selectedUser: SelectedUser | null) => {
       this.selectedUser = selectedUser;
       this.loadMarks();
       this.load(true);
     });
     // god rolls loaded for the first time or notably changed
     this.pandaGodRollsService.loaded$.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       filter(x => x)
       ).subscribe(x => {
         this.load(true);
       });
 
-    this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       // only care if magic params are here
       if (params.owner || params.postmaster) {
         this.shortcutInfo$.next({
@@ -216,7 +215,7 @@ export class GearComponent extends ChildComponent implements OnInit {
         this.gearFilterStateService.applyShortcutInfo(this.shortcutInfo$);
       }
     });
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const sTab = params.tab;
       if (sTab) {
         for (const o of this.options) {
@@ -228,7 +227,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       }
     });
     this.preferredStatService.stats$.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(x => {
         if (this.player$.getValue() != null) {
           this.preferredStatService.processGear(this.player$.getValue()!);
@@ -237,7 +236,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       });
 
     this.gearFilterStateService.filterUpdated$.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       tap(x => this.filtering.next(true)),
       debounceTime(10))
       .subscribe(() => {
@@ -247,13 +246,13 @@ export class GearComponent extends ChildComponent implements OnInit {
 
 
     this.noteChanged.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(100))
       .subscribe(itm => {
         this.markService.updateItem(itm);
       });
 
-    this.filterKeyUp$.pipe(takeUntil(this.unsubscribe$), debounceTime(400)).subscribe((val: string) => {
+    this.filterKeyUp$.pipe(takeUntilDestroyed(this.destroyRef), debounceTime(400)).subscribe((val: string) => {
       this.gearFilterStateService.parseWildcardFilter(this.option);
     });
   }

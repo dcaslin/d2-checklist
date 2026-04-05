@@ -5,10 +5,9 @@ import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { InventoryItem } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'd2c-optimize-gun-perks-dialog',
@@ -26,13 +25,12 @@ export class OptimizeGunPerksDialogComponent extends ChildComponent {
   constructor(public iconService: IconService,
     public gearService: GearService,
     private notificationService: NotificationService,
-    public storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    super(storageService);
+    super();
     this.parent = data.parent;
 
     this.parent.player$.pipe(
-      takeUntil(this.unsubscribe$)
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(player => {
       const fixMe = player!.gear.filter(item => item.searchText.indexOf('is:fixme') > 0);
       this.fixMe$.next(fixMe);

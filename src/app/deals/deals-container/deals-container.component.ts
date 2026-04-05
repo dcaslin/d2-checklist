@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -19,9 +18,9 @@ export class DealsContainerComponent extends ChildComponent implements OnInit {
     public iconService: IconService,
     public router: Router,
     private dialog: MatDialog,
-    storageService: StorageService
+    
   ) {
-    super(storageService);
+    super();
   }
 
   ngOnInit(): void {

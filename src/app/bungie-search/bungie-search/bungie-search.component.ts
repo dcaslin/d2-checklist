@@ -1,13 +1,13 @@
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { BungieMemberPlatform, BungieGlobalSearchResult, Const } from '../../service/model';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -16,17 +16,17 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './bungie-search.component.html',
   styleUrls: ['./bungie-search.component.scss']
 })
-export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
+export class BungieSearchComponent extends ChildComponent implements OnInit {
   Const = Const;
   routedName!: string;
   name!: string;
   public rows$: BehaviorSubject<BungieGlobalSearchResult[] | null> = new BehaviorSubject<BungieGlobalSearchResult[] | null>(null);
 
-  constructor(storageService: StorageService, private bungieService: BungieService,
+  constructor(private bungieService: BungieService,
     public iconService: IconService,
     private route: ActivatedRoute, public router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService);
+    super();
   }
 
   public async loadClan(member: BungieGlobalSearchResult) {
@@ -66,7 +66,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.routedName = params['name'];
       this.name = params['name'];
       if (this.name != null) {

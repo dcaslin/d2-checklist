@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Badge, Player } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,11 +18,10 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
   private selectedBadge: string | null = null;
   public _badge: BehaviorSubject<Badge> = new BehaviorSubject<Badge>(null!);
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: PlayerStateService,
     private route: ActivatedRoute) {
-    super(storageService);
+    super();
   }
 
   private load(player: Player, selectedBadgeHash: string) {
@@ -51,11 +50,11 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.selectedBadge = params['node'];
       this.load(this.state.currPlayer(), this.selectedBadge!);
     });
-    this.state.player.pipe(takeUntil(this.unsubscribe$)).subscribe((p: Player) => {
+    this.state.player.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p: Player) => {
       this.load(p, this.selectedBadge!);
     });
   }

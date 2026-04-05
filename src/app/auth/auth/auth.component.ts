@@ -1,10 +1,10 @@
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../service/auth.service';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -13,14 +13,14 @@ import { ChildComponent } from '../../shared/child.component';
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
+export class AuthComponent extends ChildComponent implements OnInit {
   statusMsg = 'Authorizing';
   errMsg: string | null = null;
 
   constructor(
-    storageService: StorageService, private authService: AuthService,
+    private authService: AuthService,
     private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+    super();
   }
 
   async fetch(code: string, state: string) {
@@ -45,7 +45,7 @@ export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(queryParams => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(queryParams => {
       const code: string = queryParams['code'];
       const state: string = queryParams['state'];
       this.fetch(code, state);

@@ -1,15 +1,14 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
 import { Character, Const, Player, PublicMilestonesAndActivities } from '../service/model';
-import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +16,7 @@ import { PlayerStateService } from './player-state.service';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
+export class PlayerComponent extends ChildComponent implements OnInit {
   public const: Const = Const;
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
   public errorMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
@@ -26,11 +25,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   constructor(public bungieService: BungieService,
     public iconService: IconService,
-    storageService: StorageService,
     private route: ActivatedRoute, private router: Router,
     public dialog: MatDialog,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
   }
 
   public getRaidLink(p: Player) {
@@ -98,14 +96,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   ngOnInit() {
     this.setPublicInfo();
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.init(params);
     });
   }
 
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
 
   public async onR(event: KeyboardEvent) {
     if (this.isInputTarget(event)) {

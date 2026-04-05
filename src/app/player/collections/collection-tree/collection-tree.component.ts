@@ -5,11 +5,11 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { ActivatedRoute } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { TriumphNode } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Observable, of as observableOf } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 export class TriumphFlatNode {
@@ -29,17 +29,16 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit {
   collectionTreeControl: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: PlayerStateService,
     public location: Location,
     private route: ActivatedRoute) {
-    super(storageService);
+    super();
     this.collectionTreeControl = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
   }
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.selectedTreeNodeHash = params['node'];
     });
     this.state.player.pipe(first()).subscribe(p => {

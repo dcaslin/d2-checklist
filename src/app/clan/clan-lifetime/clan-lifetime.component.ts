@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
 import { ClanStateService, ClanAggHistoryEntry } from '../clan-state.service';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { ClanLifetimeDialogComponent } from './clan-lifetime-dialog/clan-lifetime-dialog.component';
 import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dialog/clan-user-list-dialog.component';
 import { IconService } from '@app/service/icon.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,16 +16,15 @@ import { IconService } from '@app/service/icon.service';
 })
 export class ClanLifetimeComponent extends ChildComponent implements OnInit {
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: ClanStateService,
     public dialog: MatDialog) {
-    super(storageService);
+    super();
   }
 
   ngOnInit() {
     this.state.allLoaded.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       distinctUntilChanged(),
       filter(x => x)
       )

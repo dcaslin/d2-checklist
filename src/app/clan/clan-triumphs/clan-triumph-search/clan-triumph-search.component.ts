@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { IconService } from '@app/service/icon.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,18 +17,18 @@ export class ClanTriumphSearchComponent extends ChildComponent implements OnInit
   public triumphFilterText: string | null = null;
   public filteredTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject<ClanSearchableTriumph[]>([]);
 
-  constructor(storageService: StorageService, public state: ClanStateService, public iconService: IconService) {
-    super(storageService);
+  constructor(public state: ClanStateService, public iconService: IconService) {
+    super();
     this.triumphFilterText = localStorage.getItem('triumph-filter');
   }
 
   ngOnInit() {
     this.state.searchableTriumphs.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         this.filterTriumphs();
       });
     this.triumphSearchSubject.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(50))
       .subscribe(() => {
         const saveMe = this.triumphFilterText == null ? null : this.triumphFilterText.toLowerCase();

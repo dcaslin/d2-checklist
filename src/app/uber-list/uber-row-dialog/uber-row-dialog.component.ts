@@ -4,7 +4,6 @@ import { QuestDialogComponent } from '@app/player/pursuits/pursuit-list/quest-di
 import { IconService } from '@app/service/icon.service';
 import { Questline } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { MilestoneRow, PursuitRow, UberListStateService } from '../uber-list-state.service';
 
@@ -17,14 +16,13 @@ import { MilestoneRow, PursuitRow, UberListStateService } from '../uber-list-sta
 export class UberRowDialogComponent extends ChildComponent {
 
   constructor(
-    storageService: StorageService,
     public state: UberListStateService,
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<UberRowDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: (MilestoneRow | PursuitRow)) {
-      super(storageService);
+      super();
     }
 
   public openQuestDialog(quest: Questline): void {

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 
 @Component({
@@ -10,8 +9,8 @@ import { ChildComponent } from '../../shared/child.component';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent extends ChildComponent {
-  constructor(storageService: StorageService, public iconService: IconService) {
-    super(storageService);
+  constructor(public iconService: IconService) {
+    super();
   }
 
 }

@@ -2,12 +2,12 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { Bonus, BoostInfo, BUCKETS_ALL_POWER, Character, Const } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { sortByField } from '@app/shared/utilities';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../player-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'd2c-pl-bucket-dialog',
@@ -64,13 +64,12 @@ export class PlBucketDialogComponent extends ChildComponent {
   }
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public playerStateService: PlayerStateService,
     public dialogRef: MatDialogRef<PlBucketDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    super(storageService);
+    super();
     this.characterId = data.characterId;
     const boosts: BoostInfo[] = [];
     for (const key of Object.keys(Const.BOOST_DROP_TABLE)) {
@@ -83,7 +82,7 @@ export class PlBucketDialogComponent extends ChildComponent {
     this.boosts = boosts;
 
     this.playerStateService.player.pipe(
-      takeUntil(this.unsubscribe$)
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(player => {
       if (player && player.characters && player.characters.length > 0) {
         const char = player.characters.find(c => c.characterId === this.characterId);
