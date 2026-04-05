@@ -33,4 +33,11 @@ jobs:
         BUNGIE_API_KEY: ${{ secrets.API_KEY }}
     - run: npm run lint
     - run: npm run test:ci
-    - run: npx ng build --configuration production
+    - name: Production build
+      run: npx ng build --configuration production 2>&1 | tee /tmp/build-output.txt
+    - name: Report bundle size
+      run: |
+        echo '### Bundle Size' >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        grep -E '^\S|Initial' /tmp/build-output.txt >> $GITHUB_STEP_SUMMARY || true
+        echo '```' >> $GITHUB_STEP_SUMMARY

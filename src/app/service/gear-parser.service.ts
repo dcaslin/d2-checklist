@@ -5,7 +5,6 @@ import {
     BoostInfo,
     BUCKETS_ARMOR,
     BUCKETS_WEAPON,
-    ClanInfo,
     ClassAllowed,
     Const,
     DamageType,
@@ -977,32 +976,4 @@ export class GearParserService {
         }
     }
 
-    public async parseClanInfo(j: any): Promise<ClanInfo> {
-
-        const c: ClanInfo = new ClanInfo();
-        c.groupId = j.groupId;
-        c.about = j.about;
-        c.name = j.name;
-        c.creationDate = j.creationDate;
-        c.memberCount = j.memberCount;
-        c.avatarPath = j.avatarPath;
-        c.bannerPath = j.bannerPath;
-        const progs: Progression[] = [];
-        if (j.clanInfo != null && j.clanInfo.d2ClanProgressions != null) {
-            for (const key of Object.keys(j.clanInfo.d2ClanProgressions)) {
-                const p: PrivProgression = j.clanInfo.d2ClanProgressions[key];
-                const pDesc = await this.destinyCacheService.getProgression(p.progressionHash);
-                const prog: Progression = parseProgression(p, pDesc);
-                if (prog != null) {
-                    if (key === '584850370') {
-                        c.primaryProgression = prog;
-                    }
-                    progs.push(prog);
-                }
-            }
-
-        }
-        c.progressions = progs;
-        return c;
-    }
 }

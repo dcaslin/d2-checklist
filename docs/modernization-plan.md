@@ -2,12 +2,13 @@
 
 Tracking document for incremental improvements to the d2-checklist codebase. Work is ordered by priority and dependency — later phases build on earlier ones.
 
-**Current state (as of 2026-03-27):**
+**Current state (as of 2026-04-04):**
 - Angular 18.2.14, TypeScript 5.4.5, RxJS 7.8.2
 - 185 unit tests across 6 spec files, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
 - `parse.service.ts` split into 6 files (was 4,385 lines)
-- Bundle size budgets enforced
-- CI modernized: rsync deploys, Node 20.x, npm audit
+- Bundle size budgets enforced (warn 3.1 MB, error 3.5 MB)
+- CI modernized: rsync deploys, Node 22.x, npm audit, bundle size reporting
+- Git LFS replaced with build-time Bungie manifest fetch (`tools/manifest/`), InventoryItem sharded into 8 parallel loads
 
 ---
 
@@ -57,9 +58,9 @@ Split the 4,385-line monolith into domain-specific parsers.
   - `history-parser.service.ts` (236 lines) — aggregated history stats
 - [x] Keep `parse.service.ts` as a facade that delegates to the new parsers (1729 lines)
 - [x] Move shared parsing utilities into `parse-utils.ts` (268 lines)
-- [ ] Verify existing functionality still works (manual smoke test)
+- [x] Verify existing functionality still works (manual smoke test)
 
-**Done when:** Smoke test passes. Note: `parse.service.ts` retains ~1700 lines as the player-parsing orchestrator — further splitting would require breaking up the 640-line `parsePlayer` method.
+**Done.** `parse.service.ts` retains ~1700 lines as the player-parsing orchestrator — further splitting would require breaking up the 640-line `parsePlayer` method.
 
 ---
 
@@ -87,11 +88,13 @@ Bring the pipeline up to date and add safety checks.
 - [x] Replace `scp-action` with rsync deploys (single SSH connection, no UFW spam)
 - [x] Add `workflow_dispatch` trigger for manual deploys
 - [x] Add `npm audit --audit-level=moderate` step
-- [x] Upgrade Node from 18.x to 20.x
+- [x] Upgrade Node from 18.x to 22.x
 - [x] Add unit test step (from Phase 2)
-- [ ] Add bundle size reporting step (from Phase 4)
+- [x] Add bundle size reporting step (from Phase 4)
+- [x] Replace git LFS with build-time manifest fetch (`tools/manifest/`)
+- [x] Add GitHub Actions cache for manifest data
 
-**Done when:** Both deploy.yml and beta-deploy.yml run tests and report bundle sizes.
+**Done.** All workflows run tests, fetch manifest, and report bundle sizes.
 
 ---
 
@@ -140,10 +143,10 @@ Angular migrations must go one major version at a time:
 1. ~~Phase 5: CI/CD Hardening~~ — Done
 2. ~~Phase 6: Standardize Service Providers~~ — Done
 3. ~~Phase 1: TypeScript Strictness~~ — Done
-4. **Phase 3: Break Up parse.service.ts** — In progress (extracted, needs smoke test).
-5. **Phase 2: Unit Tests** — After the split, each parser file is small enough to test meaningfully.
+4. ~~Phase 3: Break Up parse.service.ts~~ — Done
+5. ~~Phase 2: Unit Tests~~ — Done
 6. ~~Phase 4: Bundle Budgets~~ — Done
-7. ~~Phase 7: Angular 18 Migration~~ — Done (14 → 18)
+7. ~~Phase 7: Angular 18 Migration~~ — Done (14 → 18, post-migration 7c is optional follow-up)
 
 ## Notes
 
