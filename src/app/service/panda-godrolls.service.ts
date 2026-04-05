@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
@@ -15,8 +15,7 @@ export const GUN_SUFFIXES = [' (Adept)', ' (Timelost)', ' (Harrowed)'];
 @Injectable({
   providedIn: 'root',
 })
-export class PandaGodrollsService implements OnDestroy {
-  private unsubscribe$: Subject<void> = new Subject<void>();
+export class PandaGodrollsService {
   public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public meta$: BehaviorSubject<RollMeta | null> = new BehaviorSubject<RollMeta | null>(null);
 
@@ -419,11 +418,6 @@ export class PandaGodrollsService implements OnDestroy {
     }
 
     return completeGodRolls;
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 }
 

@@ -5,12 +5,12 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { ActivatedRoute } from '@angular/router';
 import { CollectionTreeComponent, TriumphFlatNode } from '@app/player/collections/collection-tree/collection-tree.component';
 import { TriumphNode, TriumphRecordNode } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Observable, of as observableOf } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,23 +24,22 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
   recordDatasource!: MatTreeFlatDataSource<any, TriumphFlatNode>;
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: PlayerStateService,
     public location: Location,
     private route: ActivatedRoute) {
-    super(storageService);
+    super();
     this.treeFlattener2 = new MatTreeFlattener(this.transformer, this._getLevel, this._isExpandable, this._getChildren);
     this.triumphTreeControl = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.selectedTreeNodeHash = params['node'];
     });
 
     this.state.player.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         this.recordDatasource = new MatTreeFlatDataSource(this.triumphTreeControl, this.treeFlattener2);
         this.recordDatasource.data = p.records;
         CollectionTreeComponent.expandToSelected(this.selectedTreeNodeHash, this.triumphTreeControl);

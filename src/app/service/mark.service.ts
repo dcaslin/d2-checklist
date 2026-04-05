@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
     ItemAnnotation,
     ProfileUpdate,
@@ -18,7 +18,7 @@ import {
 import { format } from 'date-fns';
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { DimSyncService } from './dim-sync.service';
 import { InventoryItem } from './model';
@@ -31,7 +31,7 @@ const LOG_CSS = `color: royalblue`;
 
 
 @Injectable({ providedIn: 'root' })
-export class MarkService implements OnDestroy {
+export class MarkService {
     // right now we only use this for DIM-sync
     public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public currentMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject<Marks | null>(null);
@@ -44,8 +44,6 @@ export class MarkService implements OnDestroy {
     public markDict: { [id: string]: MarkChoice };
     private badState = false;
     private failCount = 0;
-
-    private unsubscribe$: Subject<void> = new Subject<void>();
 
     constructor(
         private httpClient: HttpClient,
@@ -61,7 +59,8 @@ export class MarkService implements OnDestroy {
             this.markDict[mc.value] = mc;
         }
         this.marksChanged
-            .pipe(takeUntil(this.unsubscribe$), debounceTime(5000))
+            .pipe(
+      debounceTime(5000))
             .subscribe(() => {
                 if (this.dirty$.value === true && !this.badState) {
                     this.saveMarks();
@@ -426,11 +425,6 @@ export class MarkService implements OnDestroy {
         }
         this.dirty$.next(true);
         this.marksChanged.next(true);
-    }
-
-    ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
 

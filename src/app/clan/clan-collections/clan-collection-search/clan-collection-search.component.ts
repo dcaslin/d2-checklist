@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,18 +16,18 @@ export class ClanCollectionSearchComponent extends ChildComponent implements OnI
   public collectionFilterText: string | null = null;
   public filteredCollection: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject<ClanSearchableTriumph[]>([]);
 
-  constructor(storageService: StorageService, public state: ClanStateService) {
-    super(storageService);
+  constructor(public state: ClanStateService) {
+    super();
     this.collectionFilterText = localStorage.getItem('collection-filter');
   }
 
   ngOnInit() {
     this.state.searchableTriumphs.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         this.filterTriumphs();
       });
     this.collectionSearchSubject.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(50))
       .subscribe(() => {
         const saveMe = this.collectionFilterText == null ? null : this.collectionFilterText.toLowerCase();

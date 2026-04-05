@@ -5,7 +5,6 @@ import { SortEvent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/ho
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 
@@ -29,12 +28,11 @@ export class ArmorCompareDialogComponent extends ChildComponent {
   sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<ArmorCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    super(storageService);
+    super();
     this.title = data.title;
     this.items = data.gear;
 

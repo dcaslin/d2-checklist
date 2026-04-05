@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
@@ -7,8 +7,8 @@ import { Entry, Game, PgcrService, ViewMode } from '@app/service/pgcr.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { StorageService } from '../../service/storage.service';
 import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 
@@ -35,19 +35,18 @@ import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog
   templateUrl: './pgcr2.component.html',
   styleUrls: ['./pgcr2.component.scss']
 })
-export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy {
+export class Pgcr2Component extends ChildComponent implements OnInit {
   public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   public game$: BehaviorSubject<Game | null> = new BehaviorSubject<Game | null>(null);
   public ViewMode = ViewMode;
   public Object = Object;
 
   constructor(
-    storageService: StorageService,
     private pgcrService: PgcrService,
     public iconService: IconService,
     public dialog: MatDialog,
     private route: ActivatedRoute) {
-    super(storageService);
+    super();
   }
 
   public findGeneralStat(entry: Entry, stat: string): number {
@@ -73,7 +72,7 @@ export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const instanceId = params['instanceId'];
       this.load(instanceId);
     });

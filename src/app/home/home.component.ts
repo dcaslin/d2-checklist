@@ -1,5 +1,5 @@
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -18,6 +18,7 @@ import { environment as env } from '@env/environment';
 import { BehaviorSubject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +26,7 @@ import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
+export class HomeComponent extends ChildComponent implements OnInit {
   readonly isSignedOn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly version = env.versions.app;
@@ -60,16 +61,15 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public iconService: IconService,
     public dialog: MatDialog,
-    storageService: StorageService,
     private weekService: WeekService,
     private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService);
+    super();
     this.selectedPlatform = this.platforms[0];
     this.hideAnnouncement = 'true' === localStorage.getItem('hide-announcement-content-vault');
 
     this.storageService.settingFeed.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
         x => {
           if (x.defaultplatform != null) {
@@ -161,11 +161,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.loading.next(true);
     this.loadMileStones();
     // selected user changed
-    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((selectedUser: SelectedUser | null) => {
       this.isSignedOn$.next(selectedUser != null);
     });
 
-    this.gamerTagControl.valueChanges.pipe(takeUntil(this.unsubscribe$), startWith('')).subscribe((value) => {
+    this.gamerTagControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef), startWith('')).subscribe((value) => {
       this.elasticSearchService.searchInput$.next(value);
     } );
 

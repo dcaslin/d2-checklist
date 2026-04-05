@@ -1,5 +1,5 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { NotificationService } from '@app/service/notification.service';
 import { getDefaultTheme } from '@app/shared/utilities';
@@ -7,6 +7,7 @@ import { clear } from 'idb-keyval';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +15,7 @@ import { ChildComponent } from '../../shared/child.component';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent extends ChildComponent implements OnDestroy {
+export class SettingsComponent extends ChildComponent {
 
   theme;
   disableads = false;
@@ -35,15 +36,14 @@ export class SettingsComponent extends ChildComponent implements OnDestroy {
     { value: true, label: 'Debug' }
   ];
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     private notificationService: NotificationService
     ) {
-    super(storageService);
+    super();
     this.theme = this.storageService.getItem('theme', getDefaultTheme());
 
     this.storageService.settingFeed.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
       x => {
         if (x.theme != null) {

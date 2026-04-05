@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/mater
 import { ClanAggHistoryEntry, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -34,11 +33,10 @@ export class ClanLifetimeDialogComponent extends ChildComponent {
   }
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService, 
     public dialogRef: MatDialogRef<ClanLifetimeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public entry: ClanAggHistoryEntry) {
-      super(storageService);
+      super();
       ClanStateService.sortAggHistory(this.entry, this.sort);
     }
 

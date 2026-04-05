@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ClanStateService } from '@app/clan/clan-state.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -11,8 +10,8 @@ import { ChildComponent } from '@app/shared/child.component';
 })
 export class ClanTriumphTrackedComponent extends ChildComponent {
 
-  constructor(storageService: StorageService, public state: ClanStateService) {
-    super(storageService);
+  constructor(public state: ClanStateService) {
+    super();
   }
 
   

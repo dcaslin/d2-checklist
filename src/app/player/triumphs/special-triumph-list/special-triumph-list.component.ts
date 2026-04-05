@@ -4,11 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort, TriumphRecordNode } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { title } from 'process';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 function sortByName(x: TriumphRecordNode, y: TriumphRecordNode): number {
@@ -90,17 +90,16 @@ export class SpecialTriumphListComponent extends ChildComponent {
     }
   ];
 
-  constructor(storageService: StorageService,
-    private router: Router,
+  constructor(private router: Router,
     private route: ActivatedRoute,
     public iconService: IconService,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
 
     this.route.firstChild
 
     combineLatest([this.route.data, this.sort$, this.state.player])
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(10))
+      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(10))
       .subscribe(([data, sort, player]) => {
         let sortMe: TriumphRecordNode[] = [];
         if (data.flavor == 'catalysts') {

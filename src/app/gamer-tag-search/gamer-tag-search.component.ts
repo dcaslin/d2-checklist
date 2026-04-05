@@ -2,10 +2,10 @@ import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ChildComponent } from '@app/shared/child.component';
 import { BungieService } from '../service/bungie.service';
-import { StorageService } from '../service/storage.service';
 import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Platform, Const } from '@app/service/model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -23,10 +23,10 @@ export class GamerTagSearchComponent extends ChildComponent implements OnInit {
   gamerTag: string | null = null;
   platforms = Const.PLATFORMS_ARRAY;
 
-  constructor(storageService: StorageService, private bungieService: BungieService,
+  constructor(private bungieService: BungieService,
     private route: ActivatedRoute, public router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService);
+    super();
   }
 
   private async init(params: Params) {
@@ -67,7 +67,7 @@ export class GamerTagSearchComponent extends ChildComponent implements OnInit {
 
   ngOnInit() {
 
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
 
       this.init(params);
     });

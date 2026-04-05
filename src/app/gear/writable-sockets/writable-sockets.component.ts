@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { InventoryItem, InventorySocket } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { SelectModDialogComponent } from '../gear/select-mod-dialog/select-mod-dialog.component';
 
@@ -17,8 +16,8 @@ export class WritableSocketsComponent extends ChildComponent {
 
   constructor(
     public dialog: MatDialog,
-    public storageService: StorageService) {
-    super(storageService);
+    ) {
+    super();
   }
 
   selectMod(socket: InventorySocket): void {

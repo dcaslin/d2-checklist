@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { IconService } from '@app/service/icon.service';
 import { InventoryItem, Questline, Sort } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -29,29 +29,28 @@ export class PursuitListComponent extends ChildComponent {
   mode!: string;
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public state: PlayerStateService,
     private route: ActivatedRoute,
     public dialog: MatDialog) {
-    super(storageService);
-    this.route.url.pipe(takeUntil(this.unsubscribe$)).subscribe(segments => {
+    super();
+    this.route.url.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(segments => {
       this.mode = segments[0].path;
       this.filterAndSortPursuits();
     });
     this.displayFilterText = localStorage.getItem('pursuit-filter');
     this.state.player.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         this.filterAndSortPursuits();
       });
     this.state.trackedPursuits.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         if (this.mode == 'tracked') {
           this.filterAndSortPursuits();
         }
       });
     this.searchSubject.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(100))
       .subscribe(() => {
         if (this.displayFilterText != null) {

@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { TriumphRecordNode } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -22,12 +22,11 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
   public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject<TriumphRecordNode[]>([]);
   public hasMore$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(storageService: StorageService,
-    private router: Router,
+  constructor(private router: Router,
     private route: ActivatedRoute,
     public iconService: IconService,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
     this.triumphFilterText = localStorage.getItem('triumph-filter');
   }
 
@@ -37,11 +36,11 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
 
   ngOnInit() {
     this.state.player.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         this.filterTriumphs();
       });
     this.triumphSearchSubject.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(50))
       .subscribe(() => {
         const saveMe = this.triumphFilterText == null ? null : this.triumphFilterText.toLowerCase();

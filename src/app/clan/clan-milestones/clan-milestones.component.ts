@@ -6,6 +6,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,10 +19,10 @@ export class ClanMilestonesComponent extends ChildComponent {
 
   constructor(
     public state: ClanStateService,
-    storageService: StorageService, public iconService: IconService) {
-    super(storageService);
+    public iconService: IconService) {
+    super();
     this.state.sortedMembers.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
         x => {
           this.filterMilestones();

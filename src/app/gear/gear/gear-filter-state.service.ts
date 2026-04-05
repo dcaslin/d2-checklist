@@ -1,11 +1,11 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
 import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, InventoryItem, InventoryStat, ItemType, NumComparison, Player } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 
 export function generateState(config: ToggleConfig, choices: Choice[], visibleItemType: ItemType): ToggleState {
@@ -263,8 +263,7 @@ const GEAR_FILTER_KEY = 'D2C-GEAR-FILTER';
 @Injectable({
   providedIn: 'root'
 })
-export class GearFilterStateService implements OnDestroy {
-  private unsubscribe$: Subject<void> = new Subject<void>();
+export class GearFilterStateService {
   public toggleData!: ToggleData;
   public toggleDataArray!: BehaviorSubject<ToggleState>[];
   public autoCompleteOptions!: AutoCompleteOption[];
@@ -331,7 +330,6 @@ export class GearFilterStateService implements OnDestroy {
 
     // tap into the filter changes to mark things dirty if necessary
     this.filterUpdated$.pipe(
-      takeUntil(this.unsubscribe$),
       debounceTime(20))
       .subscribe(() => {
         const dirty = this.isFilterDirty();
@@ -376,7 +374,6 @@ export class GearFilterStateService implements OnDestroy {
       thingsToListenTo$.push(this.toggleData[key]);
     }
     combineLatest(thingsToListenTo$).pipe(
-      takeUntil(this.unsubscribe$),
       debounceTime(10)).subscribe(() => {
         this.filterUpdated$.next();
       });
@@ -987,11 +984,6 @@ export class GearFilterStateService implements OnDestroy {
       returnMe.push(new Choice(tier.displayProperties.name, tier.displayProperties.name));
     }
     return returnMe;
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 }
 

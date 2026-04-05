@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { GunRoll, GunRolls } from '@app/service/panda-godrolls.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { GunInfo, MappedRoll, PerkbenchComponent } from '../perkbench.component';
@@ -75,11 +74,10 @@ export class PerkBenchDialogComponent extends ChildComponent {
   maxPlugs = 0;
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<PerkBenchDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    super(storageService);
+    super();
     this.r = data.item;
     const name = data.name;
     this.parent = data.parent;

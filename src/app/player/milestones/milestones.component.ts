@@ -7,6 +7,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { takeUntil } from 'rxjs/operators';
 import { PlBucketDialogComponent } from '../pl-bucket-dialog/pl-bucket-dialog.component';
 import { PlayerStateService } from '../player-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,15 +20,14 @@ export class MilestonesComponent extends ChildComponent implements OnInit {
   Const = Const;
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialog: MatDialog,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
   }
 
   ngOnInit() {
-    this.state.player.pipe(takeUntil(this.unsubscribe$)).subscribe((p: Player) => {
+    this.state.player.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p: Player) => {
       if (this.debugmode.getValue()) {
         console.log('new player');
       }

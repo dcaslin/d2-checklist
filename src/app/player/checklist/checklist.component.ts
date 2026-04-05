@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../player-state.service';
 
@@ -15,10 +14,9 @@ export class ChecklistComponent extends ChildComponent {
   openEntryId: string | null = null;
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
     this.hideComplete = localStorage.getItem('hide-completed-checklists') === 'true';
 
   }

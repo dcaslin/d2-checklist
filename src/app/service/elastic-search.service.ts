@@ -1,16 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject, firstValueFrom} from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, firstValueFrom} from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { DestinyCacheService } from './destiny-cache.service';
 import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ElasticSearchService implements OnDestroy {
+export class ElasticSearchService {
   public searchInput$: BehaviorSubject<string> = new BehaviorSubject('');
-  private unsubscribe$: Subject<void> = new Subject<void>();
   public filteredAutoCompleteOptions$: BehaviorSubject<ElasticSearchResult[]> = new BehaviorSubject<ElasticSearchResult[]>([]);
 
   constructor(
@@ -20,7 +19,6 @@ export class ElasticSearchService implements OnDestroy {
   ) {
 
     this.searchInput$.pipe(
-      takeUntil(this.unsubscribe$),
       debounceTime(20))
       .subscribe((searchText) => {
         this.handleSearch(searchText);
@@ -67,12 +65,6 @@ export class ElasticSearchService implements OnDestroy {
       this.notificationService.fail('Error searching for player.');
       return [];
     }
-  }
-
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 

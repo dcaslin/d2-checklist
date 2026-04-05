@@ -130,7 +130,12 @@ Angular migrations must go one major version at a time:
 
 ### 7c: Post-migration modernization
 - [ ] Migrate key components to standalone (remove NgModule boilerplate)
-- [ ] Replace `ChildComponent` base class with `DestroyRef` + `takeUntilDestroyed`
+- [x] Replace `ChildComponent` base class with `DestroyRef` + `takeUntilDestroyed`
+  - Created `AppStateService` for shared state (debugmode, disableAds, favorites, hiddenMilestones)
+  - `ChildComponent` now uses `inject()` — no constructor params, delegates to `AppStateService`
+  - Replaced `takeUntil(this.unsubscribe$)` with `takeUntilDestroyed(this.destroyRef)` in 40+ components
+  - Removed `unsubscribe$` from 7 root services (singletons never destroy)
+  - Deleted unused `StreamingChildComponent`
 - [ ] Adopt Angular signals where beneficial
 - [ ] Evaluate esbuild-based builder (`@angular-devkit/build-angular:application`)
 

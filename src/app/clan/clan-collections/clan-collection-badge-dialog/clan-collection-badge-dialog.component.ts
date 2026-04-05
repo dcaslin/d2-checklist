@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/mater
 import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 
@@ -20,11 +19,10 @@ export class ClanCollectionBadgeDialogComponent  extends ChildComponent {
   };
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<ClanCollectionBadgeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public badge: ClanBadge) {
-    super(storageService);
+    super();
     ClanStateService.sortBadges(this.badge, this.sort);
   }
 

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Progression } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../player-state.service';
 import { ProgressStepDialogComponent } from './progress-step-dialog/progress-step-dialog.component';
@@ -14,10 +13,9 @@ import { ProgressStepDialogComponent } from './progress-step-dialog/progress-ste
 })
 export class ProgressComponent extends ChildComponent {
   constructor(
-    storageService: StorageService,
     public state: PlayerStateService,
     public dialog: MatDialog) {
-      super(storageService);
+      super();
     }
 
   

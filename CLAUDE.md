@@ -14,6 +14,10 @@ npm run build:prod   # production build
 npm run lint         # eslint
 ```
 
+## IMPORTANT NOTES
+
+ALWAYS bump the version in package.json for each new PR. If the bungie manifest version changes, also bump package.json's "manifest" value. These two values are used to bust caches on browser clients, if not bumped the clients won't see the new values.
+
 ## Project structure
 
 - `src/app/` - Angular application source

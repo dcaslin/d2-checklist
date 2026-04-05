@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
 
@@ -13,10 +12,9 @@ import { PlayerStateService } from '../../player-state.service';
 export class TriumphSealsComponent extends ChildComponent {
   openEntryId: string|null = null;
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
   }
 
   public opened(hash: string) {

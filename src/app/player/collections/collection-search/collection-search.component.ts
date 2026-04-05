@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { TriumphCollectibleNode } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,18 +18,17 @@ export class CollectionSearchComponent extends ChildComponent implements OnInit 
   public filteredCollection: BehaviorSubject<TriumphCollectibleNode[]> = new BehaviorSubject<TriumphCollectibleNode[]>([]);
   public filterText = '';
 
-  constructor(storageService: StorageService,
-    public iconService: IconService,
+  constructor(public iconService: IconService,
     public state: PlayerStateService) {
-    super(storageService);
+    super();
   }
   ngOnInit() {
     this.state.player.pipe(
-      takeUntil(this.unsubscribe$)).subscribe(p => {
+      takeUntilDestroyed(this.destroyRef)).subscribe(p => {
         this.filterCollections();
       });
     this.searchSubject.pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(100))
       .subscribe(() => {
         this.filterCollections();

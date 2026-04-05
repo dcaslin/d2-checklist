@@ -1,9 +1,8 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BungieService } from '../../service/bungie.service';
 import { ClanInfo } from '../../service/model';
-import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 
 
@@ -13,13 +12,12 @@ import { ChildComponent } from '../../shared/child.component';
   templateUrl: './clan-search.component.html',
   styleUrls: ['./clan-search.component.scss']
 })
-export class ClanSearchComponent extends ChildComponent implements OnInit, OnDestroy {
+export class ClanSearchComponent extends ChildComponent implements OnInit {
   name!: string;
   public clan: BehaviorSubject<ClanInfo | null> = new BehaviorSubject<ClanInfo | null>(null);
 
-  constructor(storageService: StorageService,
-    private bungieService: BungieService) {
-    super(storageService);
+  constructor(private bungieService: BungieService) {
+    super();
   }
   search() {
     this.load();

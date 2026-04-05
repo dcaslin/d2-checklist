@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
@@ -9,13 +8,11 @@ import { ChildComponent } from '@app/shared/child.component';
   templateUrl: './testbed.component.html',
   styleUrls: ['./testbed.component.scss']
 })
-export class TestbedComponent extends ChildComponent implements OnDestroy {
+export class TestbedComponent extends ChildComponent {
 
   constructor(
-    storageService: StorageService,    
     public iconService: IconService) {
-    super(storageService);
-
+    super();
   }
 
 }

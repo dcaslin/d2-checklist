@@ -1,9 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,12 +28,10 @@ export class AdSlotComponent extends ChildComponent implements OnInit {
   // Footer: 4516838661, 300 x 200
 
   constructor(
-    storageService: StorageService,
-
     // private router: Router,
     private route: ActivatedRoute
   ) {
-    super(storageService);
+    super();
 
   }
 

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BungieGroupMember } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanStateService } from '../clan-state.service';
 import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-list-dialog.component';
@@ -14,10 +13,9 @@ import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-l
 })
 export class ClanSettingsComponent extends ChildComponent {
 
-  constructor(storageService: StorageService,
-    public state: ClanStateService,
+  constructor(public state: ClanStateService,
     public dialog: MatDialog) {
-    super(storageService);
+    super();
   }
 
 

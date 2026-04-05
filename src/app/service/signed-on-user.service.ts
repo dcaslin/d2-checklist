@@ -1,7 +1,7 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { VendorDeals, VendorService } from '@app/service/vendor.service';
-import { BehaviorSubject, combineLatest, EMPTY, from, Observable, Subject } from 'rxjs';
-import { catchError, concatAll, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, EMPTY, from, Observable } from 'rxjs';
+import { catchError, concatAll, filter, map, tap } from 'rxjs/operators';
 import { AuthInfo, AuthService } from './auth.service';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
@@ -12,8 +12,7 @@ import { PandaGodrollsService } from './panda-godrolls.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SignedOnUserService implements OnDestroy {
-  unsubscribe$: Subject<void> = new Subject<void>();
+export class SignedOnUserService {
   public signedOnUser$: BehaviorSubject<SelectedUser | null> = new BehaviorSubject<SelectedUser | null>(null);
 
   private refreshPlayer$: BehaviorSubject<null> = new BehaviorSubject<null>(null);
@@ -64,7 +63,6 @@ export class SignedOnUserService implements OnDestroy {
     private notificationService: NotificationService
   ) {
     this.authService.authFeed.pipe(
-      takeUntil(this.unsubscribe$),
       tap(x => this.authorizing$.next(true))
     )
       .subscribe((ai: AuthInfo) => {
@@ -113,7 +111,8 @@ export class SignedOnUserService implements OnDestroy {
         }
       });
     // handle clans
-    this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser | null) => {
+    this.signedOnUser$.pipe(
+      ).subscribe((selectedUser: SelectedUser | null) => {
       if (selectedUser != null) {
         this.applyClans(selectedUser);
         this.pandaGodRollsService.updateUser(selectedUser);
@@ -122,7 +121,6 @@ export class SignedOnUserService implements OnDestroy {
 
 
     combineLatest([this.refreshPlayer$, this.signedOnUser$, this.destinyCacheService.ready$]).pipe(
-      takeUntil(this.unsubscribe$),
       filter(([refresh, selectedUser, cacheReady]) => cacheReady && (selectedUser != null)),
       tap(([refresh, selectedUser, cacheReady]) => this.playerLoading$.next(true)),
       map(([refresh, selectedUser, cacheReady]) => from(
@@ -157,7 +155,6 @@ export class SignedOnUserService implements OnDestroy {
     });
 
     combineLatest([this.refreshVendors$, this.playerFirstLoad$]).pipe(
-      takeUntil(this.unsubscribe$),
       filter(([refresh, playerFirstLoad]) => {
         if (this.player$.getValue() == null) {
           return false;
@@ -203,8 +200,7 @@ export class SignedOnUserService implements OnDestroy {
     });
 
     combineLatest([this.player$, this.vendors$]).pipe(
-      takeUntil(this.unsubscribe$)
-    ).subscribe(([player, vendors]) => {
+      ).subscribe(([player, vendors]) => {
       // force this to async for lazy loading inv items
       this.handleVendorDeals(player!, vendors);
     });
@@ -233,12 +229,6 @@ export class SignedOnUserService implements OnDestroy {
     const curr = this.signedOnUser$.getValue();
     if (curr == null) { return false; }
     return (curr.userInfo.membershipId == p.profile.userInfo.membershipId);
-  }
-
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 }

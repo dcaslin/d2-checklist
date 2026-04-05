@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -20,12 +21,12 @@ export class FriendsComponent extends ChildComponent {
   modelPlayer!: Player;
   playerCntr!: 0;
 
-  constructor(storageService: StorageService, private bungieService: BungieService, public iconService: IconService,
+  constructor(private bungieService: BungieService, public iconService: IconService,
     private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService);
+    super();
     this.favoritesList$.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (x: UserInfo[]) => {
           const members: FriendListEntry[] = [];

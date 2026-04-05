@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { GearComponent } from '../gear.component';
@@ -31,12 +30,11 @@ export class GearCompareDialogComponent extends ChildComponent {
   hideMe: InventoryItem[] = [];
 
   constructor(
-    storageService: StorageService,
     public iconService: IconService,
     public gearService: GearService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    super(storageService);
+    super();
     this.source = data.source;
     this.items = data.items;
     let maxSockets = 0;

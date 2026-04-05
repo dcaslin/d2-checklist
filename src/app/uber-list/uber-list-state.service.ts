@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DestinyCacheService, ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import {
   generateUberState,
   UberChoice,
@@ -28,8 +28,7 @@ const DEFAULT_SORT_DESC = true;
 @Injectable({
   providedIn: 'root',
 })
-export class UberListStateService implements OnDestroy {
-  private unsubscribe$: Subject<void> = new Subject<void>();
+export class UberListStateService {
 
   public filterKeyUp$: Subject<void> = new Subject();
   public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject<(MilestoneRow | PursuitRow)[]>([]);
@@ -69,7 +68,8 @@ export class UberListStateService implements OnDestroy {
     }
     this.toggleDataArray = a;
     combineLatest(thingsToListenTo$)
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(10))
+      .pipe(
+      debounceTime(10))
       .subscribe(() => {
         this.filterUpdated$.next();
       });
@@ -83,7 +83,8 @@ export class UberListStateService implements OnDestroy {
   ) {
 
     this.filterKeyUp$
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(150))
+      .pipe(
+      debounceTime(150))
       .subscribe(() => {
         this.parseWildcardFilter();
       });
@@ -96,8 +97,7 @@ export class UberListStateService implements OnDestroy {
       this.destinyCacheService.observableOfVendor(),
     ])
       .pipe(
-        takeUntil(this.unsubscribe$),
-        filter(([player, vendors]) => player != null && vendors != null)
+      filter(([player, vendors]) => player != null && vendors != null)
       )
       .subscribe(([player, charVendors, dbi, dbm, dbv]) => {
         this.currChar$.next(player!.characters[0]);
@@ -179,14 +179,16 @@ export class UberListStateService implements OnDestroy {
       });
 
     this.filterUpdated$
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(30))
+      .pipe(
+      debounceTime(30))
       .subscribe(() => {
         this.filterAndSortRows();
       });
 
     // mark tags dirty and save settings if changed
     this.filterUpdated$
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(20))
+      .pipe(
+      debounceTime(20))
       .subscribe(() => {
         const dirty = this.isFilterDirty();
         if (dirty != this.filtersDirty$.getValue()) {
@@ -595,11 +597,6 @@ export class UberListStateService implements OnDestroy {
         this.filterTags$.next(rawFilter.split(' and '));
       }
     }
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
   private async buildInitToggles(): Promise<UberToggleData> {

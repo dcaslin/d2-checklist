@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { Character, CharacterVendorData, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
-import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +13,8 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './vendors.component.html',
   styleUrls: ['./vendors.component.scss']
 })
-export class VendorsComponent implements OnInit, OnDestroy {
+export class VendorsComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   @ViewChild('filter', { static: true }) filter!: ElementRef;
 
 
@@ -32,7 +34,6 @@ export class VendorsComponent implements OnInit, OnDestroy {
   public option$: BehaviorSubject<VendorChoice> = new BehaviorSubject(this.options[0]);
   public data$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject<InventoryItem[]>([]);
   private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject<CharacterVendorData[]>([]);
-  private unsubscribe$: Subject<void> = new Subject<void>();
 
   ItemType = ItemType;
   ClassAllowed = ClassAllowed;
@@ -113,7 +114,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     fromEvent(this.filter.nativeElement, 'keyup').pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(150),
       distinctUntilChanged())
       .subscribe(() => {
@@ -125,7 +126,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
         }
       });
     combineLatest([this.char$, this.option$, this.filterText$, this.hideCompleted$, this.vendorData$]).pipe(
-      takeUntil(this.unsubscribe$),
+      takeUntilDestroyed(this.destroyRef),
       // debounceTime(150),
       distinctUntilChanged()
     ).subscribe(([char, option, filterText, hideCompleted, vendorData]) => {
@@ -161,11 +162,6 @@ export class VendorsComponent implements OnInit, OnDestroy {
       }
       return true;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 

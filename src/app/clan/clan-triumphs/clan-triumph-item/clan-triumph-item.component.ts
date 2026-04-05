@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
-import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanTriumphItemDialogComponent } from '../clan-triumph-item-dialog/clan-triumph-item-dialog.component';
 
@@ -18,10 +17,10 @@ export class ClanTriumphItemComponent extends ChildComponent {
   triumph!: ClanSearchableTriumph;
 
 
-  constructor(storageService: StorageService, public state: ClanStateService,
+  constructor(public state: ClanStateService,
     public iconService: IconService,
     public dialog: MatDialog) {
-    super(storageService);
+    super();
   }
 
   
