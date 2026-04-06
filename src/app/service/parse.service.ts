@@ -872,33 +872,91 @@ export class ParseService {
         if (resp.profile != null) {
             profile = resp.profile.data;
         }
-        let superprivate = false;
-        const charsDict: { [key: string]: Character } = {};
-        const accountProgressions: Progression[] = [];
-        const milestoneList: MileStoneName[] = [];
-        let weeklyRitualPathfinderHash = null;
-        let currentActivity: CurrentActivity | null = null;
-        const chars: Character[] = [];
-        let hasWellRested = false;
-        let weekEnd: string | null = null;
-        
-        // handle string interpolation aka dynamic strings
-        const dynamicStrings = buildDynamicStrings(resp);
 
+        const dynamicStrings = buildDynamicStrings(resp);
+        const { milestoneList, milestonesByKey } = await this.initializeMilestones(publicMilestones);
+        const charResult = await this.parseCharactersAndProgressions(resp, milestonesByKey, milestoneList, dynamicStrings);
+        const { chars, charsDict, accountProgressions } = charResult;
+        const { superprivate, currentActivity, hasWellRested } = charResult;
+        let { weeklyRitualPathfinderHash } = charResult;
+
+        const itemCompObjectivesData = resp.itemComponents?.objectives?.data;
+        const privateGear = itemCompObjectivesData == null || Object.keys(itemCompObjectivesData).length == 0;
+
+        let checklists: Checklist[] = [];
+        let charChecklists: CharChecklist[] = [];
+        let vault: Vault | null = null;
+        let shared: Shared | null = null;
+        let artifactPowerBonus = 0;
+        let gearMeta = null;
+        const currencies: Currency[] = [];
+        const bounties: InventoryItem[] = [];
+        const quests: InventoryItem[] = [];
+        const gear: InventoryItem[] = [];
+        const unparseableGearIds: { [id: string]: boolean } = {};
+        let triumphScore = null;
+        let recordTree: any[] = [];
+        let colTree: any[] = [];
+        const seals: Seal[] = [];
+        const badges: Badge[] = [];
+        const seasonChallengeEntries: SeasonalChallengeEntry[] = [];
+        let lowHangingTriumphs: TriumphRecordNode[] = [];
+        let patternTriumphs: TriumphRecordNode[] = [];
+        let exoticCatalystTriumphs: TriumphRecordNode[] = [];
+        let searchableTriumphs: TriumphRecordNode[] = [];
+        let searchableCollection: TriumphCollectibleNode[] = [];
+        let hasHiddenClosest = false;
+
+        if (!superprivate) {
+            checklists = await this.parseProfileChecklists(resp);
+            charChecklists = await this.parseCharChecklists(resp, chars);
+            artifactPowerBonus = await this.parseArtifactProgressions(resp, chars, accountProgressions);
+            await this.parseCurrencies(resp, currencies);
+            vault = new Vault();
+            shared = new Shared();
+            gearMeta = await this.handleGearMeta(chars, resp.characterInventories, resp.profileInventory);
+
+            await this.parseGearAndInventory(resp, chars, charsDict, vault, shared, gear, bounties, quests, unparseableGearIds, detailedInv, dynamicStrings);
+
+            const { nodes, records, collections, triumphScore: ts } = this.gatherPresentationData(resp, chars);
+            triumphScore = ts;
+
+            const colResult = await this.parseCollections(nodes, collections, badges);
+            colTree = colResult.colTree;
+            searchableCollection = colResult.searchableCollection;
+
+            if (records.length > 0) {
+                const recResult = await this.parseRecordsAndTriumphs(nodes, records, badges, gear, privateGear, showZeroPtTriumphs, showInvisTriumphs);
+                recordTree = recResult.recordTree;
+                seals.push(...recResult.seals);
+                seasonChallengeEntries.push(...recResult.seasonChallengeEntries);
+                lowHangingTriumphs = recResult.lowHangingTriumphs;
+                patternTriumphs = recResult.patternTriumphs;
+                exoticCatalystTriumphs = recResult.exoticCatalystTriumphs;
+                searchableTriumphs = recResult.searchableTriumphs;
+                hasHiddenClosest = recResult.hasHiddenClosest;
+                weeklyRitualPathfinderHash = recResult.weeklyRitualPathfinderHash ?? weeklyRitualPathfinderHash;
+            }
+        }
+
+        return this.finalizePlayerData(resp, profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
+            gear, vault, shared, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
+            seals, badges, seasonChallengeEntries, lowHangingTriumphs, searchableTriumphs, searchableCollection,
+            accountProgressions, artifactPowerBonus, patternTriumphs, exoticCatalystTriumphs, privateGear,
+            unparseableGearIds, gearMeta, hasHiddenClosest, weeklyRitualPathfinderHash, dynamicStrings);
+    }
+
+    private async initializeMilestones(publicMilestones: PublicMilestone[]): Promise<{ milestoneList: MileStoneName[]; milestonesByKey: { [id: string]: MileStoneName } }> {
+        const milestoneList: MileStoneName[] = [];
         const milestonesByKey: { [id: string]: MileStoneName } = {};
         if (publicMilestones != null) {
             for (const p of publicMilestones) {
-                // things to skip
                 if (
                     Const.HIDE_MILESTONES.includes(p.hash) ||
                     '4253138191' === p.hash ||  // weekly clan engrams
                     p.milestoneType == 5 || // special
                     p.type != null   // fake milestones
                 ) {
-                    if ('4253138191' === p.hash) {
-                        weekEnd = p.end;
-                    }
-
                     continue;
                 }
                 try {
@@ -917,13 +975,12 @@ export class ParseService {
                     dependsOn: p.dependsOn,
                     publicInfo: p
                 };
-                // Fix any empty dates
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
                     ms.resets = null!;
                 }
                 milestoneList.push(ms);
             }
-           
+
             for (const milestone of milestoneList) {
                 milestonesByKey[milestone.key] = milestone;
             }
@@ -939,7 +996,30 @@ export class ParseService {
                 return 0;
             });
         }
+        return { milestoneList, milestonesByKey };
+    }
 
+    private async parseCharactersAndProgressions(
+        resp: any,
+        milestonesByKey: { [id: string]: MileStoneName },
+        milestoneList: MileStoneName[],
+        dynamicStrings: DynamicStrings
+    ): Promise<{
+        chars: Character[];
+        charsDict: { [key: string]: Character };
+        superprivate: boolean;
+        hasWellRested: boolean;
+        currentActivity: CurrentActivity | null;
+        accountProgressions: Progression[];
+        weeklyRitualPathfinderHash: string | null;
+    }> {
+        const charsDict: { [key: string]: Character } = {};
+        const accountProgressions: Progression[] = [];
+        const chars: Character[] = [];
+        let superprivate = false;
+        let hasWellRested = false;
+        let currentActivity: CurrentActivity | null = null;
+        const weeklyRitualPathfinderHash = null;
 
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
@@ -983,9 +1063,6 @@ export class ParseService {
                                         activityAvailable = true;
                                     }
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null!, null!, [], !activityAvailable, c.notReady);
-                                    if (!activityAvailable || c.notReady) {
-                                        // console.dir(c.milestones[missingKey]);
-                                    }
                                 }
                             }
                         }
@@ -995,10 +1072,6 @@ export class ParseService {
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
                         for (const checkKey of Object.keys(milestonesByKey)) {
-                            // if this milestone is missing it appears complete
-                            // but if this milestone depends on other milestones it may
-                            // just be simply missing
-                            // so we have to see if those other miletsones are complete
                             if (!milestonesByKey[checkKey] || !milestonesByKey[checkKey].dependsOn || milestonesByKey[checkKey].dependsOn.length == 0) {
                                 continue;
                             }
@@ -1023,7 +1096,6 @@ export class ParseService {
                 }
             }
             if (resp.characterActivities) {
-                // turned on activity privacy
                 if (resp.characterActivities.data == null) {
                     superprivate = true;
                 } else if (resp.characterActivities.data) {
@@ -1045,7 +1117,6 @@ export class ParseService {
                 }
             }
 
-
             Object.keys(charsDict).forEach((key) => {
                 chars.push(charsDict[key]);
             });
@@ -1056,380 +1127,371 @@ export class ParseService {
                 if (aD < bD) { return 1; }
                 if (aD > bD) { return -1; }
                 return 0;
-
             });
         }
 
-        let recordTree: any[] = [];
-        const seals: Seal[] = [];
-        const badges: Badge[] = [];
-        const seasonChallengeEntries: SeasonalChallengeEntry[] = [];
-        let lowHangingTriumphs: TriumphRecordNode[] = [];
-        let patternTriumphs: TriumphRecordNode[] = [];
-        let exoticCatalystTriumphs: TriumphRecordNode[] = [];
-        let searchableTriumphs: TriumphRecordNode[] = [];
-        let searchableCollection: TriumphCollectibleNode[] = [];
-        const dictSearchableTriumphs: any = {};
+        return { chars, charsDict, superprivate, hasWellRested, currentActivity, accountProgressions, weeklyRitualPathfinderHash };
+    }
 
-        let colTree: any[] = [];
-        let triumphScore = null;
-        const currencies: Currency[] = [];
-        const rankups: Rankup[] = [];
-        const bounties: InventoryItem[] = [];
-        const quests: InventoryItem[] = [];
-        const gear: InventoryItem[] = [];
-        const unparseableGearIds: { [id: string]: boolean } = {};
-        const itemCompObjectivesData = resp.itemComponents?.objectives?.data;
-        const privateGear = itemCompObjectivesData==null || Object.keys(itemCompObjectivesData).length==0;
-        let checklists: Checklist[] = [];
+    private async parseCurrencies(resp: any, currencies: Currency[]): Promise<void> {
+        if (resp.profileCurrencies?.data?.items != null) {
+            for (const x of resp.profileCurrencies.data.items) {
+                const desc: any = await this.destinyCacheService.getInventoryItem(x.itemHash);
+                if (desc != null) {
+                    let ctype = CurrencyType.Basic;
+                    if (desc.hash == '2817410917' || desc.inventory.stackUniqueLabel && desc.inventory.stackUniqueLabel.toLowerCase().indexOf('transmog') >= 0) {
+                        ctype = CurrencyType.Cosmetic;
+                    }
+                    let maxStackSize = 99999;
+                    if (desc.inventory?.maxStackSize) {
+                        maxStackSize = desc.inventory.maxStackSize;
+                    }
+                    currencies.push(new Currency(desc.hash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity, ctype, 0, maxStackSize));
+                }
+            }
+            await this.parseCraftingMaterials(resp, currencies);
+        }
+    }
 
-        let charChecklists: CharChecklist[] = [];
-        let vault: Vault | null = null;
-        let shared: Shared | null = null;
-        let hasHiddenClosest = false;
-        let artifactPowerBonus = 0;
-        let gearMeta = null;
-
-        if (!superprivate) {
-            checklists = await this.parseProfileChecklists(resp);
-            charChecklists = await this.parseCharChecklists(resp, chars);
-            artifactPowerBonus = await this.parseArtifactProgressions(resp, chars, accountProgressions);
-            // hit with a hammer
-            if (resp.profileCurrencies?.data?.items != null) {
-                for (const x of resp.profileCurrencies.data.items) {
-                    const desc: any = await this.destinyCacheService.getInventoryItem(x.itemHash);
-                    if (desc != null) {
-                        let ctype = CurrencyType.Basic;
-                        if (desc.hash=='2817410917' || desc.inventory.stackUniqueLabel && desc.inventory.stackUniqueLabel.toLowerCase().indexOf('transmog')>=0) {
-                            ctype = CurrencyType.Cosmetic;
+    private async parseGearAndInventory(
+        resp: any,
+        chars: Character[],
+        charsDict: { [key: string]: Character },
+        vault: Vault,
+        shared: Shared,
+        gear: InventoryItem[],
+        bounties: InventoryItem[],
+        quests: InventoryItem[],
+        unparseableGearIds: { [id: string]: boolean },
+        detailedInv?: boolean,
+        dynamicStrings?: DynamicStrings
+    ): Promise<void> {
+        if (resp.characterInventories != null && resp.characterInventories.data != null) {
+            for (const key of Object.keys(resp.characterInventories.data)) {
+                const char: Character = charsDict[key];
+                const options: Target[] = chars.filter(c => c !== char);
+                options.push(vault);
+                const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
+                for (const itm of items) {
+                    const parsed: InventoryItem = await this.gearParser.parseInvItem(itm, char, resp.itemComponents, detailedInv!, options, resp.characterProgressions, resp, dynamicStrings);
+                    if (parsed != null) {
+                        if (parsed.type === ItemType.Bounty) {
+                            if (!parsed.expired) {
+                                bounties.push(parsed);
+                            }
+                        } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
+                            quests.push(parsed);
+                        } else if (detailedInv && parsed.inventoryBucket?.hash === 2422292810) {
+                            // FORBIDDEN BUCKET =)
+                            console.log(`Ignoring ${parsed.name} in the forbidden bucket`)
+                        } else {
+                            gear.push(parsed);
                         }
-                        let maxStackSize = 99999;
-                        if (desc.inventory?.maxStackSize) {
-                            maxStackSize = desc.inventory.maxStackSize;
-                        }
-                        currencies.push(new Currency(desc.hash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity, ctype, 0, maxStackSize));
                     }
                 }
-                // hack for crafting materials
-                await this.parseCraftingMaterials(resp, currencies);
             }
-            vault = new Vault();
-            shared = new Shared();
-            gearMeta = await this.handleGearMeta(chars, resp.characterInventories, resp.profileInventory);
-
-            if (resp.characterInventories != null && resp.characterInventories.data != null) {
-                for (const key of Object.keys(resp.characterInventories.data)) {
+        }
+        if (detailedInv === true) {
+            if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
+                for (const key of Object.keys(resp.characterEquipment.data)) {
                     const char: Character = charsDict[key];
                     const options: Target[] = chars.filter(c => c !== char);
                     options.push(vault);
-                    const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
+                    const items: PrivInventoryItem[] = resp.characterEquipment.data[key].items;
                     for (const itm of items) {
-                        const parsed: InventoryItem = await this.gearParser.parseInvItem(itm, char, resp.itemComponents, detailedInv!, options, resp.characterProgressions, resp, dynamicStrings);
+                        const parsed: InventoryItem = await this.gearParser.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, null, resp);
                         if (parsed != null) {
-                            // don't deal with chalice if there are no milestones
-                            // if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
-                            //     this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey, resp.characterPlugSets);
-                            // } else
-                            if (parsed.type === ItemType.Bounty) {
-                                // ignore expired
-                                if (!parsed.expired) {
-                                    bounties.push(parsed);
-                                }
-                            } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
-                                quests.push(parsed);
-                            } else if (detailedInv && parsed.inventoryBucket?.hash === 2422292810) {
-                                // FORBIDDEN BUCKET =) 
-                                console.log(`Ignoring ${parsed.name} in the forbidden bucket`)
-
-                            }
-                            else {
-                                gear.push(parsed);
-                            }
-                        } else {
-                            // could not parse, ignore
-                            // this path does not load for the gear mgr
-                        }
-                    }
-                }
-            }
-            if (detailedInv === true) {
-                if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
-                    for (const key of Object.keys(resp.characterEquipment.data)) {
-                        const char: Character = charsDict[key];
-                        const options: Target[] = chars.filter(c => c !== char);
-                        options.push(vault);
-                        const items: PrivInventoryItem[] = resp.characterEquipment.data[key].items;
-                        for (const itm of items) {
-                            const parsed: InventoryItem = await this.gearParser.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, null, resp);
-                            if (parsed != null) {
-                                gear.push(parsed);
-                            } else {
-                                // could not parse, ignore
-                                // this path does not load for the gear mgr
-                            }
-                        }
-                    }
-
-                }
-                if (resp.profileInventory != null && resp.profileInventory.data != null) {
-                    const items: PrivInventoryItem[] = resp.profileInventory.data.items;
-                    for (const itm of items) {
-
-                        // shared inv bucket from "Vault"
-                        let owner = vault;
-                        let options: Target[];
-                        if (itm.bucketHash != 138197802) {
-                            owner = shared;
-                            options = [vault];
-                        } else {
-                            options = [shared];
-                        }
-                        const parsed: InventoryItem = await this.gearParser.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options, null, resp);
-                        if (parsed != null) {
-                            if (parsed.type == ItemType.Weapon || parsed.type == ItemType.Armor || parsed.type == ItemType.Ghost || parsed.type == ItemType.Vehicle || parsed.type == ItemType.Subclass) {
-                                parsed.options.pop();
-                                for (const c of chars) {
-                                    parsed.options.push(c);
-                                }
-
-                            }
                             gear.push(parsed);
-                        } else {
-                            // capture this instance id to ignore for de-marking
-                            // for example, there are FoTL masks that D2Checklist ignores
-                            // if someone tags that in DIM, we don't want D2C to mistakenly think this is 
-                            // sharded gear and de-mark it
-                            unparseableGearIds[itm.itemInstanceId] = true;
                         }
                     }
                 }
             }
-            const nodes: any[] = [];
-            const records: any[] = [];
-            const collections: any[] = [];
-            if (resp.profileRecords != null) {
-                triumphScore = resp.profileRecords.data.score;
-            }
-            if (resp.profilePresentationNodes?.data) {
-                nodes.push(resp.profilePresentationNodes.data.nodes);
-            }
-            if (resp.profileRecords?.data) {
-                records.push(resp.profileRecords.data.records);
-            }
-            if (resp.profileCollectibles?.data) {
-                collections.push(resp.profileCollectibles.data.collectibles);
-            }
-
-            for (const char of chars) {
-                if (resp.characterPresentationNodes?.data) {
-                    const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
-                    nodes.push(presentationNodes);
-                }
-                if (resp.characterRecords?.data) {
-                    const _records = resp.characterRecords.data[char.characterId].records;
-                    records.push(_records);
-                }
-                if (resp.characterCollectibles?.data) {
-                    const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
-                    collections.push(_coll);
-                }
-            }
-
-            if (collections.length > 0) {
-                const tempBadgesParent = await this.triumphParser.handleColPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.badgesRootNode + '', nodes, collections, []);
-                const tempBadges = tempBadgesParent.children;
-                for (const ts of tempBadges) {
-                    const badge = await this.triumphParser.buildBadge(ts);
-                    if (badge != null) {
-                        badges.push(badge);
+            if (resp.profileInventory != null && resp.profileInventory.data != null) {
+                const items: PrivInventoryItem[] = resp.profileInventory.data.items;
+                for (const itm of items) {
+                    let owner = vault;
+                    let options: Target[];
+                    if (itm.bucketHash != 138197802) {
+                        owner = shared;
+                        options = [vault];
+                    } else {
+                        options = [shared];
                     }
-                }
-                badges.sort((a, b) => {
-                    const aP = a.percent;
-                    const bP = b.percent;
-                    if (aP > bP) {
-                        return -1;
-                    }
-                    if (aP < bP) {
-                        return 1;
-                    }
-                    if (a.name > b.name) {
-                        return 1;
-                    }
-                    if (a.name < b.name) {
-                        return -1;
-                    }
-                    return 0;
-                });
-
-                const collLeaves: TriumphCollectibleNode[] = [];
-                const colParent = await this.triumphParser.handleColPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.collectionRootNode + '', nodes, collections, collLeaves);
-                colTree = colParent.children;
-                searchableCollection = collLeaves.sort((a, b) => {
-                    if (a.name < b.name) { return -1; }
-                    if (a.name < b.name) { return 0; }
-                    return 0;
-                });
-                searchableCollection = searchableCollection.filter(x => {
-                    return (x.name != null) && (x.name.trim().length > 0);
-                });
-            }
-
-
-            if (records.length > 0) {
-                let triumphLeaves: TriumphRecordNode[] = [];
-
-                // Seals 1652422747
-                let parent: TriumphPresentationNode = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
-                const tempSeals = parent?.children ? parent.children : [];
-                for (const ts of tempSeals) {
-                    const seal = await this.triumphParser.buildSeal(ts, badges);
-                    if (seal != null) {
-                        seals.push(seal);
-                    }
-                }
-                const ritualPathFinderRoot: TriumphPresentationNode = await this.triumphParser.handleRecPresNode([], 622609416 + '', nodes, records, triumphLeaves, true, false);
-                if (ritualPathFinderRoot)   {
-                    const visiblePathfinder = ritualPathFinderRoot.children.find(x =>  this.triumphParser.getBestPres(nodes, x.hash)?.state == 0 );
-                    if (visiblePathfinder) {
-                        const finalStep = visiblePathfinder.children.find(x => x.name == 'Path Completion Reward');
-                        if (finalStep) {
-                            weeklyRitualPathfinderHash = finalStep.hash;
-                        }
-                    }
-                }
-                
-                // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
-                // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
-                // Tree 1024788583
-                parent = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs!, showInvisTriumphs!, []);
-                recordTree = parent?.children ? parent.children : [];
-                // exotic catalysts
-                let oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
-                if (oChild && oChild.children && oChild.children.length > 0) {
-                    recordTree.push(oChild.children[0]);
-                }
-                // medals
-                oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.medalsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
-                if (oChild && oChild.children && oChild.children.length > 0) {
-                    recordTree.push(oChild.children[0]);
-                }
-
-                // season challenges
-                oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true);
-                if (oChild && oChild.children && oChild.children.length > 0) {
-                    recordTree.push(oChild);
-                    let weeklyChild: TriumphNode | undefined = undefined;
-                    // we're at "Seasonal Challenges" which has two children, "Past Challenges" and "Weekly", we want weekly
-                    // get down to the weeks, we have "weekly" and "past challenges"
-                    if (oChild?.children?.length > 0) {
-                        for (const c of oChild.children) {
-                            if (c.name == 'Weekly') {
-                                weeklyChild = c;
+                    const parsed: InventoryItem = await this.gearParser.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options, null, resp);
+                    if (parsed != null) {
+                        if (parsed.type == ItemType.Weapon || parsed.type == ItemType.Armor || parsed.type == ItemType.Ghost || parsed.type == ItemType.Vehicle || parsed.type == ItemType.Subclass) {
+                            parsed.options.pop();
+                            for (const c of chars) {
+                                parsed.options.push(c);
                             }
                         }
-                    }
-                    // we're on the "Weekly" each child is a week in the season
-                    if (weeklyChild != null) {
-                        const incomplete = {
-                            name: 'All Incomplete',
-                            records: [] as any[]
-                        };
-                        for (const week of weeklyChild.children) {
-                            seasonChallengeEntries.push({
-                                name: week.name,
-                                records: week.children as TriumphRecordNode[]
-                            });
-                            for (const r of week.children) {
-                                if (!r.complete) {
-                                    incomplete.records.push(r);
-                                }
-                            }
-                        }
-                        seasonChallengeEntries.push(incomplete);
+                        gear.push(parsed);
+                    } else {
+                        unparseableGearIds[itm.itemInstanceId] = true;
                     }
                 }
-
-                // metrics
-                // oChild = this.triumphParser.handleRecPresNode([], '1074663644', nodes, records, triumphLeaves, true, true);
-                // recordTree.push(oChild);
-                // lore
-                oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.loreRootNodeHash + '', nodes, records, triumphLeaves, true, true);
-                if (oChild && oChild.children && oChild.children.length > 0) {
-                    recordTree.push(oChild.children[0]);
-                }
-                // dedupe list of leaves
-                const leafSet: {[key: string]: TriumphRecordNode}= {};
-                for (const t of triumphLeaves) {
-                    leafSet[t.hash] = t;
-                }
-                triumphLeaves = [];
-                for (const key of Object.keys(leafSet)) {
-                    triumphLeaves.push(leafSet[key]);
-                }
-                lowHangingTriumphs = triumphLeaves.filter((l) => { return !l.complete; });
-                if (showZeroPtTriumphs != true) {
-                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return l.score > 0; });
-                }
-                if (showInvisTriumphs != true) {
-                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return !l.invisible; });
-                }
-                lowHangingTriumphs.sort((a, b) => {
-                    if (a.percentToNextInterval > b.percentToNextInterval) { return -1; }
-                    if (a.percentToNextInterval < b.percentToNextInterval) { return 1; }
-                    return 0;
-                });
-
-                searchableTriumphs = triumphLeaves.filter(x => {
-                    return (x.name != null) && (x.name.trim().length > 0);
-                });
-                
-                exoticCatalystTriumphs = this.triumphParser.findLeaves(searchableTriumphs, [2744330515]);
-                patternTriumphs = this.triumphParser.findLeaves(searchableTriumphs, [127506319, 3289524180, 1464475380]);
-                if (!privateGear) {
-                    for (const p of patternTriumphs) {
-                        // search gear for a weapon matching that name that is crafted
-                        const crafted = gear.filter((g) => {  return g.name == p.name && g.crafted; });
-                        p.crafted = crafted;
-                        const redborder = gear.filter((g) => {  return g.name == p.name && g.deepsight; });
-                        p.redborder = redborder;
-                        
-                    }
-                }
-                // const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs, false);
-                // searchableTriumphs.push(mmxix);
-                // const mmxx = this.handleRecordNode([], '4239091332', records, showZeroPtTriumphs, showInvisTriumphs, false);
-                // searchableTriumphs.push(mmxx);
-                // const highScore = this.handleRecordNode([], '2884099200', records, showZeroPtTriumphs, showInvisTriumphs, false);
-                // searchableTriumphs.push(highScore);
-
-                searchableTriumphs = searchableTriumphs.sort((a, b) => {
-                    if (a.name < b.name) { return -1; }
-                    if (a.name < b.name) { return 0; }
-                    return 0;
-                });
-                for (const r of searchableTriumphs) {
-                    dictSearchableTriumphs[r.hash] = r;
-                }
-
-                // filter any hidden
-                try {
-                    const sHideMe = localStorage.getItem('hidden-closest-triumphs');
-                    if (sHideMe != null) {
-                        const hideMe: string[] = JSON.parse(sHideMe);
-
-                        lowHangingTriumphs = lowHangingTriumphs.filter((l) => {
-                            return hideMe.indexOf(l.hash) < 0;
-                        });
-                        hasHiddenClosest = true;
-                    }
-
-                } catch (exc) {
-                    console.dir(exc);
-                }
-                lowHangingTriumphs = lowHangingTriumphs.slice(0, 50);
             }
         }
+    }
+
+    private gatherPresentationData(resp: any, chars: Character[]): {
+        nodes: any[];
+        records: any[];
+        collections: any[];
+        triumphScore: number | null;
+    } {
+        const nodes: any[] = [];
+        const records: any[] = [];
+        const collections: any[] = [];
+        let triumphScore = null;
+        if (resp.profileRecords != null) {
+            triumphScore = resp.profileRecords.data.score;
+        }
+        if (resp.profilePresentationNodes?.data) {
+            nodes.push(resp.profilePresentationNodes.data.nodes);
+        }
+        if (resp.profileRecords?.data) {
+            records.push(resp.profileRecords.data.records);
+        }
+        if (resp.profileCollectibles?.data) {
+            collections.push(resp.profileCollectibles.data.collectibles);
+        }
+        for (const char of chars) {
+            if (resp.characterPresentationNodes?.data) {
+                nodes.push(resp.characterPresentationNodes.data[char.characterId].nodes);
+            }
+            if (resp.characterRecords?.data) {
+                records.push(resp.characterRecords.data[char.characterId].records);
+            }
+            if (resp.characterCollectibles?.data) {
+                collections.push(resp.characterCollectibles.data[char.characterId].collectibles);
+            }
+        }
+        return { nodes, records, collections, triumphScore };
+    }
+
+    private async parseCollections(
+        nodes: any[],
+        collections: any[],
+        badges: Badge[]
+    ): Promise<{ colTree: any[]; searchableCollection: TriumphCollectibleNode[] }> {
+        let colTree: any[] = [];
+        let searchableCollection: TriumphCollectibleNode[] = [];
+        if (collections.length > 0) {
+            const tempBadgesParent = await this.triumphParser.handleColPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.badgesRootNode + '', nodes, collections, []);
+            const tempBadges = tempBadgesParent.children;
+            for (const ts of tempBadges) {
+                const badge = await this.triumphParser.buildBadge(ts);
+                if (badge != null) {
+                    badges.push(badge);
+                }
+            }
+            badges.sort((a, b) => {
+                const aP = a.percent;
+                const bP = b.percent;
+                if (aP > bP) { return -1; }
+                if (aP < bP) { return 1; }
+                if (a.name > b.name) { return 1; }
+                if (a.name < b.name) { return -1; }
+                return 0;
+            });
+
+            const collLeaves: TriumphCollectibleNode[] = [];
+            const colParent = await this.triumphParser.handleColPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.collectionRootNode + '', nodes, collections, collLeaves);
+            colTree = colParent.children;
+            searchableCollection = collLeaves.sort((a, b) => {
+                if (a.name < b.name) { return -1; }
+                if (a.name < b.name) { return 0; }
+                return 0;
+            });
+            searchableCollection = searchableCollection.filter(x => {
+                return (x.name != null) && (x.name.trim().length > 0);
+            });
+        }
+        return { colTree, searchableCollection };
+    }
+
+    private async parseRecordsAndTriumphs(
+        nodes: any[],
+        records: any[],
+        badges: Badge[],
+        gear: InventoryItem[],
+        privateGear: boolean,
+        showZeroPtTriumphs?: boolean,
+        showInvisTriumphs?: boolean
+    ): Promise<{
+        recordTree: any[];
+        seals: Seal[];
+        seasonChallengeEntries: SeasonalChallengeEntry[];
+        lowHangingTriumphs: TriumphRecordNode[];
+        patternTriumphs: TriumphRecordNode[];
+        exoticCatalystTriumphs: TriumphRecordNode[];
+        searchableTriumphs: TriumphRecordNode[];
+        hasHiddenClosest: boolean;
+        weeklyRitualPathfinderHash: string | null;
+    }> {
+        const seals: Seal[] = [];
+        const seasonChallengeEntries: SeasonalChallengeEntry[] = [];
+        let weeklyRitualPathfinderHash: string | null = null;
+        let triumphLeaves: TriumphRecordNode[] = [];
+
+        // Seals
+        let parent: TriumphPresentationNode = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
+        const tempSeals = parent?.children ? parent.children : [];
+        for (const ts of tempSeals) {
+            const seal = await this.triumphParser.buildSeal(ts, badges);
+            if (seal != null) {
+                seals.push(seal);
+            }
+        }
+
+        // Ritual pathfinder
+        const ritualPathFinderRoot: TriumphPresentationNode = await this.triumphParser.handleRecPresNode([], 622609416 + '', nodes, records, triumphLeaves, true, false);
+        if (ritualPathFinderRoot) {
+            const visiblePathfinder = ritualPathFinderRoot.children.find(x => this.triumphParser.getBestPres(nodes, x.hash)?.state == 0);
+            if (visiblePathfinder) {
+                const finalStep = visiblePathfinder.children.find(x => x.name == 'Path Completion Reward');
+                if (finalStep) {
+                    weeklyRitualPathfinderHash = finalStep.hash;
+                }
+            }
+        }
+
+        // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
+        // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
+        // Tree 1024788583
+        parent = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs!, showInvisTriumphs!, []);
+        const recordTree = parent?.children ? parent.children : [];
+        // exotic catalysts
+        let oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
+        if (oChild && oChild.children && oChild.children.length > 0) {
+            recordTree.push(oChild.children[0]);
+        }
+        // medals
+        oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.medalsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
+        if (oChild && oChild.children && oChild.children.length > 0) {
+            recordTree.push(oChild.children[0]);
+        }
+
+        // season challenges
+        oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true);
+        if (oChild && oChild.children && oChild.children.length > 0) {
+            recordTree.push(oChild);
+            let weeklyChild: TriumphNode | undefined = undefined;
+            if (oChild?.children?.length > 0) {
+                for (const c of oChild.children) {
+                    if (c.name == 'Weekly') {
+                        weeklyChild = c;
+                    }
+                }
+            }
+            if (weeklyChild != null) {
+                const incomplete = {
+                    name: 'All Incomplete',
+                    records: [] as any[]
+                };
+                for (const week of weeklyChild.children) {
+                    seasonChallengeEntries.push({
+                        name: week.name,
+                        records: week.children as TriumphRecordNode[]
+                    });
+                    for (const r of week.children) {
+                        if (!r.complete) {
+                            incomplete.records.push(r);
+                        }
+                    }
+                }
+                seasonChallengeEntries.push(incomplete);
+            }
+        }
+
+        // lore
+        oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.loreRootNodeHash + '', nodes, records, triumphLeaves, true, true);
+        if (oChild && oChild.children && oChild.children.length > 0) {
+            recordTree.push(oChild.children[0]);
+        }
+
+        // dedupe list of leaves
+        const leafSet: { [key: string]: TriumphRecordNode } = {};
+        for (const t of triumphLeaves) {
+            leafSet[t.hash] = t;
+        }
+        triumphLeaves = [];
+        for (const key of Object.keys(leafSet)) {
+            triumphLeaves.push(leafSet[key]);
+        }
+        let lowHangingTriumphs = triumphLeaves.filter((l) => { return !l.complete; });
+        if (showZeroPtTriumphs != true) {
+            lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return l.score > 0; });
+        }
+        if (showInvisTriumphs != true) {
+            lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return !l.invisible; });
+        }
+        lowHangingTriumphs.sort((a, b) => {
+            if (a.percentToNextInterval > b.percentToNextInterval) { return -1; }
+            if (a.percentToNextInterval < b.percentToNextInterval) { return 1; }
+            return 0;
+        });
+
+        let searchableTriumphs = triumphLeaves.filter(x => {
+            return (x.name != null) && (x.name.trim().length > 0);
+        });
+
+        const exoticCatalystTriumphs = this.triumphParser.findLeaves(searchableTriumphs, [2744330515]);
+        const patternTriumphs = this.triumphParser.findLeaves(searchableTriumphs, [127506319, 3289524180, 1464475380]);
+        if (!privateGear) {
+            for (const p of patternTriumphs) {
+                const crafted = gear.filter((g) => { return g.name == p.name && g.crafted; });
+                p.crafted = crafted;
+                const redborder = gear.filter((g) => { return g.name == p.name && g.deepsight; });
+                p.redborder = redborder;
+            }
+        }
+
+        searchableTriumphs = searchableTriumphs.sort((a, b) => {
+            if (a.name < b.name) { return -1; }
+            if (a.name < b.name) { return 0; }
+            return 0;
+        });
+
+        // filter any hidden
+        let hasHiddenClosest = false;
+        try {
+            const sHideMe = localStorage.getItem('hidden-closest-triumphs');
+            if (sHideMe != null) {
+                const hideMe: string[] = JSON.parse(sHideMe);
+                lowHangingTriumphs = lowHangingTriumphs.filter((l) => {
+                    return hideMe.indexOf(l.hash) < 0;
+                });
+                hasHiddenClosest = true;
+            }
+        } catch (exc) {
+            console.dir(exc);
+        }
+        lowHangingTriumphs = lowHangingTriumphs.slice(0, 50);
+
+        return {
+            recordTree, seals, seasonChallengeEntries, lowHangingTriumphs,
+            patternTriumphs, exoticCatalystTriumphs, searchableTriumphs,
+            hasHiddenClosest, weeklyRitualPathfinderHash
+        };
+    }
+
+    private async finalizePlayerData(
+        resp: any, profile: Profile, chars: Character[], currentActivity: CurrentActivity | null,
+        milestoneList: MileStoneName[], currencies: Currency[], bounties: InventoryItem[], quests: InventoryItem[],
+        gear: InventoryItem[], vault: Vault | null, shared: Shared | null,
+        superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[],
+        triumphScore: number | null, recordTree: any[], colTree: any[],
+        seals: Seal[], badges: Badge[], seasonChallengeEntries: SeasonalChallengeEntry[],
+        lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
+        searchableCollection: TriumphCollectibleNode[],
+        accountProgressions: Progression[], artifactPowerBonus: number,
+        patternTriumphs: TriumphRecordNode[], exoticCatalystTriumphs: TriumphRecordNode[],
+        privateGear: boolean, unparseableGearIds: { [id: string]: boolean },
+        gearMeta: GearMetaData | null, hasHiddenClosest: boolean,
+        weeklyRitualPathfinderHash: string | null, dynamicStrings: DynamicStrings
+    ): Promise<Player> {
         let title = '';
         for (const char of chars) {
             if (char.title != null && char.title.trim().length > 0) {
@@ -1438,7 +1500,6 @@ export class ParseService {
             }
         }
         let transitoryData: ProfileTransitoryData | null = null;
-        // enhance current activity with transitory profile data
         if (resp.profileTransitoryData != null && resp.profileTransitoryData.data != null) {
             const _transData: PrivProfileTransitoryData = resp.profileTransitoryData.data;
             const partyMembers: SearchResult[] = [];
@@ -1489,18 +1550,18 @@ export class ParseService {
                 r.name = dynamicStringReplace(r.name, b.owner.getValue().id, dynamicStrings);
             }
         }
-        // sort currencies by order
         currencies.sort((a, b) => {
             if (a.order > b.order) { return 1; }
             if (a.order < b.order) { return -1; }
             return 0;
         });
+        const rankups: Rankup[] = [];
         return new Player(profile, chars, currentActivity!, milestoneList, currencies, bounties, quests,
-            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
+            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore!, recordTree, colTree,
             gear, vault!, shared!, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
             transitoryData!, specialProgressions, gearMeta!, patternTriumphs, exoticCatalystTriumphs, privateGear, resp.responseMintedTimestamp, resp.secondaryComponentsMintedTimestamp,
-        unparseableGearIds);
+            unparseableGearIds);
     }
 
     private async handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): Promise<GearMetaData> {

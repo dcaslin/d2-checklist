@@ -48,18 +48,20 @@ Upgrade from Angular 18 to 19. Readiness is high — already using standalone co
 
 ## Phase 3: Break Up `parsePlayer` Method
 
-The ~640-line `parsePlayer` method in `parse.service.ts` (lines ~864–1504) is the last major monolith.
+The ~640-line `parsePlayer` method in `parse.service.ts` was the last major monolith.
 
-Extract 6 private methods (keep in same file):
-- [ ] `initializeMilestones()` (~55 lines) — milestone parsing and sorting
-- [ ] `parseCharactersAndProgressions()` (~120 lines) — character data, progressions, activities
-- [ ] `parseGearAndInventory()` (~115 lines) — inventory items across characters/vault/shared
-- [ ] `parseCollections()` (~70 lines) — collectibles and badge trees
-- [ ] `parseRecordsAndTriumphs()` (~150 lines) — triumph hierarchy, seals, catalysts, lore
-- [ ] `finalizePlayerData()` (~40 lines) — currencies, light level, dynamic strings, return Player
-- [ ] Reduce `parsePlayer` to ~100–150 lines of orchestration
+Extracted 7 private methods (kept in same file):
+- [x] `initializeMilestones()` — milestone parsing and sorting
+- [x] `parseCharactersAndProgressions()` — character data, progressions, activities
+- [x] `parseCurrencies()` — profile currency parsing
+- [x] `parseGearAndInventory()` — inventory items across characters/vault/shared
+- [x] `gatherPresentationData()` — collect nodes/records/collections from profile and characters
+- [x] `parseCollections()` — collectibles and badge trees
+- [x] `parseRecordsAndTriumphs()` — triumph hierarchy, seals, catalysts, lore
+- [x] `finalizePlayerData()` — title, transitory data, currencies, light level, dynamic strings, return Player
+- [x] Reduced `parsePlayer` to 83 lines of orchestration
 
-**Done when:** `parsePlayer` is under 200 lines. Each extracted method has clear inputs/outputs. All tests pass.
+**Done.** All 185 tests pass. `parsePlayer` is 83 lines.
 
 ---
 
