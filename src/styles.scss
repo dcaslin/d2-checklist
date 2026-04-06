@@ -8,7 +8,8 @@
 @import 'styles-reset';
 
 @include mat.all-component-typographies();
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 @include mat.all-component-densities(-2);
 
 
