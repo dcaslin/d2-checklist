@@ -18,12 +18,13 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "es2020",
+    "module": "ES2022",
+    "resolveJsonModule": true,
     "lib": [
-      "es2020",
+      "ES2022",
       "dom"
     ],
     "paths": {
