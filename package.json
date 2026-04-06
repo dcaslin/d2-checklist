@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "29.6.0",
+  "version": "30.0.0",
   "manifest": "242999.26.03.25.2000-1-bnet.64463",
   "license": "MIT",
   "scripts": {
@@ -36,7 +36,7 @@
     "@angular/router": "^19.2.20",
     "@angular/service-worker": "^19.2.20",
     "@d2api/date": "3.0.0",
-    "@fortawesome/angular-fontawesome": "^0.15.0",
+    "@fortawesome/angular-fontawesome": "^1.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
@@ -55,11 +55,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.23",
-    "@angular-eslint/builder": "18.4.3",
-    "@angular-eslint/eslint-plugin": "18.4.3",
-    "@angular-eslint/eslint-plugin-template": "18.4.3",
-    "@angular-eslint/schematics": "18.4.3",
-    "@angular-eslint/template-parser": "18.4.3",
+    "@angular-eslint/builder": "^19.8.1",
+    "@angular-eslint/eslint-plugin": "^19.8.1",
+    "@angular-eslint/eslint-plugin-template": "^19.8.1",
+    "@angular-eslint/schematics": "^19.8.1",
+    "@angular-eslint/template-parser": "^19.8.1",
     "@angular/cli": "^19.2.23",
     "@angular/compiler-cli": "^19.2.20",
     "@angular/language-service": "^19.2.20",

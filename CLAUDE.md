@@ -2,7 +2,7 @@
 
 ## Project overview
 
-d2-checklist is the Angular front end for [d2checklist.com](https://www.d2checklist.com), a Destiny 2 companion app. It uses Angular 18, Angular Material, and the Bungie API.
+d2-checklist is the Angular front end for [d2checklist.com](https://www.d2checklist.com), a Destiny 2 companion app. It uses Angular 19, Angular Material, and the Bungie API.
 
 ## Build and run
 

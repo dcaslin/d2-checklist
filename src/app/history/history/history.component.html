@@ -5,7 +5,7 @@
   <ng-container *ngIf="_player|async as player">
       <h2 class="centerMe" >Activity History -
           <a
-            [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]">
+            [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId]">
             {{player.profile.userInfo.displayName}}
           </a>
         </h2>

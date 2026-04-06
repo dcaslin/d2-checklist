@@ -3,10 +3,10 @@
 Tracking document for the next round of incremental improvements. The previous plan (v1) covering TypeScript strictness, unit tests, parse.service.ts split, bundle budgets, CI/CD hardening, service provider standardization, and Angular 14→18 migration is fully complete.
 
 **Current state (as of 2026-04-06):**
-- Angular 18.2.14, TypeScript 5.4.5, RxJS 7.8.2
-- 185 unit tests, 7/7 TypeScript strict flags, `strictTemplates` enabled, `no-explicit-any` warning (446 warnings)
-- Standalone components, esbuild application builder, `bootstrapApplication()`
-- `parse.service.ts` (~1700 lines) delegates to 4 domain-specific parsers
+- Angular 19.2.20, TypeScript 5.8.3, RxJS 7.8.2
+- 185 unit tests, 7/7 TypeScript strict flags, `strictTemplates` enabled, `no-explicit-any` warning (481 warnings)
+- Standalone components (default in Angular 19), esbuild application builder, `bootstrapApplication()`
+- `parse.service.ts` (~1800 lines) delegates to 4 domain-specific parsers, `parsePlayer` broken into 8 focused methods
 - Bundle budgets enforced, CI runs tests + manifest fetch + bundle reporting
 
 ---
@@ -32,17 +32,17 @@ Remove all stale git LFS references and broken LFS pointer files left over from 
 
 ## Phase 2: Angular 19 Upgrade
 
-Upgrade from Angular 18 to 19. Readiness is high — already using standalone components, esbuild builder, `bootstrapApplication()`, and `provideRouter()`.
+Upgraded from Angular 18 to 19.
 
-- [ ] Fix 2 `UntypedFormControl` usages (`gear-utilities-dialog.component.ts`, `home.component.ts`) → typed `FormControl<string | null>`
-- [ ] `ng update @angular/core@19 @angular/cli@19`
-- [ ] `ng update @angular/material@19` (also updates `@angular/cdk`)
-- [ ] Update `@angular-eslint/*` to 19.x
-- [ ] Check `@fortawesome/angular-fontawesome` compatibility (currently 0.15.0)
-- [ ] Bump TypeScript if required (Angular 19 needs TS >= 5.5)
-- [ ] Fix any breaking changes
+- [x] Fix 2 `UntypedFormControl` usages → typed `FormControl<string | null>`
+- [x] `ng update @angular/core@19 @angular/cli@19` — all @angular/* to 19.2.x, TypeScript to 5.8.3, zone.js to 0.15.1
+- [x] `ng update @angular/material@19` — Material and CDK to 19.2.x, styles.scss updated
+- [x] Update `@angular-eslint/*` to 19.x
+- [x] Upgrade `@fortawesome/angular-fontawesome` 0.15.0 → 1.0.0 (Angular 19 peer dep)
+- [x] Removed `standalone: true` from 119 components (default in Angular 19)
+- [x] Fixed template error in `history.component.html` (`this.player` → `player` for template variable)
 
-**Done when:** All `@angular/*` packages at 19.x. `npm run build:prod` passes within budgets. `npm run test:ci` passes all tests. `npm run lint` has no new errors.
+**Done.** All 185 tests pass. 0 lint errors. Build succeeds.
 
 ---
 

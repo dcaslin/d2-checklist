@@ -1,6 +1,6 @@
 # d2-checklist
 
-Front end for [d2checklist.com](https://www.d2checklist.com), built with Angular 18 and Angular Material.
+Front end for [d2checklist.com](https://www.d2checklist.com), built with Angular 19 and Angular Material.
 
 ## Getting set up
 
