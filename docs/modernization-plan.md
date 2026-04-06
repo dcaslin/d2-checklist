@@ -1,178 +1,133 @@
-# d2-checklist Modernization Plan
+# d2-checklist Modernization Plan (v2)
 
-Tracking document for incremental improvements to the d2-checklist codebase. Work is ordered by priority and dependency — later phases build on earlier ones.
+Tracking document for the next round of incremental improvements. The previous plan (v1) covering TypeScript strictness, unit tests, parse.service.ts split, bundle budgets, CI/CD hardening, service provider standardization, and Angular 14→18 migration is fully complete.
 
-**Current state (as of 2026-04-04):**
+**Current state (as of 2026-04-06):**
 - Angular 18.2.14, TypeScript 5.4.5, RxJS 7.8.2
-- 185 unit tests across 6 spec files, 7 of 7 TypeScript strict flags enabled, `strictTemplates` enabled, `no-explicit-any` warning
-- `parse.service.ts` split into 6 files (was 4,385 lines)
-- Bundle size budgets enforced (warn 3.1 MB, error 3.5 MB)
-- CI modernized: rsync deploys, Node 22.x, npm audit, bundle size reporting
-- Git LFS replaced with build-time Bungie manifest fetch (`tools/manifest/`), InventoryItem sharded into 8 parallel loads
+- 185 unit tests, 7/7 TypeScript strict flags, `strictTemplates` enabled, `no-explicit-any` warning (446 warnings)
+- Standalone components, esbuild application builder, `bootstrapApplication()`
+- `parse.service.ts` (~1700 lines) delegates to 4 domain-specific parsers
+- Bundle budgets enforced, CI runs tests + manifest fetch + bundle reporting
 
 ---
 
-## Phase 1: TypeScript Strictness
+## Phase 1: Documentation & Git LFS Cleanup
 
-Enable strict type checking incrementally to catch bugs at compile time instead of production.
+Remove all stale git LFS references and broken LFS pointer files left over from the v1 migration.
 
-- [x] Enable `noImplicitAny`, fix resulting errors
-- [x] Enable `noImplicitReturns` and `noFallthroughCasesInSwitch`
-- [x] Enable `strictBindCallApply` and `strictFunctionTypes`
-- [x] Enable `strictNullChecks` in `tsconfig.json`, fix resulting errors (~632 errors across 60+ files)
-- [x] Enable `strictPropertyInitialization`, fix resulting errors (~211 errors across 47 files)
-- [x] Enable `strictTemplates` in `angularCompilerOptions` (~212 errors across 56 template files)
-- [x] Turn on ESLint rule `@typescript-eslint/no-explicit-any` as a warning (446 warnings for gradual cleanup)
+- [x] Update `CLAUDE.md` — remove LFS section and references, update `src/assets/` description and `parse.service.ts` line count
+- [x] Update `README.md` — fix Angular version (was 14, now 18), remove LFS references
+- [x] Update `.gitignore` — remove 4 un-ignore lines for deleted LFS files
+- [x] Update `package.json` `clean` script — remove exclusions for deleted files
+- [x] Delete `.gitattributes` (empty, no longer needed)
+- [x] Delete 4 unreferenced LFS pointer files (`destiny2-energytype.json`, `destiny2-equipmentslot.json`, `destiny2-pursuittags.json`, `destiny2-recordseasons.json`)
+- [x] Delete unreferenced `panda-godrolls.json` (unminified; only `.min.json` is used at runtime)
+- [x] Restore real JSON content for `panda-godrolls.min.json` and `fake-milestones.json` (were LFS pointers)
+- [x] Untrack all `src/assets/*.json` from git LFS
+- [ ] Bump version in `package.json`
 
-**Done when:** `"strict": true` in tsconfig.json and `strictTemplates: true` in angular compiler options.
-
----
-
-## Phase 2: Unit Tests for Critical Services
-
-Add test infrastructure and cover the highest-risk code paths.
-
-- [x] Verify Karma/Jasmine config works — installed test dependencies, created `test.ts`, fixed sass include paths
-- [x] Add unit tests for `parse-utils.ts` — 51 tests covering all pure utility functions
-- [x] Add unit tests for `gear-parser.service.ts` — 24 tests for static methods (cookDamageType, isDamageTypeEnergy, getPlugName)
-- [x] Add unit tests for `history-parser.service.ts` — 13 tests for mergeAggHistory2
-- [x] Add a CI step to run tests on every push/PR (`ci.yml` for PRs, test step in deploy workflows)
-- [x] Add unit tests for `auth.service.ts` — 34 tests for static methods (cookToken, isValid, isValidRefresh, randomString, parseError)
-- [x] Add unit tests for `bungie.service.ts` — 38 tests for parsePlatform, getActivityModes, parseBungieResponse
-- [x] Add unit tests for `parse.service.ts` — 25 tests for static delegation methods and calculateMaxLight
-- [x] Set a coverage floor and enforce in CI — global thresholds: 10% statements, 7% branches, 12% functions, 10% lines (current: ~13/10/15/13%)
-
-**Done.** Critical services have 185 tests running in CI with a coverage gate.
+**Done when:** `git grep -i "git lfs"` returns no matches. No LFS pointer files remain. `npm run build:prod` succeeds.
 
 ---
 
-## Phase 3: Break Up parse.service.ts
+## Phase 2: Angular 19 Upgrade
 
-Split the 4,385-line monolith into domain-specific parsers.
+Upgrade from Angular 18 to 19. Readiness is high — already using standalone components, esbuild builder, `bootstrapApplication()`, and `provideRouter()`.
 
-- [x] Identify logical domains within `parse.service.ts` (gear, triumphs, milestones, history/stats)
-- [x] Extract each domain into its own service/class:
-  - `gear-parser.service.ts` (1008 lines) — inventory item parsing
-  - `triumph-parser.service.ts` (666 lines) — triumphs, seals, badges, collectibles, quests
-  - `milestone-parser.service.ts` (696 lines) — milestones, activities, modifiers
-  - `history-parser.service.ts` (236 lines) — aggregated history stats
-- [x] Keep `parse.service.ts` as a facade that delegates to the new parsers (1729 lines)
-- [x] Move shared parsing utilities into `parse-utils.ts` (268 lines)
-- [x] Verify existing functionality still works (manual smoke test)
+- [ ] Fix 2 `UntypedFormControl` usages (`gear-utilities-dialog.component.ts`, `home.component.ts`) → typed `FormControl<string | null>`
+- [ ] `ng update @angular/core@19 @angular/cli@19`
+- [ ] `ng update @angular/material@19` (also updates `@angular/cdk`)
+- [ ] Update `@angular-eslint/*` to 19.x
+- [ ] Check `@fortawesome/angular-fontawesome` compatibility (currently 0.15.0)
+- [ ] Bump TypeScript if required (Angular 19 needs TS >= 5.5)
+- [ ] Fix any breaking changes
 
-**Done.** `parse.service.ts` retains ~1700 lines as the player-parsing orchestrator — further splitting would require breaking up the 640-line `parsePlayer` method.
+**Done when:** All `@angular/*` packages at 19.x. `npm run build:prod` passes within budgets. `npm run test:ci` passes all tests. `npm run lint` has no new errors.
 
 ---
 
-## Phase 4: Bundle Budgets
+## Phase 3: Break Up `parsePlayer` Method
 
-Prevent bundle bloat.
+The ~640-line `parsePlayer` method in `parse.service.ts` (lines ~864–1504) is the last major monolith.
 
-- [x] Add bundle size budgets to `angular.json`:
-  - Initial bundle: warn at 2.75 MB, error at 3.25 MB (current: 2.64 MB)
-  - Any component style: keep existing 6 KB warning
-  - Note: no vendor chunk budget needed — `vendorChunk: false` in prod config
+Extract 6 private methods (keep in same file):
+- [ ] `initializeMilestones()` (~55 lines) — milestone parsing and sorting
+- [ ] `parseCharactersAndProgressions()` (~120 lines) — character data, progressions, activities
+- [ ] `parseGearAndInventory()` (~115 lines) — inventory items across characters/vault/shared
+- [ ] `parseCollections()` (~70 lines) — collectibles and badge trees
+- [ ] `parseRecordsAndTriumphs()` (~150 lines) — triumph hierarchy, seals, catalysts, lore
+- [ ] `finalizePlayerData()` (~40 lines) — currencies, light level, dynamic strings, return Player
+- [ ] Reduce `parsePlayer` to ~100–150 lines of orchestration
 
-> **Note:** `console.log` calls are intentional — the user base is technical and uses console output for self-debugging. Do not remove or gate them.
-
-**Done.** Budgets enforced in production builds.
-
----
-
-## Phase 5: CI/CD Hardening
-
-Bring the pipeline up to date and add safety checks.
-
-- [x] Update `actions/checkout` to v4 in all workflows
-- [x] Update `actions/setup-node` to v4 with built-in npm cache
-- [x] Replace `scp-action` with rsync deploys (single SSH connection, no UFW spam)
-- [x] Add `workflow_dispatch` trigger for manual deploys
-- [x] Add `npm audit --audit-level=moderate` step
-- [x] Upgrade Node from 18.x to 22.x
-- [x] Add unit test step (from Phase 2)
-- [x] Add bundle size reporting step (from Phase 4)
-- [x] Replace git LFS with build-time manifest fetch (`tools/manifest/`)
-- [x] Add GitHub Actions cache for manifest data
-
-**Done.** All workflows run tests, fetch manifest, and report bundle sizes.
+**Done when:** `parsePlayer` is under 200 lines. Each extracted method has clear inputs/outputs. All tests pass.
 
 ---
 
-## Phase 6: Standardize Service Providers
+## Phase 4: Eliminate `any` Types
 
-Eliminate the mixed `providedIn: 'root'` vs `app.module.ts` providers pattern.
+446 ESLint `no-explicit-any` warnings. Top files: `parse.service.ts` (54), `tools/manifest/common.ts` (35), `milestone-parser.service.ts` (33), `gear-parser.service.ts` (31), `destiny-cache.service.ts` (25).
 
-- [x] Audit all services — list which use `providedIn: 'root'` vs module providers
-- [x] Migrate all 9 legacy services to `providedIn: 'root'`
-- [x] Remove corresponding entries from `app.module.ts` providers array
-- [x] Verify tree-shaking works correctly (build compiles cleanly)
+- [ ] Type the Bungie API response parameter (`resp`) in parse services with proper interfaces
+- [ ] Type `tools/manifest/common.ts` cache interfaces (35 warnings, build-tooling only)
+- [ ] Type `milestone-parser.service.ts` milestone responses (33 warnings)
+- [ ] Type `gear-parser.service.ts` inventory item parsing (31 warnings, has test safety net)
+- [ ] Type `destiny-cache.service.ts` cache lookups (25 warnings)
+- [ ] Type remaining files: `triumph-parser.service.ts` (17), `vendor.service.ts` (16), `gear-filter-state.service.ts` (15), `shared/utilities.ts` (7), `storage.service.ts` (7)
+- [ ] Escalate `no-explicit-any` from `warn` to `error` once under 50 remaining (with targeted `eslint-disable` for genuinely dynamic data)
 
-**Done when:** All services use `providedIn: 'root'` and `app.module.ts` providers array contains only non-service tokens.
+Strategy: prefer `unknown` + type guards over `any` at API boundaries. Work in 3–5 PRs grouped by domain.
+
+**Done when:** Under 100 warnings remaining. Top 5 files each have fewer than 10.
 
 ---
 
-## Phase 7: Angular 18+ Migration
+## Phase 5: Increase Test Coverage
 
-The biggest effort. Phases 1–6 reduce risk and make this migration smoother.
+Currently: 185 tests, ~13%/10%/15%/13% (statements/branches/functions/lines). Floor: 10/7/12/10.
 
-### 7a: Pre-migration prep
-- [x] Upgrade RxJS from 6.6 to 7.8 (toPromise → firstValueFrom, 17 call sites)
-- [x] Upgrade TypeScript 4.8 → 5.4
-- [x] Upgrade Angular Material to match each Angular version (including legacy → MDC migration)
-- [x] Update FontAwesome angular-fontawesome 0.11 → 0.15, angular-eslint 14 → 18
+Priority targets:
+- [ ] Extracted `parsePlayer` sub-methods from Phase 3 (clear input/output contracts)
+- [ ] `destiny-cache.service.ts` — cache loading and lookups
+- [ ] `milestone-parser.service.ts` — milestone cooking logic
+- [ ] `triumph-parser.service.ts` — seal/badge building
+- [ ] `gear-filter-state.service.ts` — filter predicates
+- [ ] Key components with significant logic (`GearComponent`, `PlayerComponent`)
+- [ ] Raise coverage floor to 20/15/20/20
 
-### 7b: Angular version hops
-Angular migrations must go one major version at a time:
-- [x] Angular 14 → 15 (`ng update @angular/core@15 @angular/cli@15`)
-- [x] Angular 15 → 16 (`ng update @angular/core@16 @angular/cli@16`)
-- [x] Angular 16 → 17 (`ng update @angular/core@17 @angular/cli@17`)
-- [x] Angular 17 → 18 (`ng update @angular/core@18 @angular/cli@18`)
+**Done when:** 300+ tests. Coverage floor at 20/15/20/20. Each `parsePlayer` sub-method has at least one test.
 
-### 7c: Post-migration modernization
-- [x] Migrate key components to standalone (remove NgModule boilerplate)
-  - Ran Angular standalone migration schematic (3 steps: convert, prune, bootstrap)
-  - All 129 components now `standalone: true` with per-component imports
-  - Deleted all 15 NgModule files (SharedModule, MilestoneCheckModule, 12 feature modules, AppRoutingModule)
-  - `main.ts` uses `bootstrapApplication()` with `provideRouter()`, `provideServiceWorker()`, `provideHttpClient()`, `provideAnimations()`
-  - Moved `MAT_TOOLTIP_DEFAULT_OPTIONS` from MilestoneCheckModule to MilestoneCheckComponent providers
-  - Deleted `Destroyable` base class (replaced with direct subscription in LoggedInGuard)
-- [x] Replace `ChildComponent` base class with `DestroyRef` + `takeUntilDestroyed`
-  - Created `AppStateService` for shared state (debugmode, disableAds, favorites, hiddenMilestones)
-  - `ChildComponent` now uses `inject()` — no constructor params, delegates to `AppStateService`
-  - Replaced `takeUntil(this.unsubscribe$)` with `takeUntilDestroyed(this.destroyRef)` in 40+ components
-  - Removed `unsubscribe$` from 7 root services (singletons never destroy)
-  - Deleted unused `StreamingChildComponent`
-- [x] Adopt Angular signals where beneficial
-  - Converted `AppStateService` BehaviorSubjects to `WritableSignal` (disableAds, debugmode, favoritesList$, favoritesMap, hiddenMilestones, hiddenClanMilestones)
-  - Converted `ChildComponent.loading` to `signal<boolean>(false)`
-  - Converted service-level `loading` BehaviorSubjects to signals (StreamingService, GearService, ClanStateService, FriendStarComponent, PerkbenchComponent, DimSyncService, MarkService)
-  - Updated 54 templates: replaced `field | async` with `field()` signal reads
-  - Replaced `.next()` with `.set()` and `.getValue()` with `()` across 24 TS files
-  - Removed `AsyncPipe` import from 11 components that no longer use it
-  - Converted `FriendsComponent.members` to signal, used `effect()` for reactive state
-- [x] Evaluate esbuild-based builder (`@angular-devkit/build-angular:application`)
-  - Switched from webpack `browser` builder to esbuild `application` builder
-  - Replaced `require()` with ESM `import` for package.json in environment files
-  - Removed polyfills.ts (zone.js now specified in angular.json polyfills array)
-  - Removed webpack-only options: `vendorChunk`, `buildOptimizer`, `namedChunks`, `aot`
-  - Updated deploy workflows for new `dist/browser/` output path
-  - Updated tsconfig: `module: "ES2022"`, `moduleResolution: "bundler"`, `resolveJsonModule: true`
+---
 
-**Done (7a+7b).** Running on Angular 18.2.14. Post-migration modernization (7c) is optional follow-up work.
+## Phase 6: Further Signal Adoption
+
+274 `BehaviorSubject` instances across 52 files. Some already converted to signals.
+
+Priority conversions:
+- [ ] `gear-filter-state.service.ts` (45 BehaviorSubjects)
+- [ ] `uber-list-state.service.ts` (28 BehaviorSubjects)
+- [ ] `clan-state.service.ts` (18 BehaviorSubjects)
+- [ ] Evaluate Angular 19 signal APIs (`resource()`, `linkedSignal()`) after Phase 2
+- [ ] Convert incrementally, one service per PR
+
+**Done when:** BehaviorSubject count under 150. The three largest files are converted.
 
 ---
 
 ## Execution Order
 
-1. ~~Phase 5: CI/CD Hardening~~ — Done
-2. ~~Phase 6: Standardize Service Providers~~ — Done
-3. ~~Phase 1: TypeScript Strictness~~ — Done
-4. ~~Phase 3: Break Up parse.service.ts~~ — Done
-5. ~~Phase 2: Unit Tests~~ — Done
-6. ~~Phase 4: Bundle Budgets~~ — Done
-7. ~~Phase 7: Angular 18 Migration~~ — Done (14 → 18, post-migration 7c is optional follow-up)
+| # | Phase | Effort | Depends On |
+|---|-------|--------|------------|
+| 1 | Documentation & Git LFS Cleanup | Small (1 PR) | — |
+| 2 | Angular 19 Upgrade | Medium (1–2 PRs) | Phase 1 |
+| 3 | Break Up parsePlayer | Medium (1 PR) | — |
+| 4 | Eliminate `any` Types | Large (3–5 PRs) | Phase 3 |
+| 5 | Increase Test Coverage | Large (3–5 PRs) | Phase 3 |
+| 6 | Further Signal Adoption | Large (5+ PRs) | Phase 2 |
+
+Phases 4 & 5 can run in parallel after Phase 3. Phase 6 can start after Phase 2.
 
 ## Notes
 
 - Each phase should be its own PR (or set of PRs for large phases).
-- Phase 3 before Phase 2 is intentional: testing a 4,385-line monolith is painful and the tests would need rewriting after the split anyway.
+- ALWAYS bump `version` in `package.json` for each PR. If the bungie manifest version changes, also bump `"manifest"`.
+- `console.log` calls are intentional — never remove them.
