@@ -54,10 +54,6 @@ src/environments/keys-prod.ts
 
 # Generated manifest JSON files (fetched at build time via tools/manifest/)
 src/assets/destiny2-*.json
-!src/assets/destiny2-energytype.json
-!src/assets/destiny2-equipmentslot.json
-!src/assets/destiny2-pursuittags.json
-!src/assets/destiny2-recordseasons.json
 
 # Manifest tool cache
 tools/manifest/.cache/

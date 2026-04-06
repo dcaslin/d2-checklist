@@ -7,7 +7,7 @@ d2-checklist is the Angular front end for [d2checklist.com](https://www.d2checkl
 ## Build and run
 
 ```bash
-npm install          # also runs `git lfs install` via prepare script
+npm install          # install dependencies
 npm start            # serves on https://localhost:4200
 npm run build        # development build
 npm run build:prod   # production build
@@ -27,7 +27,7 @@ ALWAYS bump the version in package.json for each new PR. If the bungie manifest 
   - `app.routes.ts` - All routes and route guards
   - `main.ts` - Bootstrap entry point (`bootstrapApplication`)
 - `src/environments/` - Environment configs; `keys.ts` (gitignored) holds Bungie API credentials
-- `src/assets/` - Static assets (JSON files tracked via git LFS)
+- `src/assets/` - Static assets (manifest JSON generated at build time by `tools/manifest/`, plus godroll and fallback data)
 - `.github/workflows/` - CI/CD (deploy.yml, beta-deploy.yml)
 
 ## Key patterns
@@ -35,11 +35,7 @@ ALWAYS bump the version in package.json for each new PR. If the bungie manifest 
 - Standalone component architecture (no NgModules) — each component imports its own dependencies
 - Many components extend `ChildComponent` for shared state (delegates to `AppStateService`)
 - Services use `providedIn: 'root'`; route guards provided in `main.ts` bootstrap
-- `parse.service.ts` is the largest file (~4k lines) - handles Bungie API response parsing
-
-## Git LFS
-
-`src/assets/*.json` files are tracked with git LFS. The `prepare` script in package.json runs `git lfs install` automatically on `npm install`.
+- `parse.service.ts` (~1700 lines) orchestrates Bungie API response parsing, delegating to domain-specific parsers
 
 ## FontAwesome Pro
 

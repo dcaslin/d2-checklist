@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "29.4.0",
+  "version": "29.5.0",
   "manifest": "242999.26.03.25.2000-1-bnet.64463",
   "license": "MIT",
   "scripts": {
@@ -15,7 +15,7 @@
     "test:ci": "ng test --no-watch --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint",
     "build:prod": "ng build --configuration production",
-    "clean": "rm -rf ./dist/ ./tools/manifest/.cache/ && find src/assets -name 'destiny2-*.json' ! -name '*energytype*' ! -name '*equipmentslot*' ! -name '*pursuittags*' ! -name '*recordseasons*' -delete",
+    "clean": "rm -rf ./dist/ ./tools/manifest/.cache/ && find src/assets -name 'destiny2-*.json' -delete",
     "server": "cd dist && http-server -S -p 4200 -C ../dev-certs/localhost.crt -K ../dev-certs/localhost.key",
     "prod": "npm run clean && npm run build:prod && npm run server",
     "manifest:fetch": "npx ts-node --project tools/manifest/tsconfig.json tools/manifest/index.ts",
