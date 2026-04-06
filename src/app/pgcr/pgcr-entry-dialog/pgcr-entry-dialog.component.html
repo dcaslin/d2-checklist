@@ -7,7 +7,7 @@
       <div class="simple-caption-darker-no-margin sub-title">{{player.characterClass}} {{player.lightLevel}}</div>
     </div>
     <div>
-      <d2c-friend-star [userInfo]="$any(player.destinyUserInfo)" [favoritesMap]="(favoritesMap|async)!"></d2c-friend-star>
+      <d2c-friend-star [userInfo]="$any(player.destinyUserInfo)" [favoritesMap]="favoritesMap()!"></d2c-friend-star>
     </div>
   </div>
 </div>

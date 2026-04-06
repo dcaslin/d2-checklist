@@ -17,7 +17,7 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="col-md-4">
-    <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode|async" (selectionChange)="onDebugSelect($event)">
+    <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode()" (selectionChange)="onDebugSelect($event)">
       <mat-option *ngFor="let t of debugChoices" [value]="t.value">
         {{t.label}}
       </mat-option>
@@ -72,7 +72,7 @@
     <fa-icon [icon]="iconService.fabPaypal"></fa-icon> Donate
   </a>
 </div>
-<div *ngIf="(debugmode|async)===true">
+<div *ngIf="debugmode()===true">
   <hr>
   <p class="note">
     <mat-icon>bug_report</mat-icon> You've enabled debug mode. This might do nothing, or it might show extra information

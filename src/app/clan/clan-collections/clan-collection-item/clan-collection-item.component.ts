@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanCollectionItemDialogComponent } from '../clan-collection-item-dialog/clan-collection-item-dialog.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
@@ -14,7 +14,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     templateUrl: './clan-collection-item.component.html',
     styleUrls: ['./clan-collection-item.component.scss'],
     standalone: true,
-    imports: [NgIf, MatButton, MatProgressBar, AsyncPipe]
+    imports: [NgIf, MatButton, MatProgressBar]
 })
 export class ClanCollectionItemComponent extends ChildComponent {
 

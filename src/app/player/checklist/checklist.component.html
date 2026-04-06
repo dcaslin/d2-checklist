@@ -14,7 +14,7 @@
             <ng-container *ngIf="checklist.video">
               <a [href]="checklist.video" class="accent-text link-icon" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
             </ng-container>            
-            <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
+            <span *ngIf="debugmode()">&ensp;[{{checklist.hash}}]</span>
 
           </mat-panel-title>
           <mat-panel-description>
@@ -52,7 +52,7 @@
                     </ng-container>
                     <!-- <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}} <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon></a> -->
 
-                    <span *ngIf="debugmode|async">
+                    <span *ngIf="debugmode()">
                       &ensp;[{{check.hash}}] &ensp;
                       <span class="fake-link" (click)="state.requestRefresh()">
                         <fa-icon [icon]="iconService.fasSync" [animation]="(state.loading|async)! ? 'spin' : undefined" [fixedWidth]="true">
@@ -82,7 +82,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{checklist.name}}          
-          <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
+          <span *ngIf="debugmode()">&ensp;[{{checklist.hash}}]</span>
         </mat-panel-title>
         <mat-panel-description>
           <span *ngFor="let t of checklist.totals">{{t.char.className}}
@@ -113,7 +113,7 @@
                   </a>
 
                   <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
-                  <span *ngIf="debugmode|async">
+                  <span *ngIf="debugmode()">
                     &ensp;[{{check.hash}}] &ensp;
                     <span class="fake-link" (click)="state.requestRefresh()">
                       <fa-icon [icon]="iconService.fasSync" [animation]="(state.loading|async)! ? 'spin' : undefined" [fixedWidth]="true">

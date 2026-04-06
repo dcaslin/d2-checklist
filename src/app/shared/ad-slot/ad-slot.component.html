@@ -1,4 +1,4 @@
-<ng-container *ngIf="(disableAds|async)!==true">
+<ng-container *ngIf="disableAds()!==true">
     <ng-container *ngIf="screenWidth$|async as screenWidth">
         <ng-container *ngIf="adType=='unknown'">
             Unknown type, fixme

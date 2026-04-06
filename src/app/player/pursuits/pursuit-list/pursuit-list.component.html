@@ -95,7 +95,7 @@
                 <button mat-icon-button *ngIf="g.tracked" matTooltip="This is tracked in game, click to untrack." (click)="state.gameTrackPursuit(g, false)">
                   <fa-icon [icon]="iconService.fasBookmark" class="accent-text"></fa-icon>
                 </button> -->
-                <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
+                <span *ngIf="debugmode()">&ensp;[{{g.hash}}]</span>
                 <div *ngIf="g.questline">
                   <a mat-stroked-button (click)="openQuestDialog(g.questline)">
                     <fa-icon [icon]="iconService.farProjectDiagram"></fa-icon> Questline {{g.questline.progress}}

@@ -55,7 +55,7 @@
             </a>
           </span>
 
-          <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+          <ng-container *ngIf="debugmode()">{{node.data.hash}}</ng-container>
           <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true"
             (click)="state.trackTriumph(node.data)"></fa-icon>
           <fa-icon class="pad-left" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true"
@@ -85,7 +85,7 @@
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.complete"
           class="accent-text mat-option.mat-selected"></fa-icon>
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
-        {{node.data.name}} <span *ngIf="debugmode|async">{{node.data.hash}}</span>
+        {{node.data.name}} <span *ngIf="debugmode()">{{node.data.hash}}</span>
         <span class="simple-caption">
           <span class="padded">{{node.data.progress}}/{{node.data.completionValue}}</span>
           <span class="padded d-none d-xl-inline">{{node.data.pts|number}} / {{node.data.totalPts|number}}

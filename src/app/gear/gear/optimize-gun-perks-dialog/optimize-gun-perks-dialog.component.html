@@ -1,11 +1,11 @@
 <h5 mat-dialog-title class="title-row">Optimize Gun Perks
     <button mat-icon-button (click)="parent.load()">
-        <fa-icon [icon]="iconService.fasSyncAlt" [animation]="(parent.loading|async)! ? 'spin' : undefined"></fa-icon>
+        <fa-icon [icon]="iconService.fasSyncAlt" [animation]="(parent.loading())! ? 'spin' : undefined"></fa-icon>
     </button>
 </h5>
 <div mat-dialog-content class="body">
     <div class="fixed-spinner">
-        <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner"
+        <fa-icon *ngIf="(gearService.loading())===true" [icon]="iconService.farSpinner"
           animation="spin" size="3x" [fixedWidth]="true"></fa-icon>        
       </div>
     <p class="simple-caption-darker-no-margin">This will modify the selected perks on all of your guns to choose those preferred by your god rolls.</p>    

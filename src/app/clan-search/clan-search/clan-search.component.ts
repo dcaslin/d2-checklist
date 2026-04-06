@@ -35,7 +35,7 @@ export class ClanSearchComponent extends ChildComponent implements OnInit {
   }
 
   private async load() {
-    this.loading.next(true);
+    this.loading.set(true);
     try {
       const x = await this.bungieService.searchClans(this.name);
       this.clan.next(x);
@@ -44,7 +44,7 @@ export class ClanSearchComponent extends ChildComponent implements OnInit {
       this.clan = null!;
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
 
   }

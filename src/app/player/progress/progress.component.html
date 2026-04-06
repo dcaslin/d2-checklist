@@ -19,7 +19,7 @@
 
             </span>
             <span class="light">
-              <ng-container *ngIf="debugmode|async">{{faction.hash}} </ng-container>
+              <ng-container *ngIf="debugmode()">{{faction.hash}} </ng-container>
               <ng-container *ngIf="faction.steps!=null && (faction.steps[faction.level]!=null)">
 
                 <button mat-raised-button color="accent" (click)="openStepDialog(faction)">
@@ -105,7 +105,7 @@
             <td class="lead" data-label="">
               <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
               <span class="light">Level {{faction.level}}
-                <ng-container *ngIf="debugmode|async">{{faction.hash}}</ng-container>
+                <ng-container *ngIf="debugmode()">{{faction.hash}}</ng-container>
                 <ng-container *ngIf="faction.steps!=null && (faction.steps[faction.level]!=null)">
                   {{faction.title}}
                 </ng-container>

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal} from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {
   DestinyCacheService,
@@ -229,7 +229,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   public filteredRolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject<MappedRoll[]>(
     []
   );
-  public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public loading$ = signal<boolean>(false);
   private weapons: GunInfo[] = [];
 
 
@@ -393,7 +393,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   async load() {
-    this.loading$.next(true);
+    this.loading$.set(true);
     try {
       let gunRolls = await PandaGodrollsService.getCustomGodRolls();
       if (gunRolls) {
@@ -414,7 +414,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       console.dir(x);
       this.notificationService.fail(x);
     } finally {
-      this.loading$.next(false);
+      this.loading$.set(false);
     }
   }
 
@@ -434,7 +434,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   loadPandaJson(sGodRolls: string, weapons: GunInfo[], custom: boolean): void {
-    this.loading$.next(true);
+    this.loading$.set(true);
     try {
       const completeRolls: CompleteGodRolls = JSON.parse(sGodRolls);
       if (!PandaGodrollsService.isValid(completeRolls)) {
@@ -452,7 +452,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       console.dir(x);
       this.notificationService.fail(x);
     } finally {
-      this.loading$.next(false);
+      this.loading$.set(false);
     }
   }
 

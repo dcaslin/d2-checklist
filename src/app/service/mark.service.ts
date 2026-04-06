@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal} from '@angular/core';
 import {
     ItemAnnotation,
     ProfileUpdate,
@@ -33,7 +33,7 @@ const LOG_CSS = `color: royalblue`;
 @Injectable({ providedIn: 'root' })
 export class MarkService {
     // right now we only use this for DIM-sync
-    public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public loading$ = signal<boolean>(false);
     public currentMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject<Marks | null>(null);
     private cleanMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject<Marks | null>(null); // the original marks loaded from the server
     // have an observable for dirty that's debounced to once every second that writes updates to server
@@ -435,7 +435,7 @@ export class MarkService {
     }
 
     async doInitialDimSync(): Promise<boolean> {
-        this.loading$.next(true);
+        this.loading$.set(true);
         try {
             const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
             const d2cMarks = await this.load(selectedUser!.userInfo.membershipType, selectedUser!.userInfo.membershipId);
@@ -470,7 +470,7 @@ export class MarkService {
             return true;
 
         } finally {
-            this.loading$.next(false);
+            this.loading$.set(false);
         }
     }
 

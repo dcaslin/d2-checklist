@@ -8,7 +8,7 @@ import { BungieService } from '../../service/bungie.service';
 import { Activity, ActivityMode, Const, Player, UserInfo } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
@@ -25,7 +25,7 @@ import { FriendStarComponent } from '../../shared/friend-star/friend-star.compon
     templateUrl: './recent-players.component.html',
     styleUrls: ['./recent-players.component.scss'],
     standalone: true,
-    imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, MatAnchor, MatFormField, MatSelect, FormsModule, MatOption, MatButton, MatIcon, FaIconComponent, FriendStarComponent, AsyncPipe, DatePipe]
+    imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, MatAnchor, MatFormField, MatSelect, FormsModule, MatOption, MatButton, MatIcon, FaIconComponent, FriendStarComponent, DatePipe]
 })
 export class RecentPlayersComponent extends ChildComponent implements OnInit {
   activityModes: ActivityMode[];
@@ -61,7 +61,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit {
   }
 
   public async history() {
-    this.loading.next(true);
+    this.loading.set(true);
     try {
       const r = await this.bungieService.getActivityHistory(this.membershipType, this.membershipId,
         this.characterId, this.selectedMode.type, this.selectedMaxResults);
@@ -77,7 +77,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit {
       this.loadNextRow();
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 

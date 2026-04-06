@@ -1,4 +1,4 @@
-<ng-container *ngIf="loading|async; else notLoading">
+<ng-container *ngIf="loading(); else notLoading">
     <button mat-icon-button disabled>
         <fa-icon [icon]="iconService.farSpinner" animation="spin-pulse"></fa-icon>
     </button>

@@ -5,7 +5,7 @@ import { InventoryItem } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { GearComponent } from '../gear/gear.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { GodRollPlugComponent } from '../god-roll-plug/god-roll-plug.component';
 
@@ -15,7 +15,7 @@ import { GodRollPlugComponent } from '../god-roll-plug/god-roll-plug.component';
     templateUrl: './possible-rolls-dialog.component.html',
     styleUrls: ['../gear/gear.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, NgIf, CdkScrollable, MatDialogContent, NgFor, GodRollPlugComponent, AsyncPipe]
+    imports: [MatDialogTitle, NgIf, CdkScrollable, MatDialogContent, NgFor, GodRollPlugComponent]
 })
 export class PossibleRollsDialogComponent {
 

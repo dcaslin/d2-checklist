@@ -1,5 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { AppStateService } from '../service/app-state.service';
 import { StorageService } from '../service/storage.service';
 
@@ -20,7 +19,7 @@ export class ChildComponent {
     public hiddenMilestones = this.appState.hiddenMilestones;
     public hiddenClanMilestones = this.appState.hiddenClanMilestones;
 
-    public loading = new BehaviorSubject<boolean>(false);
+    public loading = signal(false);
 
     public dump(dumpMe: any): void {
         console.log(dumpMe);

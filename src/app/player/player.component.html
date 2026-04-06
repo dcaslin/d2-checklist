@@ -18,7 +18,7 @@
               <fa-icon [icon]="$any(PLATFORMS_DICT)[player.profile.userInfo.membershipType+''].icon"
                 style="font-weight: normal !important"></fa-icon>
               {{player.profile.userInfo.displayName}}
-              <d2c-friend-star [title]="true" [userInfo]="player.profile.userInfo" [favoritesMap]="(favoritesMap|async)!">
+              <d2c-friend-star [title]="true" [userInfo]="player.profile.userInfo" [favoritesMap]="favoritesMap()!">
               </d2c-friend-star>
               <button mat-icon-button (click)="state.requestRefresh()">
                 <fa-icon [icon]="iconService.farSync"></fa-icon>

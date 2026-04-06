@@ -4,7 +4,7 @@
       [style.background-image]="'url(//www.bungie.net' + ls.icon + ')'"></span>
     <div matListItemLine class="ls-line">
       <span class="underline">{{n.name}}</span>
-      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+      <span class="tiny" *ngIf="debugmode()">{{n.hash}}</span>
     </div>
     <div matListItemLine class="ls-line">
       Location: {{ls.directorLocation}}

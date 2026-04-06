@@ -8,7 +8,7 @@
         <d2c-vendors
             [player]="player"
             [currUser]="currUser"
-            [debugmode]="(debugmode|async)!"
+            [debugmode]="debugmode()!"
             [loading]="(signedOnUserService.playerLoading$|async)!"
             [vendorsLoading]="(signedOnUserService.vendorsLoading$|async)!"
             [vendorData]="(signedOnUserService.vendors$|async)!"

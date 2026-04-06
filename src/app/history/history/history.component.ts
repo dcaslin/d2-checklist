@@ -64,7 +64,7 @@ export class HistoryComponent extends ChildComponent implements OnInit {
   }
 
   public async history() {
-    this.loading.next(true);
+    this.loading.set(true);
     try {
       const rows = await this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId,
         this.selectedMode.type, this.selectedMaxResults);
@@ -72,7 +72,7 @@ export class HistoryComponent extends ChildComponent implements OnInit {
       this.database.setData(rows);
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 

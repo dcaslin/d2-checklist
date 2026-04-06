@@ -1,5 +1,5 @@
 <div class="top-section">
-  <div *ngIf="debugmode|async">
+  <div *ngIf="debugmode()">
     <div>Version: {{version}}</div>
   </div>
   <div class="searchRow">
@@ -18,7 +18,7 @@
       href="https://www.youtube.com/channel/UCbpQ7BKU32m6J9jI2O8z09w">
       <fa-icon [icon]="iconService.fabYoutube"></fa-icon> Video tutorials
     </a>
-    <ng-container *ngIf="favoritesList$|async as fl">
+    <ng-container *ngIf="favoritesList$() as fl">
       <ng-container *ngIf="fl.length>0; else noFriends">
         <a mat-raised-button class="home-button" color="primary" [matMenuTriggerFor]="friendsMenu"
           [matBadge]="fl.length" matBadgePosition="after" matBadgeColor="warn">
@@ -47,7 +47,7 @@
 
   </div>
 </div>
-<div class="center-spinner" *ngIf="(loading|async)===true">
+<div class="center-spinner" *ngIf="loading()===true">
   <mat-spinner class="loading" class="center-spinner"></mat-spinner>
 </div>
 <p *ngIf="(isSignedOn$|async) === false">
@@ -144,7 +144,7 @@
               [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
             <div matListItemLine>
               <span class="underline">{{removeActivityPrefixes(n.name)}}</span>
-              <span class="tiny" *ngIf="debugmode|async"> {{n.hash}}</span>
+              <span class="tiny" *ngIf="debugmode()"> {{n.hash}}</span>
             </div>
             <div matListItemLine>
               <!-- {{n.ll}}  -->

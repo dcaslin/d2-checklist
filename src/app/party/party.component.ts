@@ -94,7 +94,7 @@ export class PartyComponent extends ChildComponent implements OnInit {
 
   private async init(params: Params) {
     try {
-      this.loading.next(true);
+      this.loading.set(true);
       this.errorMsg.next(null);
       const sPlatform = params['platform'];
       const platform = BungieService.parsePlatform(sPlatform);
@@ -130,7 +130,7 @@ export class PartyComponent extends ChildComponent implements OnInit {
       console.dir(exc);
       this.errorMsg.next(exc.message);
     } finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 }

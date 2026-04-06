@@ -8,7 +8,7 @@
                 </div>
                 <div class="badge-info">
                     {{badge.data.name}}
-                    <ng-container *ngIf="debugmode|async"> {{badge.data.hash}}</ng-container>
+                    <ng-container *ngIf="debugmode()"> {{badge.data.hash}}</ng-container>
                     <div class="button-section">
                         <button mat-stroked-button (click)="openBadgeDialog(badge)">
                             {{badge.complete}} / {{badge.total}}

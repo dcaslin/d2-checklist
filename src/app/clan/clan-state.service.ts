@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { Sort } from '@app/service/model';
@@ -99,7 +99,7 @@ export interface ClanSearchableCollection extends ClanAggregate {
   providedIn: 'root'
 })
 export class ClanStateService {
-  public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public loading = signal<boolean>(false);
   public notFound: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public inactiveMembers: BungieGroupMember[] = [];
   public defunctMembers: BungieGroupMember[] = [];
@@ -705,7 +705,7 @@ export class ClanStateService {
     this.aggHistoryAllLoaded.next(false);
     this.aggHistory.next([]);
     this.notFound.next(false);
-    this.loading.next(true);
+    this.loading.set(true);
     this.members = [];
 
     this.defunctMembers = [];
@@ -753,7 +753,7 @@ export class ClanStateService {
       this.sortData();
       const operateOnMe = this.sortedMembers.getValue();
       console.log(`Active ${operateOnMe.length} / ${functMembers.length}`);
-      this.loading.next(false);
+      this.loading.set(false);
       for (const t of operateOnMe) {
         if (this.modelPlayer.getValue() == null) {
           await this.loadSpecificPlayer(t, false);
@@ -762,7 +762,7 @@ export class ClanStateService {
         }
       }
     } catch (x) {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 

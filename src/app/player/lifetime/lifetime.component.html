@@ -53,7 +53,7 @@
                         <span *ngIf="!a.special">
                             {{a.name}}
                         </span>
-                        <div *ngIf="debugmode|async">
+                        <div *ngIf="debugmode()">
                             [{{a.hash}}]
                         </div>
 

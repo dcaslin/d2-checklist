@@ -4,7 +4,7 @@
     </p>
     <mat-progress-bar mode="determinate" [value]="(state.aggHistoryLoaded|async)!*100"></mat-progress-bar>
     <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading())===true">
         </mat-spinner>
     </div>
 </ng-container>

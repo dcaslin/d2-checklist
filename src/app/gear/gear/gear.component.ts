@@ -193,7 +193,7 @@ export class GearComponent extends ChildComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router) {
     super();
-    this.loading.next(true);
+    this.loading.set(true);
     this.options = [
       { name: 'Weapons', type: ItemType.Weapon, path: 'weapons' },
       { name: 'Armor', type: ItemType.Armor, path: 'armor' },
@@ -490,7 +490,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   public async load(quiet?: boolean) {
-    this.loading.next(true);
+    this.loading.set(true);
 
     if (quiet != true) {
       this.notificationService.info('Loading gear...');
@@ -516,7 +516,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       this.gearFilterStateService.filterUpdated$.next();
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 
