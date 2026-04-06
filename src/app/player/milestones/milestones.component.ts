@@ -21,7 +21,6 @@ import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-milestones',
     templateUrl: './milestones.component.html',
     styleUrls: ['./milestones.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, NgFor, MatTooltip, FaIconComponent, RewardDescComponent, MilestoneCheckComponent, AgoHumanizedPipe, AsyncPipe, DatePipe]
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {

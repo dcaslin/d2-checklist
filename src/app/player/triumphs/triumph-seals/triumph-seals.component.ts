@@ -17,7 +17,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-triumph-seals',
     templateUrl: './triumph-seals.component.html',
     styleUrls: ['./triumph-seals.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCheckbox, FormsModule, MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, FaIconComponent, MatTooltip, MatExpansionPanelDescription, MatAnchor, RouterLink, MatProgressBar, AsyncPipe]
 })
 export class TriumphSealsComponent extends ChildComponent {

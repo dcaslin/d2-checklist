@@ -15,7 +15,6 @@ import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-object
     selector: 'd2c-triumph-tracked',
     templateUrl: './triumph-tracked.component.html',
     styleUrls: ['./triumph-tracked.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCheckbox, FormsModule, NgFor, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe]
 })
 export class TriumphTrackedComponent extends ChildComponent {

@@ -9,7 +9,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-app-status',
     templateUrl: './app-status.component.html',
     styleUrls: ['./app-status.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCard, MatCardContent, MatProgressBar, AsyncPipe, DecimalPipe]
 })
 export class AppStatusComponent {

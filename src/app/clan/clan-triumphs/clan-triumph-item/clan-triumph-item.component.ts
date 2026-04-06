@@ -14,7 +14,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-clan-triumph-item',
     templateUrl: './clan-triumph-item.component.html',
     styleUrls: ['./clan-triumph-item.component.scss'],
-    standalone: true,
     imports: [NgIf, MatIconButton, FaIconComponent, MatButton, MatProgressBar]
 })
 export class ClanTriumphItemComponent extends ChildComponent {

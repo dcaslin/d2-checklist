@@ -11,7 +11,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-item-icon',
     templateUrl: './item-icon.component.html',
     styleUrls: ['./item-icon.component.scss'],
-    standalone: true,
     imports: [NgIf, NgTemplateOutlet, MatMenuTrigger, FaIconComponent, NgClass, MatMenu, MatMenuItem, NgFor, AsyncPipe]
 })
 export class ItemIconComponent  {

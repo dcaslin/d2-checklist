@@ -17,7 +17,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-clan-settings',
     templateUrl: './clan-settings.component.html',
     styleUrls: ['./clan-settings.component.scss'],
-    standalone: true,
     imports: [MatButton, MatFormField, MatSelect, FormsModule, NgFor, MatOption, MatSelectTrigger, FaIconComponent, AsyncPipe]
 })
 export class ClanSettingsComponent extends ChildComponent {

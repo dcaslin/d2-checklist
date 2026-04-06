@@ -20,7 +20,6 @@ import { GodRollPlugComponent } from '../../gear/god-roll-plug/god-roll-plug.com
     selector: 'd2c-weapon-compare-dialog',
     templateUrl: './weapon-compare-dialog.component.html',
     styleUrls: ['./weapon-compare-dialog.component.scss'],
-    standalone: true,
     imports: [NgIf, MatDialogTitle, CdkScrollable, MatDialogContent, HorizontalSortComponent, NgFor, SeasonIndicatorComponent, FaIconComponent, ItemIconComponent, NgClass, GodRollMwComponent, GodRollPlugComponent, AsyncPipe]
 })
 export class WeaponCompareDialogComponent extends ChildComponent {

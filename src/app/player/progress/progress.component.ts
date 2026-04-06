@@ -15,7 +15,6 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
     selector: 'd2c-progress',
     templateUrl: './progress.component.html',
     styleUrls: ['./progress.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, MatTooltip, MatButton, MatProgressBar, MatTabGroup, MatTab, AsyncPipe, DecimalPipe, PercentPipe]
 })
 export class ProgressComponent extends ChildComponent {

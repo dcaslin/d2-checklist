@@ -10,7 +10,6 @@ import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
     selector: 'd2c-collection-deals',
     templateUrl: './collection-deals.component.html',
     styleUrls: ['./collection-deals.component.scss'],
-    standalone: true,
     imports: [MatTooltip, NgIf, NgFor, ItemIconComponent]
 })
 export class CollectionDealsComponent {

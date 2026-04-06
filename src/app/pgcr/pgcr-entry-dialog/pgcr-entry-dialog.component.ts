@@ -14,7 +14,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-pgcr-entry-dialog',
     templateUrl: './pgcr-entry-dialog.component.html',
     styleUrls: ['./pgcr-entry-dialog.component.scss'],
-    standalone: true,
     imports: [NgIf, MatDialogTitle, RouterLink, FriendStarComponent, CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, NgFor, DecimalPipe]
 })
 export class PgcrEntryDialogComponent extends ChildComponent {

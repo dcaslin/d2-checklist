@@ -22,7 +22,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
-    standalone: true,
     imports: [MatFormField, MatSelect, FormsModule, NgFor, MatOption, NgIf, MatIcon, MatAnchor, FaIconComponent, MatButton]
 })
 export class SettingsComponent extends ChildComponent {

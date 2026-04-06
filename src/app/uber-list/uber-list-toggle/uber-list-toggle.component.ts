@@ -24,7 +24,6 @@ export function generateUberState(config: UberToggleConfig, choices: UberChoice[
     selector: 'd2c-uber-list-toggle',
     templateUrl: './uber-list-toggle.component.html',
     styleUrls: ['./uber-list-toggle.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, MatMenuTrigger, FaIconComponent, MatMenu, MatMenuItem, NgFor, MatIconButton, AsyncPipe]
 })
 export class UberListToggleComponent {

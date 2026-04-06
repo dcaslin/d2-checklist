@@ -8,7 +8,6 @@ import { GodRollPlugComponent } from '../god-roll-plug/god-roll-plug.component';
     selector: 'd2c-writable-plug',
     templateUrl: './writable-plug.component.html',
     styleUrls: ['./writable-plug.component.scss'],
-    standalone: true,
     imports: [NgIf, GodRollPlugComponent]
 })
 export class WritablePlugComponent {

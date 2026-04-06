@@ -13,7 +13,6 @@ import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-uber-pursuit-check',
     templateUrl: './uber-pursuit-check.component.html',
     styleUrls: ['./uber-pursuit-check.component.scss'],
-    standalone: true,
     imports: [NgIf, MatIcon, MatProgressBar, FaIconComponent, MatTooltip, DecimalPipe, AgoHumanizedPipe]
 })
 export class UberPursuitCheckComponent {

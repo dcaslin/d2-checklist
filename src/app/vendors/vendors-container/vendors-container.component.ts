@@ -16,7 +16,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     selector: 'd2c-vendors-container',
     templateUrl: './vendors-container.component.html',
     styleUrls: ['./vendors-container.component.scss'],
-    standalone: true,
     imports: [NgIf, VendorsComponent, SignInRequiredComponent, MatProgressSpinner, AsyncPipe]
 })
 export class VendorsContainerComponent extends ChildComponent implements OnInit {

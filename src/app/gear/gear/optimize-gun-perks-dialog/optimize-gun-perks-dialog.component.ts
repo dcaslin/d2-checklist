@@ -18,7 +18,6 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
     templateUrl: './optimize-gun-perks-dialog.component.html',
     styleUrls: ['./optimize-gun-perks-dialog.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatIconButton,
@@ -31,7 +30,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
         MatButton,
         MatDialogClose,
         AsyncPipe,
-    ],
+    ]
 })
 export class OptimizeGunPerksDialogComponent extends ChildComponent {
   parent: GearComponent;

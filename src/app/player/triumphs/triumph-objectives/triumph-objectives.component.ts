@@ -10,7 +10,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-triumph-objectives',
     templateUrl: './triumph-objectives.component.html',
     styleUrls: ['./triumph-objectives.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, FaIconComponent, MatProgressBar, DecimalPipe]
 })
 export class TriumphObjectivesComponent {

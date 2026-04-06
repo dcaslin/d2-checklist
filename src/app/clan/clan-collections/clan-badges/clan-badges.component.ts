@@ -11,7 +11,6 @@ import { MatButton } from '@angular/material/button';
     selector: 'd2c-clan-badges',
     templateUrl: './clan-badges.component.html',
     styleUrls: ['./clan-badges.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, MatButton, AsyncPipe]
 })
 export class ClanBadgesComponent extends ChildComponent {

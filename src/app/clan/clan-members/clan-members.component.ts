@@ -15,7 +15,6 @@ import { AgoHumanizedPipe, MinsHumanizedPipe } from '../../shared/pipe/timing.pi
     selector: 'd2c-clan-members',
     templateUrl: './clan-members.component.html',
     styleUrls: ['./clan-members.component.scss'],
-    standalone: true,
     imports: [NgIf, RouterLink, NgTemplateOutlet, NgFor, FriendStarComponent, FaIconComponent, MatAnchor, MatTooltip, AgoHumanizedPipe, MinsHumanizedPipe, AsyncPipe, DecimalPipe]
 })
 export class ClanMembersComponent extends ChildComponent {

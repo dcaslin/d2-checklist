@@ -13,7 +13,6 @@ import { AgoHumanizedPipe } from '../../../shared/pipe/timing.pipe';
     selector: 'd2c-clan-user-list-dialog',
     templateUrl: './clan-user-list-dialog.component.html',
     styleUrls: ['./clan-user-list-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, NgFor, RouterLink, AgoHumanizedPipe]
 })
 export class ClanUserListDialogComponent extends ChildComponent {

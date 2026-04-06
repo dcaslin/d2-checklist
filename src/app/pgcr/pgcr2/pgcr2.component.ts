@@ -37,7 +37,6 @@ import { MatTooltip } from '@angular/material/tooltip';
     selector: 'd2c-pgcr2',
     templateUrl: './pgcr2.component.html',
     styleUrls: ['./pgcr2.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent, NgFor, NgTemplateOutlet, MatTooltip, AsyncPipe, JsonPipe, DecimalPipe, DatePipe]
 })
 export class Pgcr2Component extends ChildComponent implements OnInit {

@@ -13,7 +13,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-collection-badges',
     templateUrl: './collection-badges.component.html',
     styleUrls: ['./collection-badges.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCheckbox, FormsModule, NgFor, RouterLink, FaIconComponent, AsyncPipe]
 })
 export class CollectionBadgesComponent extends ChildComponent {

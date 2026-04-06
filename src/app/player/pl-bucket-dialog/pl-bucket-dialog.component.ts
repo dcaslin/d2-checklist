@@ -17,7 +17,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     selector: 'd2c-pl-bucket-dialog',
     templateUrl: './pl-bucket-dialog.component.html',
     styleUrls: ['./pl-bucket-dialog.component.scss'],
-    standalone: true,
     imports: [NgIf, MatDialogTitle, FaIconComponent, CdkScrollable, MatDialogContent, NgFor, MatProgressSpinner, AsyncPipe]
 })
 export class PlBucketDialogComponent extends ChildComponent {

@@ -13,7 +13,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-gear-toggle',
     templateUrl: './gear-toggle.component.html',
     styleUrls: ['../gear.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, MatMenuTrigger, FaIconComponent, MatMenu, MatMenuItem, NgFor, MatIconButton, AsyncPipe]
 })
 export class GearToggleComponent {

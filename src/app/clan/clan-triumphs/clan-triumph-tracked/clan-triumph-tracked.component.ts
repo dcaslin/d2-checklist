@@ -9,7 +9,6 @@ import { ClanTriumphItemComponent } from '../clan-triumph-item/clan-triumph-item
     selector: 'd2c-clan-triumph-tracked',
     templateUrl: './clan-triumph-tracked.component.html',
     styleUrls: ['./clan-triumph-tracked.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, ClanTriumphItemComponent, AsyncPipe]
 })
 export class ClanTriumphTrackedComponent extends ChildComponent {

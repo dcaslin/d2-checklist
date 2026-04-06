@@ -13,7 +13,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-legendary-lost-sector',
     templateUrl: './legendary-lost-sector.component.html',
     styleUrls: ['./legendary-lost-sector.component.scss'],
-    standalone: true,
     imports: [
         NgIf,
         MatListItem,
@@ -21,7 +20,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
         MatListItemLine,
         FaIconComponent,
         NgFor,
-    ],
+    ]
 })
 export class LegendaryLostSectorComponent extends ChildComponent {
 

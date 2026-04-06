@@ -25,7 +25,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-triumph-tree',
     templateUrl: './triumph-tree.component.html',
     styleUrls: ['./triumph-tree.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, FaIconComponent, MatCheckbox, FormsModule, MatTree, MatTreeNodeDef, MatTreeNode, MatTreeNodeToggle, MatTreeNodePadding, MatIconButton, TriumphObjectivesComponent, MatIcon, MatTooltip, MatProgressBar, AsyncPipe, DecimalPipe]
 })
 export class TriumphTreeComponent extends ChildComponent implements OnInit {

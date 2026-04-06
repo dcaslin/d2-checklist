@@ -24,7 +24,6 @@ import { FriendStarComponent } from '../../shared/friend-star/friend-star.compon
     selector: 'd2c-history',
     templateUrl: './recent-players.component.html',
     styleUrls: ['./recent-players.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, MatAnchor, MatFormField, MatSelect, FormsModule, MatOption, MatButton, MatIcon, FaIconComponent, FriendStarComponent, DatePipe]
 })
 export class RecentPlayersComponent extends ChildComponent implements OnInit {

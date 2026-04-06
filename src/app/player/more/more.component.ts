@@ -9,7 +9,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-more',
     templateUrl: './more.component.html',
     styleUrls: ['./more.component.scss'],
-    standalone: true,
     imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, RouterOutlet]
 })
 export class MoreComponent {

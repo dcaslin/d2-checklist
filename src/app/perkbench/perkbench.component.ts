@@ -187,7 +187,6 @@ function isIncomplete(isController: boolean, roll: MappedRoll): boolean {
     selector: 'd2c-perkbench',
     templateUrl: './perkbench.component.html',
     styleUrls: ['./perkbench.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardHeader,
@@ -209,7 +208,7 @@ function isIncomplete(isController: boolean, roll: MappedRoll): boolean {
         AsyncPipe,
         TitleCasePipe,
         DatePipe,
-    ],
+    ]
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
   public isController = true;

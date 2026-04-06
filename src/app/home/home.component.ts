@@ -44,7 +44,6 @@ import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
     selector: 'd2c-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatLabel, MatIcon, MatSuffix, MatInput, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatAnchor, FaIconComponent, MatMenuTrigger, MatBadge, MatMenu, MatMenuItem, RouterLink, NgFor, MatButton, MatTooltip, MatProgressSpinner, MatCard, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, SignedOnLoadingIconComponent, MatExpansionPanelDescription, MatCardContent, DealsContainerComponent, MatCardHeader, MatCardTitle, MatCardSubtitle, MatList, MatListItem, LegendaryLostSectorComponent, MatListItemIcon, MatListItemLine, RobotHomeComponent, MatAutocomplete, MatOption, AsyncPipe, AgoHumanizedPipe]
 })
 export class HomeComponent extends ChildComponent implements OnInit {

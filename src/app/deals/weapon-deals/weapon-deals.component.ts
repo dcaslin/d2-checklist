@@ -14,7 +14,6 @@ import { GodRollItemComponent } from '../../gear/god-roll-item/god-roll-item.com
     selector: 'd2c-weapon-deals',
     templateUrl: './weapon-deals.component.html',
     styleUrls: ['./weapon-deals.component.scss'],
-    standalone: true,
     imports: [MatTooltip, NgIf, NgFor, ItemIconComponent, GodRollItemComponent]
 })
 export class WeaponDealsComponent {

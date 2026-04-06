@@ -13,7 +13,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-milestone-check',
     templateUrl: './milestone-check.component.html',
     styleUrls: ['./milestone-check.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, FaIconComponent, MatTooltip, MatProgressBar],
     providers: [
         {

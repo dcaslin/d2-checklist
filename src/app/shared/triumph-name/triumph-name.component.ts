@@ -11,7 +11,6 @@ import { MatTooltip } from '@angular/material/tooltip';
     selector: 'd2c-triumph-name',
     templateUrl: './triumph-name.component.html',
     styleUrls: ['./triumph-name.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent, MatTooltip, NgFor]
 })
 export class TriumphNameComponent {

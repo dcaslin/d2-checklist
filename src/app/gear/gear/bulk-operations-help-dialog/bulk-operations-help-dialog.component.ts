@@ -8,7 +8,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
     selector: 'd2c-bulk-operations-help-dialog',
     templateUrl: './bulk-operations-help-dialog.component.html',
     styleUrls: ['./bulk-operations-help-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent]
 })
 export class BulkOperationsHelpDialogComponent {

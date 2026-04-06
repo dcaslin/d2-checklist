@@ -8,7 +8,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-sort-indicator',
     templateUrl: './sort-indicator.component.html',
     styleUrls: ['./sort-indicator.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent]
 })
 export class SortIndicatorComponent {

@@ -33,7 +33,6 @@ export class InstantMatcher implements ErrorStateMatcher {
     selector: 'd2c-gear-utilities-dialog',
     templateUrl: './gear-utilities-dialog.component.html',
     styleUrls: ['./gear-utilities-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, NgIf, MatProgressSpinner, MatTabGroup, MatTab, FormsModule, MatFormField, MatSelect, NgFor, MatOption, MatError, MatButton, FaIconComponent, MatAnchor, RouterLink, MatRadioGroup, MatRadioButton, AsyncPipe, DatePipe]
 })
 export class GearUtilitiesDialogComponent {

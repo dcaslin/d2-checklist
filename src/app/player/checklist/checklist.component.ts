@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
     selector: 'd2c-checklist',
     templateUrl: './checklist.component.html',
     styleUrls: ['./checklist.component.scss'],
-    standalone: true,
     imports: [NgIf, MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, FaIconComponent, MatExpansionPanelDescription, MatCheckbox, FormsModule, AsyncPipe]
 })
 export class ChecklistComponent extends ChildComponent {

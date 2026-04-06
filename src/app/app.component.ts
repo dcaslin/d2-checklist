@@ -39,7 +39,6 @@ import { AppStatusComponent } from './app-status/app-status.component';
     selector: 'd2c-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: true,
     imports: [MatSidenavContainer, MatSidenav, RouterLink, MatNavList, NgIf, MatListItem, MatIcon, NgFor, MatDivider, RouterLinkActive, FaIconComponent, MatMenuTrigger, MatMenu, MatMenuItem, MatToolbar, MatToolbarRow, MatIconButton, SignedOnLoadingIconComponent, MatAnchor, MatButton, MatTooltip, PlayerCurrenciesComponent, AdSlotComponent, AppStatusComponent, RouterOutlet, AsyncPipe]
 })
 export class AppComponent implements OnInit, AfterViewInit {
@@ -281,7 +280,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'd2c-success-snack',
     templateUrl: 'snackbars/success.html',
-    standalone: true,
     imports: [MatIcon]
 })
 export class SuccessSnackbarComponent {
@@ -295,7 +293,6 @@ export class SuccessSnackbarComponent {
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'd2c-info-snack',
     templateUrl: 'snackbars/info.html',
-    standalone: true,
     imports: [MatIcon]
 })
 export class InfoSnackbarComponent {
@@ -309,7 +306,6 @@ export class InfoSnackbarComponent {
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'd2c-warn-snack',
     templateUrl: 'snackbars/warn.html',
-    standalone: true,
     imports: [MatIcon]
 })
 export class WarnSnackbarComponent {
@@ -323,7 +319,6 @@ export class WarnSnackbarComponent {
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'd2c-select-platform-dialog',
     templateUrl: './select-platform-dialog.component.html',
-    standalone: true,
     imports: [
         MatDialogTitle,
         CdkScrollable,
@@ -333,7 +328,7 @@ export class WarnSnackbarComponent {
         MatDialogClose,
         FaIconComponent,
         MatIcon,
-    ],
+    ]
 })
 export class SelectPlatformDialogComponent {
   public const: Const = Const;

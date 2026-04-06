@@ -30,7 +30,6 @@ import { TimingPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-history',
     templateUrl: './history.component.html',
     styleUrls: ['./history.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, MatAnchor, MatFormField, MatSelect, FormsModule, MatOption, MatButton, MatIcon, MatTable, MatSort, CdkColumnDef, CdkHeaderCellDef, MatHeaderCell, MatSortHeader, CdkCellDef, MatCell, FaIconComponent, CdkHeaderRowDef, MatHeaderRow, CdkRowDef, MatRow, MatPaginator, TimingPipe, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class HistoryComponent extends ChildComponent implements OnInit {

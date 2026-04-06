@@ -33,7 +33,6 @@ import { MatOption } from '@angular/material/core';
     selector: 'd2c-gear-compare-dialog',
     templateUrl: './gear-compare-dialog.component.html',
     styleUrls: ['../gear.component.scss'],
-    standalone: true,
     imports: [NgIf, MatDialogTitle, SeasonIndicatorComponent, MatIconButton, MatDialogClose, MatIcon, MatCheckbox, FormsModule, CdkScrollable, MatDialogContent, HorizontalSortComponent, NgFor, MatButton, MatTooltip, MatMenuTrigger, MatMenu, MatMenuItem, FaIconComponent, NgClass, GodRollItemComponent, ItemIconComponent, MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, MatProgressBar, RouterLink, GodRollMwComponent, WritablePlugComponent, MatAutocomplete, MatOption, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class GearCompareDialogComponent extends ChildComponent {

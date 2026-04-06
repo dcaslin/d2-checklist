@@ -11,7 +11,6 @@ import { MatAnchor } from '@angular/material/button';
     selector: 'd2c-collections',
     templateUrl: './collections.component.html',
     styleUrls: ['./collections.component.scss'],
-    standalone: true,
     imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, RouterOutlet, MatAnchor]
 })
 export class CollectionsComponent {

@@ -9,7 +9,6 @@ import { NgChartsModule } from 'ng2-charts';
     selector: 'd2c-clan-lifetime-graph',
     templateUrl: './clan-lifetime-graph.component.html',
     styleUrls: ['./clan-lifetime-graph.component.scss'],
-    standalone: true,
     imports: [NgChartsModule]
 })
 export class ClanLifetimeGraphComponent {

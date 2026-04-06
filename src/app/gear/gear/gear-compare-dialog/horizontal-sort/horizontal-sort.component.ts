@@ -13,7 +13,6 @@ export interface SortEvent {
     selector: 'd2c-horizontal-sort',
     templateUrl: './horizontal-sort.component.html',
     styleUrls: ['./horizontal-sort.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent]
 })
 export class HorizontalSortComponent {

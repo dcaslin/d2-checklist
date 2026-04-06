@@ -8,7 +8,6 @@ import { NgChartsModule } from 'ng2-charts';
     selector: 'd2c-clan-triumph-graph',
     templateUrl: './clan-triumph-graph.component.html',
     styleUrls: ['./clan-triumph-graph.component.scss'],
-    standalone: true,
     imports: [NgChartsModule]
 })
 export class ClanTriumphGraphComponent {

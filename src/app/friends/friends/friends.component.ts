@@ -19,7 +19,6 @@ import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-friends',
     templateUrl: './friends.component.html',
     styleUrls: ['./friends.component.scss'],
-    standalone: true,
     imports: [FaIconComponent, MatAnchor, NgIf, MatProgressSpinner, NgFor, MatTooltip, RouterLink, MilestoneCheckComponent, AgoHumanizedPipe, DecimalPipe, AsyncPipe]
 })
 export class FriendsComponent extends ChildComponent {

@@ -10,7 +10,6 @@ import { MatTooltip } from '@angular/material/tooltip';
     selector: 'd2c-god-roll-item',
     templateUrl: './god-roll-item.component.html',
     styleUrls: ['./god-roll-item.component.scss'],
-    standalone: true,
     imports: [NgIf, NgStyle, FaIconComponent, MatTooltip]
 })
 export class GodRollItemComponent {

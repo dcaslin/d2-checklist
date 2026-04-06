@@ -28,7 +28,6 @@ import { AgoHumanizedPipe } from '../../../shared/pipe/timing.pipe';
     selector: 'd2c-pursuit-list',
     templateUrl: './pursuit-list.component.html',
     styleUrls: ['./pursuit-list.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatSelect, FormsModule, NgFor, MatOption, MatLabel, MatInput, MatIconButton, MatSuffix, MatIcon, MatCheckbox, FaIconComponent, MatAnchor, MatProgressBar, AgoHumanizedPipe, AsyncPipe, DecimalPipe]
 })
 export class PursuitListComponent extends ChildComponent {

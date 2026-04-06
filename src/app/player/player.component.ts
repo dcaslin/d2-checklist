@@ -24,7 +24,6 @@ import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
     selector: 'd2c-player',
     templateUrl: './player.component.html',
     styleUrls: ['./player.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner, FaIconComponent, FriendStarComponent, MatIconButton, NgFor, RouterLink, MatAnchor, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, MatIcon, MatTabNav, MatTabLink, RouterLinkActive, MatTabNavPanel, RouterOutlet, AgoHumanizedPipe, AsyncPipe]
 })
 export class PlayerComponent extends ChildComponent implements OnInit {

@@ -8,7 +8,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
     selector: 'd2c-gear-help-dialog',
     templateUrl: './gear-help-dialog.component.html',
     styleUrls: ['../gear.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent]
 })
 export class GearHelpDialogComponent {

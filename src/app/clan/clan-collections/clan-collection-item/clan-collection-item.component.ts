@@ -13,7 +13,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-clan-collection-item',
     templateUrl: './clan-collection-item.component.html',
     styleUrls: ['./clan-collection-item.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, MatProgressBar]
 })
 export class ClanCollectionItemComponent extends ChildComponent {

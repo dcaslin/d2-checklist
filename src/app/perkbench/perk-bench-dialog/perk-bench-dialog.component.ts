@@ -61,7 +61,6 @@ function buildEmptyGunRolls(name: string, mnk: boolean, controller: boolean): Gu
     selector: 'd2c-perk-bench-dialog',
     templateUrl: './perk-bench-dialog.component.html',
     styleUrls: ['./perk-bench-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, MatButtonToggleGroup, FormsModule, MatButtonToggle, NgIf, FaIconComponent, NgFor, MatButton, MatTooltip, CdkScrollable, MatDialogContent, MatCheckbox, AsyncPipe]
 })
 export class PerkBenchDialogComponent extends ChildComponent {
