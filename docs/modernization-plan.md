@@ -142,7 +142,14 @@ Angular migrations must go one major version at a time:
   - Replaced `takeUntil(this.unsubscribe$)` with `takeUntilDestroyed(this.destroyRef)` in 40+ components
   - Removed `unsubscribe$` from 7 root services (singletons never destroy)
   - Deleted unused `StreamingChildComponent`
-- [ ] Adopt Angular signals where beneficial
+- [x] Adopt Angular signals where beneficial
+  - Converted `AppStateService` BehaviorSubjects to `WritableSignal` (disableAds, debugmode, favoritesList$, favoritesMap, hiddenMilestones, hiddenClanMilestones)
+  - Converted `ChildComponent.loading` to `signal<boolean>(false)`
+  - Converted service-level `loading` BehaviorSubjects to signals (StreamingService, GearService, ClanStateService, FriendStarComponent, PerkbenchComponent, DimSyncService, MarkService)
+  - Updated 54 templates: replaced `field | async` with `field()` signal reads
+  - Replaced `.next()` with `.set()` and `.getValue()` with `()` across 24 TS files
+  - Removed `AsyncPipe` import from 11 components that no longer use it
+  - Converted `FriendsComponent.members` to signal, used `effect()` for reactive state
 - [x] Evaluate esbuild-based builder (`@angular-devkit/build-angular:application`)
   - Switched from webpack `browser` builder to esbuild `application` builder
   - Replaced `require()` with ESM `import` for package.json in environment files

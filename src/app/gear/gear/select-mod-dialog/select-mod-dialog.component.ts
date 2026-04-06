@@ -5,7 +5,7 @@ import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { InventoryItem, InventorySocket } from '@app/service/model';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { ManifestItemIconComponent } from '../../../shared/manifest-item-icon/manifest-item-icon.component';
 
@@ -14,7 +14,7 @@ import { ManifestItemIconComponent } from '../../../shared/manifest-item-icon/ma
     templateUrl: './select-mod-dialog.component.html',
     styleUrls: ['./select-mod-dialog.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgIf, FaIconComponent, NgFor, ManifestItemIconComponent, AsyncPipe]
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgIf, FaIconComponent, NgFor, ManifestItemIconComponent]
 })
 export class SelectModDialogComponent {
   public item: InventoryItem;

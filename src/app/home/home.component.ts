@@ -174,12 +174,12 @@ export class HomeComponent extends ChildComponent implements OnInit {
       this.ref.markForCheck();
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 
   ngOnInit() {
-    this.loading.next(true);
+    this.loading.set(true);
     this.loadMileStones();
     // selected user changed
     this.signedOnUserService.signedOnUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((selectedUser: SelectedUser | null) => {

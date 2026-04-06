@@ -36,10 +36,10 @@
       <mat-tab-nav-panel #tabPanel>
         <div class="body clan-body">
           <div class="center-spinner">
-            <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true">
+            <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading())===true">
             </mat-spinner>
           </div>
-          <router-outlet *ngIf="(state.loading|async) === false"></router-outlet>
+          <router-outlet *ngIf="(state.loading()) === false"></router-outlet>
         </div>
       </mat-tab-nav-panel>
     </div>   

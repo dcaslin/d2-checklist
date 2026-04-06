@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { InventoryItem, InventorySocket } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
 import { SelectModDialogComponent } from '../gear/select-mod-dialog/select-mod-dialog.component';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { WritablePlugComponent } from '../writable-plug/writable-plug.component';
 
 @Component({
@@ -11,7 +11,7 @@ import { WritablePlugComponent } from '../writable-plug/writable-plug.component'
     templateUrl: './writable-sockets.component.html',
     styleUrls: ['./writable-sockets.component.scss'],
     standalone: true,
-    imports: [NgFor, NgIf, WritablePlugComponent, AsyncPipe]
+    imports: [NgFor, NgIf, WritablePlugComponent]
 })
 export class WritableSocketsComponent extends ChildComponent {
   @Input() item!: InventoryItem;

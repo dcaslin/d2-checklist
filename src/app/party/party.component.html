@@ -1,5 +1,5 @@
 <div class="fixed-spinner">
-    <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+    <mat-spinner class="loading" class="center-spinner" *ngIf="loading()===true"></mat-spinner>
 </div>
 <div class="body-text">
     <div *ngIf="errorMsg|async as msg">{{msg}}</div>

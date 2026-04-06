@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal} from '@angular/core';
 import { getHttpErrorMsg, sleep } from '@app/shared/utilities';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, tap } from 'rxjs/operators';
@@ -47,7 +47,7 @@ function isGrind(i: InventoryItem): boolean {
 @Injectable({ providedIn: 'root' })
 export class GearService {
 
-    public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public loading = signal<boolean>(false);
     public _operatingOn$: BehaviorSubject<Operation | null> = new BehaviorSubject<Operation | null>(null);
 
     public operatingOn$: Observable<Operation | null>;
@@ -220,7 +220,7 @@ export class GearService {
 
     public async loadGear(selectedUser: SelectedUser, lastPlayer: Player): Promise<Player> {
         try {
-            this.loading.next(true);
+            this.loading.set(true);
             const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType,
                 selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
                 'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
@@ -301,7 +301,7 @@ export class GearService {
             this.preferredStatService.processGear(player);
             return player;
         } finally {
-            this.loading.next(false);
+            this.loading.set(false);
         }
     }
 
@@ -913,7 +913,7 @@ export class GearService {
     }
 
     public async insertFreeSocketForWeaponPerk(item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
-        this.loading.next(true);
+        this.loading.set(true);
 
         try {
             const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue()!, item, socket, plug.hash);
@@ -936,7 +936,7 @@ export class GearService {
             return false;
         }
         finally {
-            this.loading.next(false);
+            this.loading.set(false);
         }
     }
 
@@ -946,7 +946,7 @@ export class GearService {
 
         const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, plug.plug?.energyCost, '', true, []);
 
-        this.loading.next(true);
+        this.loading.set(true);
         try {
             let success = true;
             if (!previewOnly) {
@@ -970,7 +970,7 @@ export class GearService {
             return false;
         }
         finally {
-            this.loading.next(false);
+            this.loading.set(false);
         }
     }
 
@@ -1006,7 +1006,7 @@ export class GearService {
 
     public async transfer(player: Player, itm: InventoryItem, target: Target, vaultStatus: VaultStatus, progressTracker$?: Subject<void>, tryHard?: boolean): Promise<boolean> {
         try {
-            this.loading.next(true);
+            this.loading.set(true);
 
             // equip something else from our bucket, if we can
             if (itm.equipped.getValue() == true) {
@@ -1136,13 +1136,13 @@ export class GearService {
         }
         finally {
             this.canEquip(itm);
-            this.loading.next(false);
+            this.loading.set(false);
         }
     }
 
     public async setLock(player: Player, itm: InventoryItem, locked: boolean): Promise<boolean> {
         try {
-            this.loading.next(true);
+            this.loading.set(true);
             let owner;
             if (itm.owner.getValue() == player.vault || itm.owner.getValue() == player.shared) {
                 owner = player.characters[0];
@@ -1157,13 +1157,13 @@ export class GearService {
             return false;
         }
         finally {
-            this.loading.next(false);
+            this.loading.set(false);
         }
     }
 
     public async equip(player: Player, itm: InventoryItem): Promise<boolean> {
         try {
-            this.loading.next(true);
+            this.loading.set(true);
             const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm);
             if (success === true) {
                 const bucket: Bucket = this.bucketService.getBucket(itm.owner.getValue(), itm.inventoryBucket);
@@ -1178,7 +1178,7 @@ export class GearService {
             return false;
         }
         finally {
-            this.loading.next(false);
+            this.loading.set(false);
         }
     }
 }

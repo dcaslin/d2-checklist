@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDi
 import { Questline } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,7 +11,7 @@ import { NgFor, NgIf, AsyncPipe } from '@angular/common';
     templateUrl: './quest-dialog.component.html',
     styleUrls: ['./quest-dialog.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgFor, NgIf, AsyncPipe]
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgFor, NgIf]
 })
 export class QuestDialogComponent extends ChildComponent {
 

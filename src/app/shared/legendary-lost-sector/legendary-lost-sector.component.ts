@@ -4,7 +4,7 @@ import { BurnDialogComponent } from '@app/home/burn-dialog/burn-dialog.component
 import { IconService } from '@app/service/icon.service';
 import { LostSector, MilestoneActivity } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { MatListItem, MatListItemIcon, MatListItemLine } from '@angular/material/list';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
@@ -21,7 +21,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
         MatListItemLine,
         FaIconComponent,
         NgFor,
-        AsyncPipe,
     ],
 })
 export class LegendaryLostSectorComponent extends ChildComponent {

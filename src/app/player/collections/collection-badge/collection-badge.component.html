@@ -4,7 +4,7 @@
       <button routerLink=".." mat-button><fa-icon [icon]="iconService.fasArrowLeft"></fa-icon></button>
       
       <span id="badge-name" style="margin-left: 5px; margin-right: 5px">{{b.name}}</span>
-      <ng-container *ngIf="debugmode|async"> {{b.hash}}</ng-container>
+      <ng-container *ngIf="debugmode()"> {{b.hash}}</ng-container>
       
       <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="b.complete" class="accent-text mat-option.mat-selected"></fa-icon>      
       <fa-icon [icon]="iconService.farSquare" *ngIf="!b.complete"></fa-icon>
@@ -47,13 +47,13 @@
                   {{t.name}}                  
                   <fa-icon [icon]="iconService.fasCheckSquare"  *ngIf="t.acquired" class="accent-text mat-option.mat-selected"></fa-icon>                  
                   <fa-icon [icon]="iconService.farSquare" *ngIf="!t.acquired"></fa-icon>
-                  <ng-container *ngIf="debugmode|async"> {{t.hash}}</ng-container>
+                  <ng-container *ngIf="debugmode()"> {{t.hash}}</ng-container>
                   <br>
                   <span class="simple-caption" *ngIf="state.player|async as player">
                     <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                       <ng-container *ngIf="i>0">
                         <a [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId,'collections','tree', p.hash]">{{p.path}}</a>
-                        <ng-container *ngIf="debugmode|async"> {{p.hash}} </ng-container>
+                        <ng-container *ngIf="debugmode()"> {{p.hash}} </ng-container>
                         <ng-container *ngIf="!isLast">
                           /
                         </ng-container>

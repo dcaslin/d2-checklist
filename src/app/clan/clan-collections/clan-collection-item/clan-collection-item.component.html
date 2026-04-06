@@ -4,7 +4,7 @@
             <div *ngIf="item.data.icon!=null" class="transparent-icon transparent-leaf-icon"
                 [style.background-image]="'url(//www.bungie.net' + item.data.icon + ')'"></div>
             {{item.data.name}}
-            <span class="simple-caption" *ngIf="debugmode|async">{{item.data.hash}}</span>
+            <span class="simple-caption" *ngIf="debugmode()">{{item.data.hash}}</span>
         </div>
         <div class="clan-child-spacer"></div>
         <div class="clan-child-details">

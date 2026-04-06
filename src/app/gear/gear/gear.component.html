@@ -1,10 +1,10 @@
 <div class="fixed-spinner">
-  <fa-icon *ngIf="(loading|async)===true || (gearService.loading|async)===true" [icon]="iconService.farSpinner"
+  <fa-icon *ngIf="loading()===true || (gearService.loading())===true" [icon]="iconService.farSpinner"
     animation="spin" size="3x" [fixedWidth]="true"></fa-icon>
-  <fa-icon *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)"
+  <fa-icon *ngIf="(filtering|async)===true && !(loading()===true || (gearService.loading())===true)"
     [icon]="iconService.fasCog" animation="spin" size="3x" [fixedWidth]="true"></fa-icon>
 </div>
-<ng-container *ngIf="(loading|async)===false && selectedUser==null">
+<ng-container *ngIf="loading()===false && selectedUser==null">
   <d2c-sign-in-required></d2c-sign-in-required>
 </ng-container>
 <div class="gear-body" *ngIf="player$|async as player" (keydown.r)="onR($any($event))">
@@ -380,14 +380,14 @@
                   </button>
 
                 </mat-menu>
-                <span *ngIf="debugmode|async">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>
+                <span *ngIf="debugmode()">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>
 
                 <div>
                   <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}</span>
                   <span *ngIf="i.postmaster" class="margin-left warn-text">
                     <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
                   </span>
-                  <d2c-god-roll-item [item]="i" [debugmode]="(debugmode|async)!"></d2c-god-roll-item>
+                  <d2c-god-roll-item [item]="i" [debugmode]="debugmode()!"></d2c-god-roll-item>
                 </div>                
                 <div *ngIf="i.craftProgress as obj" class="obj-desc fake-link"  (click)="sort('progress.craftProgress')">
                   <div class="total-progress">
@@ -431,7 +431,7 @@
                 </ng-container>
                 <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
                 </div>
-                <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]
+                <ng-container *ngIf="debugmode()"><br>[{{i.inventoryBucket.displayProperties.name}}]
                 </ng-container>
                 <div class="vertical-pad">
                   <button mat-stroked-button [matMenuTriggerFor]="compareMenu"
@@ -479,7 +479,7 @@
               </td>
 
               <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
-                <d2c-god-roll-mw [item]="i" [debugmode]="(debugmode|async)!"></d2c-god-roll-mw>
+                <d2c-god-roll-mw [item]="i" [debugmode]="debugmode()!"></d2c-god-roll-mw>
               </td>
 
               <td

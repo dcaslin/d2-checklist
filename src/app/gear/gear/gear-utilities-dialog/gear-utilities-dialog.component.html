@@ -1,6 +1,6 @@
 <mat-dialog-content>
     <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(markService.loading$|async)===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(markService.loading$())===true"></mat-spinner>
     </div>
     <mat-tab-group>
         <mat-tab label="Tag Sync & Backup">

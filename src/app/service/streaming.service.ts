@@ -1,18 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal} from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
 import { NotificationService } from '@app/service/notification.service';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { catchError, concatAll, map, tap } from 'rxjs/operators';
 
 
 
 @Injectable({
-  providedIn: 'root',
-})
+  providedIn: 'root' })
 export class StreamingService {
 
-  public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public loading = signal<boolean>(false);
   httpClient: HttpClient;
   bungieService: BungieService;
   notificationService: NotificationService;
@@ -28,13 +27,13 @@ export class StreamingService {
   }
 
   streamReq(operation: string, url: string): Observable<any> {
-    this.loading.next(true);
+    this.loading.set(true);
     return from(this.bungieService.buildReqOptions()).pipe(
       map((opt) => this.httpClient.get<any>(url, opt)),
       concatAll(),
       map((j) => this.bungieService.parseBungieResponse(j)),
       catchError(this.handleError<any>(operation, null)),
-      tap((x) => this.loading.next(false))
+      tap((x) => this.loading.set(false))
     );
   }
 

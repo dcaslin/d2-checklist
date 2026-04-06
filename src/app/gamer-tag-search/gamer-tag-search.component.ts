@@ -35,7 +35,7 @@ export class GamerTagSearchComponent extends ChildComponent implements OnInit {
   }
 
   private async init(params: Params) {
-    this.loading.next(true);
+    this.loading.set(true);
     try {
       this.errorMsg.next(null);
       this.progressMsg.next(null);
@@ -65,7 +65,7 @@ export class GamerTagSearchComponent extends ChildComponent implements OnInit {
     } catch (exc) {
       this.errorMsg.next(exc);
     } finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 

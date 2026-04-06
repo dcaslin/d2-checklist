@@ -1,5 +1,5 @@
 <div class="center-spinner">
-  <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+  <mat-spinner class="loading" class="center-spinner" *ngIf="loading()===true"></mat-spinner>
 </div>
 <div class="body-text" [hidden]="(_player|async)==null">
   <ng-container *ngIf="_player|async as player">
@@ -62,7 +62,7 @@
         <mat-cell *cdkCellDef="let row">
           {{row.name}}
           <fa-icon [icon]="iconService.fasShieldCheck" *ngIf="row.success"></fa-icon>
-          <span *ngIf="debugmode|async">{{row.referenceId}}</span>
+          <span *ngIf="debugmode()">{{row.referenceId}}</span>
         </mat-cell>
       </ng-container>
       <ng-container cdkColumnDef="kd">

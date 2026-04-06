@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal} from '@angular/core';
 import {
   AuthTokenRequest,
   AuthTokenResponse,
@@ -9,7 +9,7 @@ import {
   ProfileUpdateRequest,
   ProfileUpdateResponse
 } from '@destinyitemmanager/dim-api-types';
-import { BehaviorSubject, firstValueFrom} from 'rxjs';
+import { firstValueFrom} from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
@@ -18,10 +18,9 @@ import { SignedOnUserService } from './signed-on-user.service';
 const LOG_CSS = `color: mediumseagreen`;
 
 @Injectable({
-  providedIn: 'root',
-})
+  providedIn: 'root' })
 export class DimSyncService {
-  public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public loading$ = signal<boolean>(false);
 
   constructor(
     private httpClient: HttpClient,
@@ -64,8 +63,7 @@ export class DimSyncService {
     }
     const req: AuthTokenRequest = {
       bungieAccessToken: await this.authService.getKey(),
-      membershipId: selectedUser.membership.bungieId,
-    };
+      membershipId: selectedUser.membership.bungieId };
 
     const headers = new HttpHeaders().set(
       'X-API-Key',
@@ -110,9 +108,8 @@ export class DimSyncService {
     const body: ProfileUpdateRequest = {
       platformMembershipId: selectedUser!.userInfo.membershipId,
       destinyVersion: 2,
-      updates,
-    };
-    this.loading$.next(true);
+      updates };
+    this.loading$.set(true);
     try {
       const headers = await this.buildHeaders();
       const url = `https://api.destinyitemmanager.com/profile`;
@@ -126,13 +123,13 @@ export class DimSyncService {
       console.dir(x);
       return false;
     } finally {
-      this.loading$.next(false);
+      this.loading$.set(false);
     }
   }
 
   async getDimTags(): Promise<ItemAnnotation[]> {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
-    this.loading$.next(true);
+    this.loading$.set(true);
     try {
       console.log('%cGetting DIM tags', LOG_CSS);
       const headers = await this.buildHeaders();
@@ -146,7 +143,7 @@ export class DimSyncService {
       console.dir(x);
       return [];
     } finally {
-      this.loading$.next(false);
+      this.loading$.set(false);
     }
   }
 

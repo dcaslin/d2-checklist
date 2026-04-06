@@ -1,16 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { IconService } from '@app/service/icon.service';
 import { FriendListEntry, Player, UserInfo } from '@app/service/model';
-import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatAnchor } from '@angular/material/button';
-import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { NgIf, NgFor, DecimalPipe, AsyncPipe } from '@angular/common';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-check.component';
@@ -23,10 +20,10 @@ import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
     templateUrl: './friends.component.html',
     styleUrls: ['./friends.component.scss'],
     standalone: true,
-    imports: [FaIconComponent, MatAnchor, NgIf, MatProgressSpinner, NgFor, MatTooltip, RouterLink, MilestoneCheckComponent, AgoHumanizedPipe, AsyncPipe, DecimalPipe]
+    imports: [FaIconComponent, MatAnchor, NgIf, MatProgressSpinner, NgFor, MatTooltip, RouterLink, MilestoneCheckComponent, AgoHumanizedPipe, DecimalPipe, AsyncPipe]
 })
 export class FriendsComponent extends ChildComponent {
-  public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject<FriendListEntry[]>([]);
+  public members = signal<FriendListEntry[]>([]);
   modelPlayer!: Player;
   playerCntr!: 0;
 
@@ -34,19 +31,17 @@ export class FriendsComponent extends ChildComponent {
     private router: Router,
     private ref: ChangeDetectorRef) {
     super();
-    this.favoritesList$.pipe(
-      takeUntilDestroyed(this.destroyRef))
-      .subscribe(
-        (x: UserInfo[]) => {
-          const members: FriendListEntry[] = [];
-          for (const f of x) {
-            const member = new FriendListEntry();
-            member.user = f;
-            members.push(member);
-          }
-          this.members.next(members);
-          this.load();
-        });
+    effect(() => {
+      const x = this.favoritesList$();
+      const members: FriendListEntry[] = [];
+      for (const f of x) {
+        const member = new FriendListEntry();
+        member.user = f;
+        members.push(member);
+      }
+      this.members.set(members);
+      this.load();
+    });
   }
 
   public  async loadPlayer(friend: FriendListEntry): Promise<void> {
@@ -69,19 +64,19 @@ export class FriendsComponent extends ChildComponent {
 
   private async slowlyLoadRest(): Promise<void> {
     this.ref.markForCheck();
-    if (this.playerCntr >= this.members.value.length) {
+    if (this.playerCntr >= this.members().length) {
       return;
     }
 
     try {
-      await this.loadPlayer(this.members.value[this.playerCntr]);
+      await this.loadPlayer(this.members()[this.playerCntr]);
       this.playerCntr++;
       this.slowlyLoadRest();
     } catch (err) {
       console.dir(err);
       // reloading mid load can break this
-      if (this.members.value[this.playerCntr] != null) {
-        console.log('Skipping error on ' + this.members.value[this.playerCntr].user.displayName + ' and continuing');
+      if (this.members()[this.playerCntr] != null) {
+        console.log('Skipping error on ' + this.members()[this.playerCntr].user.displayName + ' and continuing');
         this.playerCntr++;
         this.slowlyLoadRest();
       }
@@ -98,10 +93,10 @@ export class FriendsComponent extends ChildComponent {
 
 
   public load() {
-    this.loading.next(true);
+    this.loading.set(true);
     this.modelPlayer = null!;
     this.playerCntr = 0;
-    for (const m of this.members.value) {
+    for (const m of this.members()) {
       m.player$.next(null);
       m.errorMsg$.next(null);
     }
@@ -109,7 +104,7 @@ export class FriendsComponent extends ChildComponent {
       this.slowlyLoadRest();
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 

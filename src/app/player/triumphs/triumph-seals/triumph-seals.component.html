@@ -12,7 +12,7 @@
             <div *ngIf="s.icon!=null" class="seal-icon"
               [style.background-image]="'url(//www.bungie.net' + s.icon + ')'"></div>
               <fa-icon class="pad-right" *ngIf="s.gildTotal>0 && s.gildProgress>=s.gildTotal" [icon]="iconService.fadShieldAlt" matTooltip="Gilded!"></fa-icon> {{s.title}}           
-            <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
+            <ng-container *ngIf="debugmode()">{{s.hash}}</ng-container>
           </mat-panel-title>
           <mat-panel-description [class.accent-text]="s.complete">
             {{s.progress}} / {{s.completionValue}} 
@@ -45,7 +45,7 @@
                       <a [href]="$any(c).lowLinks.videoLink" class="pad-left" *ngIf="$any(c).lowLinks.videoLink!=null && $any(c).lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
                     </ng-container>
                     
-                    <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
+                    <ng-container *ngIf="debugmode()">{{c.hash}}</ng-container>
                     <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
                       (click)="state.trackTriumph($any(c))"></fa-icon>
                     <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph($any(c))"></fa-icon>                                         

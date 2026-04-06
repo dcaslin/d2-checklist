@@ -1,5 +1,5 @@
 <div class="center-spinner">
-  <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+  <mat-spinner class="loading" class="center-spinner" *ngIf="loading()===true"></mat-spinner>
 </div>
 <div class="body-text">
   <h2 class="centerMe">Recent Teammates -
@@ -62,7 +62,7 @@
           <td>
             <a [routerLink]="['/'+friend.user.membershipType, friend.user.membershipId]"
               color="accent">{{friend.user.displayName}}</a>
-            <d2c-friend-star [userInfo]="friend.user" [favoritesMap]="(favoritesMap|async)!"></d2c-friend-star>
+            <d2c-friend-star [userInfo]="friend.user" [favoritesMap]="favoritesMap()!"></d2c-friend-star>
             <div *ngIf="friend.user.bungieInfo!=null && friend.user.bungieInfo.clans!=null">
               <div class="clans" *ngFor="let clan of friend.user.bungieInfo.clans">  
                 Clan: <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>

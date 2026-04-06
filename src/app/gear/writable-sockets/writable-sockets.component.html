@@ -1,5 +1,5 @@
 <ng-container *ngFor="let socket of item.sockets; first as isFirstSocket">
-    <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}}
+    <div *ngIf="debugmode()" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}}
         <br />
     </div>
     <!-- Armor sockets are always selectable b/c they're mods-->
@@ -7,7 +7,7 @@
         <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
             [class.margin-5]="socket.empty" (click)="selectMod(socket)" class="fake-link">
             <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="(debugmode|async)!">
+                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode()!">
                 </d2c-writable-plug>
                 <ng-container *ngIf="!isLastPlug"> | </ng-container>
             </ng-container>
@@ -18,7 +18,7 @@
         <div [class.top-divider]="!isFirstSocket"
             (click)="selectMod(socket)" class="fake-link">
             <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="(debugmode|async)!">
+                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode()!">
                 </d2c-writable-plug>
                 <ng-container *ngIf="!isLastPlug"> | </ng-container>
             </ng-container>
@@ -29,14 +29,14 @@
         <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
             [class.margin-5]="socket.empty">
             <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="(debugmode|async)!">
+                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode()!">
                 </d2c-writable-plug>
                 <ng-container *ngIf="!isLastPlug"> | </ng-container>
             </ng-container>
         </div>
     </ng-container>
 
-    <div *ngIf="debugmode|async">
+    <div *ngIf="debugmode()">
         <br />
     </div>
 </ng-container>

@@ -4,7 +4,7 @@
     <tbody>
       <tr *ngFor="let step of data.steps; index as i" >
         
-        <td class="desc-cell" [class.accent-bg-text]="step.current"><b>{{i+1}}. {{step.name}}</b><br>{{step.desc}} <span *ngIf="debugmode|async">{{step.hash}}</span></td>
+        <td class="desc-cell" [class.accent-bg-text]="step.current"><b>{{i+1}}. {{step.name}}</b><br>{{step.desc}} <span *ngIf="debugmode()">{{step.hash}}</span></td>
         <td [class.accent-bg-text]="step.current">
           
           <div *ngFor="let obj of step.objectives">

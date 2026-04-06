@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormField } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { MatOption } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor, MatButton } from '@angular/material/button';
@@ -23,7 +23,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
     standalone: true,
-    imports: [MatFormField, MatSelect, FormsModule, NgFor, MatOption, NgIf, MatIcon, MatAnchor, FaIconComponent, MatButton, AsyncPipe]
+    imports: [MatFormField, MatSelect, FormsModule, NgFor, MatOption, NgIf, MatIcon, MatAnchor, FaIconComponent, MatButton]
 })
 export class SettingsComponent extends ChildComponent {
 

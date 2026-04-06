@@ -72,7 +72,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <d2c-triumph-name [t]="t" [debugmode]="(debugmode|async)!"
+                                            <d2c-triumph-name [t]="t" [debugmode]="debugmode()!"
                                                 (navigate)="navigate($event)">
                                             </d2c-triumph-name>
                                             <ng-container *ngIf="o.showCrafted && !o.player!.privateGear">

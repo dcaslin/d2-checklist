@@ -109,7 +109,7 @@
             </tr>
         </ng-template>
     </div>
-    <ng-container  *ngIf="debugmode|async">
+    <ng-container  *ngIf="debugmode()">
         <h1>Details</h1>
             <div class="flex-row">
                 <div *ngFor="let e of g.entries">

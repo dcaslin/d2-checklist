@@ -78,7 +78,7 @@
                         <td class="activity-col">
                           <div class="fake-link">{{row.title.name}}</div>
                           <div class="simple-caption-darker-no-margin" *ngIf="row.title.questline as q">Questline: {{q.progress}}</div>
-                          <div *ngIf="debugmode|async"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
+                          <div *ngIf="debugmode()"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
                         </td>
                         <td class="hide-mobile-table-cell">
                           <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
@@ -90,7 +90,7 @@
                               <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
                                 [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
 
-                              <span *ngIf="debugmode|async"> {{r.hash}}</span>
+                              <span *ngIf="debugmode()"> {{r.hash}}</span>
                             </div>
                           </div>
 
@@ -113,7 +113,7 @@
                         </td>
                         <td class="activity-col ">
                           <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}</div>
-                          <span *ngIf="debugmode|async"> {{row.title.key}} - reward tier {{row.rewardTier}}</span>
+                          <span *ngIf="debugmode()"> {{row.title.key}} - reward tier {{row.rewardTier}}</span>
                         </td>
                         <td class="hide-mobile-table-cell">
                           <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
@@ -125,7 +125,7 @@
                               <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0"
                                 [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
                                 [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
-                              <span *ngIf="debugmode|async"> {{r.hash}}</span>
+                              <span *ngIf="debugmode()"> {{r.hash}}</span>
                             </div>
                           </div>
                         </td>

@@ -97,7 +97,7 @@
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             <div class="compare-icon-cell">
-                                <d2c-god-roll-item [vertical]="true" [item]="i" [debugmode]="(debugmode|async)!">
+                                <d2c-god-roll-item [vertical]="true" [item]="i" [debugmode]="debugmode()!">
                                 </d2c-god-roll-item>
                                 <d2c-item-icon [i]="i" [mark]="i.mark" [option]="i.type"
                                     (toggleLock)="parent.setLock(player, i, $event)"
@@ -226,7 +226,7 @@
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
-                            <d2c-god-roll-mw [item]="i" [debugmode]="(debugmode|async)!"></d2c-god-roll-mw>
+                            <d2c-god-roll-mw [item]="i" [debugmode]="debugmode()!"></d2c-god-roll-mw>
                         </td>
                     </ng-container>
                 </tr>
@@ -266,7 +266,7 @@
                                     <div *ngIf="i2 == i1">
                                         <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
                                             <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug"
-                                                [debugmode]="(debugmode|async)!"></d2c-writable-plug>
+                                                [debugmode]="debugmode()!"></d2c-writable-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
                                         </ng-container>
                                     </div>

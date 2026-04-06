@@ -11,7 +11,7 @@
       <div style="text-align: left; margin-bottom: 20px" [class.warn-text]="node.data.hash == selectedTreeNodeHash" [id]="'tree-node-'+node.data.hash">
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected"></fa-icon>        
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.acquired"></fa-icon>                
-        {{node.data.name}} <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+        {{node.data.name}} <ng-container *ngIf="debugmode()">{{node.data.hash}}</ng-container>
         <br>
         <span class="simple-caption">
           {{node.data.sourceString}}
@@ -30,7 +30,7 @@
         <fa-icon [icon]="iconService.fasCheckSquare"  *ngIf="node.data.complete" class="accent-text mat-option.mat-selected"></fa-icon>        
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
         {{node.data.name}}
-        <span *ngIf="debugmode|async">{{node.data.hash}}</span>
+        <span *ngIf="debugmode()">{{node.data.hash}}</span>
         <span class="simple-caption">
           {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
         </span> <br>

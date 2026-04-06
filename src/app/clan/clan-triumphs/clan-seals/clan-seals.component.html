@@ -7,7 +7,7 @@
                         <div *ngIf="s.data.icon!=null" class="seal-icon"
                             [style.background-image]="'url(//www.bungie.net' + s.data.icon + ')'"></div>
                         {{s.data.title}}
-                        <ng-container *ngIf="debugmode|async">{{s.data.hash}}</ng-container>
+                        <ng-container *ngIf="debugmode()">{{s.data.hash}}</ng-container>
                     </mat-panel-title>
                     <mat-panel-description>
                         <button mat-stroked-button (click)="openSealDialog(s, $event)">

@@ -40,13 +40,13 @@ export class BungieSearchComponent extends ChildComponent implements OnInit {
   }
 
   public async loadClan(member: BungieGlobalSearchResult) {
-    this.loading.next(true);
+    this.loading.set(true);
     try {
       const x = await this.bungieService.getClans(member.bungieNetMembershipId!);
       member.clans = x;
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
     this.ref.markForCheck();
 
@@ -65,13 +65,13 @@ export class BungieSearchComponent extends ChildComponent implements OnInit {
 
   private async load() {
     console.log('loading');
-    this.loading.next(true);
+    this.loading.set(true);
     try {
       const x: BungieGlobalSearchResult[] = await this.bungieService.searchBungieUsers(this.name);
       this.rows$.next(x);
     }
     finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 

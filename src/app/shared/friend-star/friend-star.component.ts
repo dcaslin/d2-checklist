@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, signal} from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { UserInfo } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
-import { BehaviorSubject } from 'rxjs';
-import { NgIf, AsyncPipe } from '@angular/common';
+import {} from 'rxjs';
+import { NgIf } from '@angular/common';
 import { MatIconButton } from '@angular/material/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
@@ -13,10 +13,10 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     templateUrl: './friend-star.component.html',
     styleUrls: ['./friend-star.component.scss'],
     standalone: true,
-    imports: [NgIf, MatIconButton, FaIconComponent, AsyncPipe]
+    imports: [NgIf, MatIconButton, FaIconComponent]
 })
 export class FriendStarComponent {
-  public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public loading = signal<boolean>(false);
 
   @Input() title = false;
   @Input() userInfo!: UserInfo;
@@ -28,10 +28,10 @@ export class FriendStarComponent {
 
   async toggleFav() {
     try {
-      this.loading.next(true);
+      this.loading.set(true);
       await this.storageService.toggleFav(this.userInfo, null!);
     } finally {
-      this.loading.next(false);
+      this.loading.set(false);
     }
   }
 }

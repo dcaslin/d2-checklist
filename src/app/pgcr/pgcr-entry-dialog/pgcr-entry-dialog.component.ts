@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogTitle, MatDi
 import { IconService } from '@app/service/icon.service';
 import { Entry } from '@app/service/pgcr.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FriendStarComponent } from '../../shared/friend-star/friend-star.component';
 import { CdkScrollable } from '@angular/cdk/scrolling';
@@ -15,7 +15,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     templateUrl: './pgcr-entry-dialog.component.html',
     styleUrls: ['./pgcr-entry-dialog.component.scss'],
     standalone: true,
-    imports: [NgIf, MatDialogTitle, RouterLink, FriendStarComponent, CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, NgFor, AsyncPipe, DecimalPipe]
+    imports: [NgIf, MatDialogTitle, RouterLink, FriendStarComponent, CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, NgFor, DecimalPipe]
 })
 export class PgcrEntryDialogComponent extends ChildComponent {
   constructor(

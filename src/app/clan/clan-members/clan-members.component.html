@@ -14,7 +14,7 @@
                     <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                     </a>
-                    <d2c-friend-star [userInfo]="member.destinyUserInfo" [favoritesMap]="(favoritesMap|async)!"></d2c-friend-star>
+                    <d2c-friend-star [userInfo]="member.destinyUserInfo" [favoritesMap]="favoritesMap()!"></d2c-friend-star>
                     <span class="fake-link" style="margin-left:0.25em"
                         (click)="state.loadSpecificPlayer(member, true)">
                         &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
