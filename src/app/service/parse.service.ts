@@ -877,7 +877,8 @@ export class ParseService {
         const { milestoneList, milestonesByKey } = await this.initializeMilestones(publicMilestones);
         const charResult = await this.parseCharactersAndProgressions(resp, milestonesByKey, milestoneList, dynamicStrings);
         const { chars, charsDict, accountProgressions } = charResult;
-        let { superprivate, currentActivity, hasWellRested, weeklyRitualPathfinderHash } = charResult;
+        const { superprivate, currentActivity, hasWellRested } = charResult;
+        let { weeklyRitualPathfinderHash } = charResult;
 
         const itemCompObjectivesData = resp.itemComponents?.objectives?.data;
         const privateGear = itemCompObjectivesData == null || Object.keys(itemCompObjectivesData).length == 0;
@@ -1360,7 +1361,7 @@ export class ParseService {
         // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
         // Tree 1024788583
         parent = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs!, showInvisTriumphs!, []);
-        let recordTree = parent?.children ? parent.children : [];
+        const recordTree = parent?.children ? parent.children : [];
         // exotic catalysts
         let oChild = await this.triumphParser.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
         if (oChild && oChild.children && oChild.children.length > 0) {
