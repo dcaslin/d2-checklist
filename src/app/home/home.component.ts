@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
@@ -55,7 +55,7 @@ export class HomeComponent extends ChildComponent implements OnInit {
   readonly platformMap = Const.PLATFORMS_DICT;
 
 
-  gamerTagControl = new UntypedFormControl();
+  gamerTagControl = new FormControl<string | null>(null);
 
   hideAnnouncement = true;
   dealsExpanded = 'false' !== localStorage.getItem('expand-deals');
@@ -187,7 +187,7 @@ export class HomeComponent extends ChildComponent implements OnInit {
     });
 
     this.gamerTagControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef), startWith('')).subscribe((value) => {
-      this.elasticSearchService.searchInput$.next(value);
+      this.elasticSearchService.searchInput$.next(value ?? '');
     } );
 
   }
