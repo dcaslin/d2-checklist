@@ -16,7 +16,6 @@ import { ClanTriumphItemComponent } from '../clan-triumph-item/clan-triumph-item
     selector: 'd2c-clan-triumph-search',
     templateUrl: './clan-triumph-search.component.html',
     styleUrls: ['./clan-triumph-search.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, NgFor, ClanTriumphItemComponent, AsyncPipe]
 })
 export class ClanTriumphSearchComponent extends ChildComponent implements OnInit {

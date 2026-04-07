@@ -49,7 +49,6 @@ function buildEmptyData(): ShardModeDialogData {
     selector: 'd2c-shard-mode-dialog',
     templateUrl: './shard-mode-dialog.component.html',
     styleUrls: ['./shard-mode-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, MatButton, FaIconComponent, CdkScrollable, MatDialogContent, NgIf, MatTooltip, ManifestItemIconComponent, MatProgressBar, MatDialogActions, MatDialogClose, AsyncPipe]
 })
 export class ShardModeDialogComponent extends ChildComponent {

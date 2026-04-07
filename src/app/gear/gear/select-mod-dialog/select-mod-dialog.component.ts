@@ -13,7 +13,6 @@ import { ManifestItemIconComponent } from '../../../shared/manifest-item-icon/ma
     selector: 'd2c-select-mod-dialog',
     templateUrl: './select-mod-dialog.component.html',
     styleUrls: ['./select-mod-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgIf, FaIconComponent, NgFor, ManifestItemIconComponent]
 })
 export class SelectModDialogComponent {

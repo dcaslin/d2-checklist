@@ -10,7 +10,6 @@ import { NgFor, NgIf } from '@angular/common';
     selector: 'd2c-quest-dialog',
     templateUrl: './quest-dialog.component.html',
     styleUrls: ['./quest-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgFor, NgIf]
 })
 export class QuestDialogComponent extends ChildComponent {

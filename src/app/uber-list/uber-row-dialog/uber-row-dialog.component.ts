@@ -20,7 +20,6 @@ import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-uber-row-dialog',
     templateUrl: './uber-row-dialog.component.html',
     styleUrls: ['./uber-row-dialog.component.scss'],
-    standalone: true,
     imports: [NgIf, MatDialogTitle, CdkScrollable, MatDialogContent, NgFor, MatTabGroup, MatTab, MilestoneCheckComponent, MatProgressBar, FaIconComponent, MatAnchor, AsyncPipe, DecimalPipe, AgoHumanizedPipe]
 })
 export class UberRowDialogComponent extends ChildComponent {

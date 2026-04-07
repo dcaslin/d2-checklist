@@ -10,7 +10,6 @@ import { ArmorDealsComponent } from '../armor-deals/armor-deals.component';
     selector: 'd2c-deals',
     templateUrl: './deals.component.html',
     styleUrls: ['./deals.component.scss'],
-    standalone: true,
     imports: [NgIf, CollectionDealsComponent, WeaponDealsComponent, ArmorDealsComponent]
 })
 export class DealsComponent {

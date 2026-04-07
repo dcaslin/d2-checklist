@@ -18,7 +18,6 @@ import { AgoHumanizedPipe, DateFormatPipe } from '../../shared/pipe/timing.pipe'
     selector: 'd2c-clan-info',
     templateUrl: './clan-info.component.html',
     styleUrls: ['./clan-info.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, FaIconComponent, MatButton, RouterLink, MatTooltip, AgoHumanizedPipe, DateFormatPipe, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class ClanInfoComponent extends ChildComponent {

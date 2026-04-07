@@ -28,7 +28,6 @@ export class TriumphFlatNode {
     selector: 'd2c-collection-tree',
     templateUrl: './collection-tree.component.html',
     styleUrls: ['./collection-tree.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCheckbox, FormsModule, MatTree, MatTreeNodeDef, MatTreeNode, MatTreeNodeToggle, MatTreeNodePadding, MatIconButton, FaIconComponent, MatIcon, MatProgressBar, AsyncPipe]
 })
 export class CollectionTreeComponent extends ChildComponent implements OnInit {

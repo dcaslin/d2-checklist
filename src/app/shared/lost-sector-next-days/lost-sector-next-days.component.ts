@@ -12,7 +12,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
     selector: 'd2c-lost-sector-next-days',
     templateUrl: './lost-sector-next-days.component.html',
     styleUrls: ['./lost-sector-next-days.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, MatTabNav, NgFor, MatTabLink, MatTabNavPanel, CdkScrollable, MatDialogContent, NgIf, AsyncPipe, DatePipe]
 })
 export class LostSectorNextDaysComponent {

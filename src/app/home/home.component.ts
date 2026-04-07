@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
@@ -44,7 +44,6 @@ import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
     selector: 'd2c-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatLabel, MatIcon, MatSuffix, MatInput, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatAnchor, FaIconComponent, MatMenuTrigger, MatBadge, MatMenu, MatMenuItem, RouterLink, NgFor, MatButton, MatTooltip, MatProgressSpinner, MatCard, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, SignedOnLoadingIconComponent, MatExpansionPanelDescription, MatCardContent, DealsContainerComponent, MatCardHeader, MatCardTitle, MatCardSubtitle, MatList, MatListItem, LegendaryLostSectorComponent, MatListItemIcon, MatListItemLine, RobotHomeComponent, MatAutocomplete, MatOption, AsyncPipe, AgoHumanizedPipe]
 })
 export class HomeComponent extends ChildComponent implements OnInit {
@@ -55,7 +54,7 @@ export class HomeComponent extends ChildComponent implements OnInit {
   readonly platformMap = Const.PLATFORMS_DICT;
 
 
-  gamerTagControl = new UntypedFormControl();
+  gamerTagControl = new FormControl<string | null>(null);
 
   hideAnnouncement = true;
   dealsExpanded = 'false' !== localStorage.getItem('expand-deals');
@@ -187,7 +186,7 @@ export class HomeComponent extends ChildComponent implements OnInit {
     });
 
     this.gamerTagControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef), startWith('')).subscribe((value) => {
-      this.elasticSearchService.searchInput$.next(value);
+      this.elasticSearchService.searchInput$.next(value ?? '');
     } );
 
   }

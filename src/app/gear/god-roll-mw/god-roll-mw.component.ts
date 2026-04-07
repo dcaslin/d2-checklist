@@ -11,7 +11,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     selector: 'd2c-god-roll-mw',
     templateUrl: './god-roll-mw.component.html',
     styleUrls: ['./god-roll-mw.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent, MatTooltip, MatProgressBar]
 })
 export class GodRollMwComponent {

@@ -19,7 +19,6 @@ import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-object
     selector: 'd2c-triumph-closest',
     templateUrl: './triumph-closest.component.html',
     styleUrls: ['./triumph-closest.component.scss'],
-    standalone: true,
     imports: [NgIf, MatSelect, FormsModule, NgFor, MatOption, MatCheckbox, MatButton, FaIconComponent, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe]
 })
 export class TriumphClosestComponent extends ChildComponent {

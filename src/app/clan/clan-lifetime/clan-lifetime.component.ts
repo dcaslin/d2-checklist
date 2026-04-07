@@ -22,7 +22,6 @@ import { TimingPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-clan-lifetime',
     templateUrl: './clan-lifetime.component.html',
     styleUrls: ['./clan-lifetime.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressBar, MatProgressSpinner, MatTabGroup, MatTab, NgTemplateOutlet, NgFor, MatButton, MatTooltip, FaIconComponent, RouterLink, TimingPipe, AsyncPipe, DecimalPipe]
 })
 export class ClanLifetimeComponent extends ChildComponent implements OnInit {

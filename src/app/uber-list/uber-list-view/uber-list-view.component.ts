@@ -23,7 +23,6 @@ import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-
     selector: 'd2c-uber-list-view',
     templateUrl: './uber-list-view.component.html',
     styleUrls: ['./uber-list-view.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButtonToggleGroup, NgFor, MatButtonToggle, MatButton, FaIconComponent, MatCheckbox, FormsModule, SignedOnLoadingIconComponent, SortIndicatorComponent, MatTooltip, UberPursuitCheckComponent, MilestoneCheckComponent, AsyncPipe]
 })
 export class UberListViewComponent extends ChildComponent {

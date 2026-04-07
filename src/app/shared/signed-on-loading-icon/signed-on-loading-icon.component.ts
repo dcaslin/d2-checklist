@@ -9,7 +9,6 @@ import { FaStackComponent, FaIconComponent, FaStackItemSizeDirective } from '@fo
     selector: 'd2c-signed-on-loading-icon',
     templateUrl: './signed-on-loading-icon.component.html',
     styleUrls: ['./signed-on-loading-icon.component.scss'],
-    standalone: true,
     imports: [NgIf, FaStackComponent, FaIconComponent, FaStackItemSizeDirective, AsyncPipe]
 })
 export class SignedOnLoadingIconComponent {

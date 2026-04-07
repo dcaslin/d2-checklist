@@ -18,7 +18,6 @@ import { RouterLink } from '@angular/router';
     selector: 'd2c-collection-search',
     templateUrl: './collection-search.component.html',
     styleUrls: ['./collection-search.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, NgFor, FaIconComponent, RouterLink, AsyncPipe]
 })
 export class CollectionSearchComponent extends ChildComponent implements OnInit {

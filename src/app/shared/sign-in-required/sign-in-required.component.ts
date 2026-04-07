@@ -12,7 +12,6 @@ import { MatButton } from '@angular/material/button';
     selector: 'd2c-sign-in-required',
     templateUrl: './sign-in-required.component.html',
     styleUrls: ['./sign-in-required.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCard, MatCardHeader, MatCardAvatar, FaIconComponent, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions, MatButton, AsyncPipe]
 })
 export class SignInRequiredComponent {

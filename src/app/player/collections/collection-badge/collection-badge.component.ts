@@ -19,7 +19,6 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
     selector: 'd2c-collection-badge',
     templateUrl: './collection-badge.component.html',
     styleUrls: ['./collection-badge.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, RouterLink, FaIconComponent, MatCheckbox, FormsModule, MatTabGroup, NgFor, MatTab, AsyncPipe]
 })
 export class CollectionBadgeComponent extends ChildComponent implements OnInit {

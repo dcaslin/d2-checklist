@@ -12,7 +12,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-friend-star',
     templateUrl: './friend-star.component.html',
     styleUrls: ['./friend-star.component.scss'],
-    standalone: true,
     imports: [NgIf, MatIconButton, FaIconComponent]
 })
 export class FriendStarComponent {

@@ -14,7 +14,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-deals-container',
     templateUrl: './deals-container.component.html',
     styleUrls: ['./deals-container.component.scss'],
-    standalone: true,
     imports: [NgIf, DealsComponent, SignInRequiredComponent, FaIconComponent, AsyncPipe]
 })
 export class DealsContainerComponent extends ChildComponent implements OnInit {

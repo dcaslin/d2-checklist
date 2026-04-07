@@ -14,7 +14,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     selector: 'd2c-uber-list-parent',
     templateUrl: './uber-list-parent.component.html',
     styleUrls: ['./uber-list-parent.component.scss'],
-    standalone: true,
     imports: [NgIf, MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, RouterOutlet, SignInRequiredComponent, MatProgressSpinner, AsyncPipe]
 })
 export class UberListParentComponent implements OnInit {

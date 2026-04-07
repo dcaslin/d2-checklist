@@ -53,7 +53,6 @@ function sortByProgress(x: TriumphRecordNode, y: TriumphRecordNode): number {
     selector: 'd2c-special-triumph-list',
     templateUrl: './special-triumph-list.component.html',
     styleUrls: ['./special-triumph-list.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCheckbox, FormsModule, MatFormField, MatLabel, MatSelect, NgFor, MatOption, MatInput, MatAutocompleteTrigger, MatIconButton, MatSuffix, MatIcon, MatAutocomplete, SortIndicatorComponent, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class SpecialTriumphListComponent extends ChildComponent {

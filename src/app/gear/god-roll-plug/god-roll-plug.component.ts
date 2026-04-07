@@ -13,7 +13,6 @@ import { MatIconButton } from '@angular/material/button';
     selector: 'd2c-god-roll-plug',
     templateUrl: './god-roll-plug.component.html',
     styleUrls: ['./god-roll-plug.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent, MatTooltip, MatIconButton]
 })
 export class GodRollPlugComponent {

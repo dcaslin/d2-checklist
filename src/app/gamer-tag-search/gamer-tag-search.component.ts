@@ -16,7 +16,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     selector: 'd2c-gamer-tag-search',
     templateUrl: './gamer-tag-search.component.html',
     styleUrls: ['./gamer-tag-search.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, MatButton, MatProgressSpinner, AsyncPipe]
 })
 export class GamerTagSearchComponent extends ChildComponent implements OnInit {

@@ -17,7 +17,6 @@ import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
     selector: 'd2c-armor-deals',
     templateUrl: './armor-deals.component.html',
     styleUrls: ['./armor-deals.component.scss'],
-    standalone: true,
     imports: [MatTooltip, FaIconComponent, NgIf, NgFor, ItemIconComponent, DecimalPipe]
 })
 export class ArmorDealsComponent {

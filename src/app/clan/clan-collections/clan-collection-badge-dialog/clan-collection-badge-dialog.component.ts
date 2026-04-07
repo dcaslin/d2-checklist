@@ -17,7 +17,6 @@ import { RouterLink } from '@angular/router';
     selector: 'd2c-clan-collection-badge-dialog',
     templateUrl: './clan-collection-badge-dialog.component.html',
     styleUrls: ['./clan-collection-badge-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, ClanTriumphGraphComponent, NgTemplateOutlet, NgIf, NgFor, RouterLink, AsyncPipe, DecimalPipe]
 })
 export class ClanCollectionBadgeDialogComponent  extends ChildComponent {

@@ -19,7 +19,6 @@ import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-object
     selector: 'd2c-triumph-seasons',
     templateUrl: './triumph-seasons.component.html',
     styleUrls: ['./triumph-seasons.component.scss'],
-    standalone: true,
     imports: [NgIf, MatCheckbox, FormsModule, MatFormField, MatLabel, MatSelect, NgFor, MatOption, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe]
 })
 export class TriumphSeasonsComponent extends ChildComponent {

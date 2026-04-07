@@ -15,7 +15,6 @@ import { SeasonIndicatorComponent } from '../../../shared/season-indicator/seaso
     selector: 'd2c-season-breakdown-dialog',
     templateUrl: './season-breakdown-dialog.component.html',
     styleUrls: ['./season-breakdown-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, MatTabGroup, NgFor, MatTab, MatTooltip, FaIconComponent, NgIf, SeasonIndicatorComponent, AsyncPipe]
 })
 export class SeasonBreakdownDialogComponent {

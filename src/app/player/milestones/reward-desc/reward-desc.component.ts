@@ -9,7 +9,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-reward-desc',
     templateUrl: './reward-desc.component.html',
     styleUrls: ['./reward-desc.component.scss'],
-    standalone: true,
     imports: [NgIf, NgTemplateOutlet, FaIconComponent]
 })
 export class RewardDescComponent implements OnInit {

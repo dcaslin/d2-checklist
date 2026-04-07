@@ -6,7 +6,6 @@ import { RouterLink } from '@angular/router';
     selector: 'd2c-robot-home',
     templateUrl: './robot-home.component.html',
     styleUrls: ['./robot-home.component.scss'],
-    standalone: true,
     imports: [RouterLink]
 })
 export class RobotHomeComponent {

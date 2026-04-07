@@ -14,7 +14,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-pursuits',
     templateUrl: './pursuits.component.html',
     styleUrls: ['./pursuits.component.scss'],
-    standalone: true,
     imports: [NgIf, SignInRequiredComponent, MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, RouterOutlet, AsyncPipe]
 })
 export class PursuitsComponent extends ChildComponent {

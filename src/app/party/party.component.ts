@@ -23,7 +23,6 @@ import { AgoHumanizedPipe } from '../shared/pipe/timing.pipe';
     selector: 'd2c-party',
     templateUrl: './party.component.html',
     styleUrls: ['./party.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner, RouterLink, NgFor, FaIconComponent, MatAnchor, NgTemplateOutlet, MatTooltip, AsyncPipe, DecimalPipe, AgoHumanizedPipe]
 })
 export class PartyComponent extends ChildComponent implements OnInit {

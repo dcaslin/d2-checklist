@@ -10,7 +10,6 @@ import { RouterLink } from '@angular/router';
     selector: 'd2c-about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss'],
-    standalone: true,
     imports: [MatAnchor, FaIconComponent, RouterLink]
 })
 export class AboutComponent extends ChildComponent {

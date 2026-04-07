@@ -22,7 +22,6 @@ import { TriumphObjectivesComponent } from '../triumph-objectives/triumph-object
     selector: 'd2c-triumph-search',
     templateUrl: './triumph-search.component.html',
     styleUrls: ['./triumph-search.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, MatCheckbox, NgFor, TriumphNameComponent, MatProgressBar, TriumphObjectivesComponent, AsyncPipe]
 })
 export class TriumphSearchComponent extends ChildComponent implements OnInit {

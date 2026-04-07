@@ -18,7 +18,6 @@ import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
     selector: 'd2c-armor-compare-dialog',
     templateUrl: './armor-compare-dialog.component.html',
     styleUrls: ['./armor-compare-dialog.component.scss'],
-    standalone: true,
     imports: [NgIf, MatDialogTitle, CdkScrollable, MatDialogContent, HorizontalSortComponent, NgFor, SeasonIndicatorComponent, FaIconComponent, ItemIconComponent, NgClass, AsyncPipe]
 })
 export class ArmorCompareDialogComponent extends ChildComponent {

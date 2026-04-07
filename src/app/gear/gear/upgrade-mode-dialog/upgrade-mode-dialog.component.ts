@@ -45,7 +45,6 @@ function buildEmptyData(): UpgradeModeDialogData {
     selector: 'd2c-upgrade-mode-dialog',
     templateUrl: './upgrade-mode-dialog.component.html',
     styleUrls: ['./upgrade-mode-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, MatButton, FaIconComponent, CdkScrollable, MatDialogContent, NgIf, MatTooltip, NgFor, ManifestItemIconComponent, MatProgressBar, MatDialogActions, MatDialogClose, AsyncPipe]
 })
 export class UpgradeModeDialogComponent extends ChildComponent {

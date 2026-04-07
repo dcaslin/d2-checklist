@@ -12,7 +12,6 @@ import { NgIf, AsyncPipe } from '@angular/common';
     selector: 'd2c-clan-collections',
     templateUrl: './clan-collections.component.html',
     styleUrls: ['./clan-collections.component.scss'],
-    standalone: true,
     imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, NgIf, RouterOutlet, AsyncPipe]
 })
 export class ClanCollectionsComponent extends ChildComponent {

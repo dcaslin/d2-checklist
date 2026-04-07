@@ -10,7 +10,6 @@ import { WritablePlugComponent } from '../writable-plug/writable-plug.component'
     selector: 'd2c-writable-sockets',
     templateUrl: './writable-sockets.component.html',
     styleUrls: ['./writable-sockets.component.scss'],
-    standalone: true,
     imports: [NgFor, NgIf, WritablePlugComponent]
 })
 export class WritableSocketsComponent extends ChildComponent {

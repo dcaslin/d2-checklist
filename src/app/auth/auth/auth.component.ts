@@ -14,7 +14,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     selector: 'd2c-auth',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner]
 })
 export class AuthComponent extends ChildComponent implements OnInit {

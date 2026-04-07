@@ -10,7 +10,6 @@ import { NgFor, NgIf } from '@angular/common';
     selector: 'd2c-burn-dialog',
     templateUrl: './burn-dialog.component.html',
     styleUrls: ['./burn-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgFor, NgIf]
 })
 export class BurnDialogComponent {

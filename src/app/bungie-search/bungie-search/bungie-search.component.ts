@@ -23,7 +23,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-bungie-search',
     templateUrl: './bungie-search.component.html',
     styleUrls: ['./bungie-search.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner, MatFormField, MatLabel, MatInput, FormsModule, MatMiniFabButton, MatIcon, NgFor, RouterLink, FaIconComponent, AsyncPipe]
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit {

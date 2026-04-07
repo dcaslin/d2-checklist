@@ -13,7 +13,6 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
     selector: 'd2c-armor-perks-dialog',
     templateUrl: './armor-perks-dialog.component.html',
     styleUrls: ['./armor-perks-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, NgIf, CdkScrollable, MatDialogContent, MatTabGroup, NgFor, MatTab, AsyncPipe]
 })
 export class ArmorPerksDialogComponent {

@@ -11,7 +11,6 @@ import { NitroUnitComponent } from './nitro-unit/nitro-unit.component';
     selector: 'd2c-ad-slot',
     templateUrl: './ad-slot.component.html',
     styleUrls: ['./ad-slot.component.scss'],
-    standalone: true,
     imports: [NgIf, NitroUnitComponent, AsyncPipe]
 })
 export class AdSlotComponent extends ChildComponent implements OnInit {

@@ -22,7 +22,6 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './mod-helper-dialog.component.html',
     styleUrls: ['./mod-helper-dialog.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatIconButton,
@@ -40,7 +39,7 @@ import { FormsModule } from '@angular/forms';
         MatButton,
         MatDialogClose,
         AsyncPipe,
-    ],
+    ]
 })
 export class ModHelperDialogComponent extends ChildComponent {
 

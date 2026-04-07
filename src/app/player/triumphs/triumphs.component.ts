@@ -12,7 +12,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-triumphs',
     templateUrl: './triumphs.component.html',
     styleUrls: ['./triumphs.component.scss'],
-    standalone: true,
     imports: [NgIf, MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, RouterOutlet, AsyncPipe]
 })
 export class TriumphsComponent extends ChildComponent {

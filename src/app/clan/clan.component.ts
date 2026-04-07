@@ -19,7 +19,6 @@ import { MatAnchor } from '@angular/material/button';
     selector: 'd2c-clan-history',
     templateUrl: './clan.component.html',
     styleUrls: ['./clan.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent, MatProgressBar, MatTabNav, MatTabLink, RouterLink, RouterLinkActive, MatTabNavPanel, MatProgressSpinner, RouterOutlet, MatAnchor, AsyncPipe]
 })
 export class ClanComponent extends ChildComponent implements OnInit {

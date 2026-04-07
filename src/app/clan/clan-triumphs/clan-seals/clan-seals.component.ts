@@ -14,7 +14,6 @@ import { ClanTriumphItemComponent } from '../clan-triumph-item/clan-triumph-item
     selector: 'd2c-clan-seals',
     templateUrl: './clan-seals.component.html',
     styleUrls: ['./clan-seals.component.scss'],
-    standalone: true,
     imports: [NgIf, MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription, MatButton, ClanTriumphItemComponent, AsyncPipe]
 })
 export class ClanSealsComponent extends ChildComponent {

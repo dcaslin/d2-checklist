@@ -8,7 +8,6 @@ import { NgFor, NgIf, DecimalPipe } from '@angular/common';
     selector: 'd2c-progress-step-dialog',
     templateUrl: './progress-step-dialog.component.html',
     styleUrls: ['./progress-step-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, NgFor, NgIf, DecimalPipe]
 })
 export class ProgressStepDialogComponent implements AfterViewInit {

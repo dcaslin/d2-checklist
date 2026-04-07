@@ -17,7 +17,6 @@ import { TimingPipe } from '../../../shared/pipe/timing.pipe';
     selector: 'd2c-clan-lifetime-dialog',
     templateUrl: './clan-lifetime-dialog.component.html',
     styleUrls: ['./clan-lifetime-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, ClanLifetimeGraphComponent, NgIf, NgFor, RouterLink, TimingPipe, DecimalPipe]
 })
 export class ClanLifetimeDialogComponent extends ChildComponent {

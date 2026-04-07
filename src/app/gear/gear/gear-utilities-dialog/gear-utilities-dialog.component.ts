@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { UntypedFormControl, FormGroupDirective, NgForm, Validators, FormsModule } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, Validators, FormsModule } from '@angular/forms';
 import { ErrorStateMatcher, MatOption } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA as MAT_DIALOG_DATA, MatDialogContent } from '@angular/material/dialog';
 import { MatSelectChange, MatSelect } from '@angular/material/select';
@@ -23,7 +23,7 @@ interface DimSyncOption {
 }
 
 export class InstantMatcher implements ErrorStateMatcher {
-  isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     return !!(control && control.invalid);
   }
 }
@@ -33,7 +33,6 @@ export class InstantMatcher implements ErrorStateMatcher {
     selector: 'd2c-gear-utilities-dialog',
     templateUrl: './gear-utilities-dialog.component.html',
     styleUrls: ['./gear-utilities-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, NgIf, MatProgressSpinner, MatTabGroup, MatTab, FormsModule, MatFormField, MatSelect, NgFor, MatOption, MatError, MatButton, FaIconComponent, MatAnchor, RouterLink, MatRadioGroup, MatRadioButton, AsyncPipe, DatePipe]
 })
 export class GearUtilitiesDialogComponent {

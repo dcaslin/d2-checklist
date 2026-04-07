@@ -20,7 +20,6 @@ import { MatCard, MatCardHeader, MatCardAvatar, MatCardTitle, MatCardSubtitle, M
     selector: 'd2c-clan-search',
     templateUrl: './clan-search.component.html',
     styleUrls: ['./clan-search.component.scss'],
-    standalone: true,
     imports: [NgIf, MatProgressSpinner, MatFormField, MatLabel, MatInput, FormsModule, MatMiniFabButton, MatIcon, RouterLink, MatCard, MatCardHeader, MatCardAvatar, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions, MatAnchor, AsyncPipe]
 })
 export class ClanSearchComponent extends ChildComponent implements OnInit {

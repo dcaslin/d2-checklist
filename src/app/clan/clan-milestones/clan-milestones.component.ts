@@ -20,7 +20,6 @@ import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-
     selector: 'd2c-clan-milestones',
     templateUrl: './clan-milestones.component.html',
     styleUrls: ['./clan-milestones.component.scss'],
-    standalone: true,
     imports: [NgIf, MatButton, FaIconComponent, NgTemplateOutlet, NgFor, MatTooltip, RouterLink, FriendStarComponent, MilestoneCheckComponent, AsyncPipe]
 })
 export class ClanMilestonesComponent extends ChildComponent {  

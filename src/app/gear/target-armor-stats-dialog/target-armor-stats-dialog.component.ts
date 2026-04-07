@@ -16,7 +16,6 @@ import { MatButton } from '@angular/material/button';
     selector: 'd2c-target-armor-stats-dialog',
     templateUrl: './target-armor-stats-dialog.component.html',
     styleUrls: ['./target-armor-stats-dialog.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatTabGroup, NgFor, MatTab, MatSlider, MatSliderThumb, FormsModule, MatCheckbox, MatDialogActions, MatButton]
 })
 export class TargetArmorStatsDialogComponent {

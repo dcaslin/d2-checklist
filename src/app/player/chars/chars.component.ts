@@ -13,7 +13,6 @@ import { AgoHumanizedPipe, MinsHumanizedPipe } from '../../shared/pipe/timing.pi
     selector: 'd2c-chars',
     templateUrl: './chars.component.html',
     styleUrls: ['./chars.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, MatCard, MatCardHeader, MatCardAvatar, MatCardTitle, MatTooltip, FaIconComponent, MatCardSubtitle, MatCardContent, AgoHumanizedPipe, MinsHumanizedPipe, AsyncPipe, DecimalPipe]
 })
 export class CharsComponent extends ChildComponent {

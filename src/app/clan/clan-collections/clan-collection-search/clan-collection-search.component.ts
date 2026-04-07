@@ -15,7 +15,6 @@ import { ClanCollectionItemComponent } from '../clan-collection-item/clan-collec
     selector: 'd2c-clan-collection-search',
     templateUrl: './clan-collection-search.component.html',
     styleUrls: ['./clan-collection-search.component.scss'],
-    standalone: true,
     imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, NgFor, ClanCollectionItemComponent, AsyncPipe]
 })
 export class ClanCollectionSearchComponent extends ChildComponent implements OnInit {

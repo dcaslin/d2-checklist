@@ -27,7 +27,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     selector: 'd2c-uber-list-builder',
     templateUrl: './uber-list-builder.component.html',
     styleUrls: ['./uber-list-builder.component.scss'],
-    standalone: true,
     imports: [NgIf, UberListToggleComponent, MatFormField, MatLabel, MatInput, FormsModule, MatIconButton, MatSuffix, MatIcon, MatButton, FaIconComponent, MatCheckbox, FaStackComponent, FaStackItemSizeDirective, SignedOnLoadingIconComponent, SortIndicatorComponent, NgFor, MatTooltip, UberPursuitCheckComponent, MilestoneCheckComponent, SignInRequiredComponent, MatProgressSpinner, AsyncPipe]
 })
 export class UberListBuilderComponent extends ChildComponent {

@@ -27,7 +27,6 @@ import { AgoHumanizedPipe } from '../../shared/pipe/timing.pipe';
     selector: 'd2c-vendors',
     templateUrl: './vendors.component.html',
     styleUrls: ['./vendors.component.scss'],
-    standalone: true,
     imports: [MatIconButton, FaIconComponent, NgIf, MatButtonToggleGroup, NgFor, MatButtonToggle, MatFormField, MatLabel, MatInput, FormsModule, MatSuffix, MatIcon, MatCheckbox, SignedOnLoadingIconComponent, MatTooltip, ItemIconComponent, GodRollItemComponent, GodRollPlugComponent, AsyncPipe, AgoHumanizedPipe]
 })
 export class VendorsComponent implements OnInit {

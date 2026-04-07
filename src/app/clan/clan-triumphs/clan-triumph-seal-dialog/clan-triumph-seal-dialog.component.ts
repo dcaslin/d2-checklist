@@ -16,7 +16,6 @@ import { RouterLink } from '@angular/router';
     selector: 'd2c-clan-triumph-seal-dialog',
     templateUrl: './clan-triumph-seal-dialog.component.html',
     styleUrls: ['./clan-triumph-seal-dialog.component.scss'],
-    standalone: true,
     imports: [CdkScrollable, MatDialogContent, MatTabGroup, MatTab, MatTabLabel, FaIconComponent, ClanTriumphGraphComponent, NgTemplateOutlet, NgIf, NgFor, RouterLink, AsyncPipe, DecimalPipe]
 })
 export class ClanTriumphSealDialogComponent extends ChildComponent {

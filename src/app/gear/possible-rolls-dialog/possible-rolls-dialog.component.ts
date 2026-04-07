@@ -14,7 +14,6 @@ import { GodRollPlugComponent } from '../god-roll-plug/god-roll-plug.component';
     selector: 'd2c-possible-rolls-dialog',
     templateUrl: './possible-rolls-dialog.component.html',
     styleUrls: ['../gear/gear.component.scss'],
-    standalone: true,
     imports: [MatDialogTitle, NgIf, CdkScrollable, MatDialogContent, NgFor, GodRollPlugComponent]
 })
 export class PossibleRollsDialogComponent {

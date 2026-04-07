@@ -13,7 +13,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-player-currencies',
     templateUrl: './player-currencies.component.html',
     styleUrls: ['./player-currencies.component.scss'],
-    standalone: true,
     imports: [NgIf, NgFor, MatTooltip, MatAnchor, MatMenuTrigger, FaIconComponent, MatMenu, NgTemplateOutlet, MatMenuItem, AsyncPipe, DecimalPipe]
 })
 export class PlayerCurrenciesComponent {

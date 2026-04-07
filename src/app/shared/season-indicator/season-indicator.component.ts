@@ -9,7 +9,6 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-season-indicator',
     templateUrl: './season-indicator.component.html',
     styleUrls: ['./season-indicator.component.scss'],
-    standalone: true,
     imports: [NgIf, MatTooltip, FaIconComponent]
 })
 export class SeasonIndicatorComponent {

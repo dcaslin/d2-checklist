@@ -9,7 +9,6 @@ import { NgChartsModule } from 'ng2-charts';
     selector: 'd2c-player-efficiency-graph',
     templateUrl: './player-efficiency-graph.component.html',
     styleUrls: ['./player-efficiency-graph.component.scss'],
-    standalone: true,
     imports: [NgChartsModule]
 })
 export class PlayerEfficiencyGraphComponent {

@@ -58,7 +58,6 @@ import { GodRollMwComponent } from '../god-roll-mw/god-roll-mw.component';
     selector: 'd2c-gear',
     templateUrl: './gear.component.html',
     styleUrls: ['./gear.component.scss'],
-    standalone: true,
     imports: [NgIf, FaIconComponent, SignInRequiredComponent, MatMenuTrigger, MatTooltip, MatButtonToggleGroup, MatButtonToggle, NgFor, MatMenu, MatMenuItem, GearToggleComponent, MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, FormsModule, MatIconButton, MatSuffix, MatIcon, MatAutocomplete, MatOption, MatButton, MatCheckbox, FaStackComponent, FaStackItemSizeDirective, SortIndicatorComponent, NgTemplateOutlet, NgClass, ItemIconComponent, GodRollItemComponent, MatProgressBar, RouterLink, SeasonIndicatorComponent, WritableSocketsComponent, GodRollMwComponent, MatPaginator, AsyncPipe, DecimalPipe, DatePipe]
 })
 export class GearComponent extends ChildComponent implements OnInit {
