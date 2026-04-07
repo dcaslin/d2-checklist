@@ -78,7 +78,7 @@ function _processStats(tagVal: string, stats: InventoryStat[], statChoiceMap: Ma
   return _processComparison(prefix, tagVal, stat.value);
 }
 
-function _processComparison(prefix: string, tagVal: string, gearVal: number): boolean {
+export function _processComparison(prefix: string, tagVal: string, gearVal: number): boolean {
   if (!tagVal.startsWith(prefix)) {
     return null!;
   }
