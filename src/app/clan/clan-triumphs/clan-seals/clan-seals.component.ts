@@ -4,7 +4,7 @@ import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
 import { IconService } from '@app/service/icon.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanTriumphSealDialogComponent } from '../clan-triumph-seal-dialog/clan-triumph-seal-dialog.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription } from '@angular/material/expansion';
 import { MatButton } from '@angular/material/button';
 import { ClanTriumphItemComponent } from '../clan-triumph-item/clan-triumph-item.component';
@@ -14,7 +14,7 @@ import { ClanTriumphItemComponent } from '../clan-triumph-item/clan-triumph-item
     selector: 'd2c-clan-seals',
     templateUrl: './clan-seals.component.html',
     styleUrls: ['./clan-seals.component.scss'],
-    imports: [NgIf, MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription, MatButton, ClanTriumphItemComponent, AsyncPipe]
+    imports: [NgIf, MatAccordion, NgFor, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatExpansionPanelDescription, MatButton, ClanTriumphItemComponent]
 })
 export class ClanSealsComponent extends ChildComponent {
   openEntryId: string|null = null;

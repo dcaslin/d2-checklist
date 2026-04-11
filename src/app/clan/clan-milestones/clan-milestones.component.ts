@@ -1,12 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { BungieGroupMember } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIf, NgTemplateOutlet, NgFor, AsyncPipe } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -22,19 +19,17 @@ import { MilestoneCheckComponent } from '../../shared/milestone-check/milestone-
     styleUrls: ['./clan-milestones.component.scss'],
     imports: [NgIf, MatButton, FaIconComponent, NgTemplateOutlet, NgFor, MatTooltip, RouterLink, FriendStarComponent, MilestoneCheckComponent, AsyncPipe]
 })
-export class ClanMilestonesComponent extends ChildComponent {  
-  public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
+export class ClanMilestonesComponent extends ChildComponent {
+  public filteredMembers = signal<BungieGroupMember[]>([]);
 
   constructor(
     public state: ClanStateService,
     public iconService: IconService) {
     super();
-    this.state.sortedMembers.pipe(
-      takeUntilDestroyed(this.destroyRef))
-      .subscribe(
-        x => {
-          this.filterMilestones();
-        });
+    effect(() => {
+      const _members = this.state.sortedMembers();
+      this.filterMilestones();
+    });
   }
 
   
@@ -62,7 +57,7 @@ export class ClanMilestonesComponent extends ChildComponent {
       if (member!.currentPlayer()!.characters[0].milestones == null) { return false; }
       return true;
     });
-    this.filteredMembers.next(temp);
+    this.filteredMembers.set(temp);
   }
 
 }

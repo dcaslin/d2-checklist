@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanCollectionBadgeDialogComponent } from '../clan-collection-badge-dialog/clan-collection-badge-dialog.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 
 @Component({
@@ -11,7 +11,7 @@ import { MatButton } from '@angular/material/button';
     selector: 'd2c-clan-badges',
     templateUrl: './clan-badges.component.html',
     styleUrls: ['./clan-badges.component.scss'],
-    imports: [NgIf, NgFor, MatButton, AsyncPipe]
+    imports: [NgIf, NgFor, MatButton]
 })
 export class ClanBadgesComponent extends ChildComponent {
 

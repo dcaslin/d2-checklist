@@ -1,12 +1,12 @@
 
-    <div *ngIf="(state.notFound|async)==false; else notFound">
+    <div *ngIf="(state.notFound())==false; else notFound">
 
       <h3 class="clan-name">
-        <ng-container *ngIf="(state.info|async)!=null">Clan: {{(state.info|async)!.name}}</ng-container>
-        <ng-container *ngIf="(state.info|async)==null"><fa-icon [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon></ng-container>
+        <ng-container *ngIf="(state.info())!=null">Clan: {{(state.info())!.name}}</ng-container>
+        <ng-container *ngIf="(state.info())==null"><fa-icon [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon></ng-container>
       </h3>
-      <ng-container *ngIf="(state.allLoaded|async) === false">
-        <ng-container *ngIf="state.profilesLoaded|async as pct">
+      <ng-container *ngIf="(state.allLoaded()) === false">
+        <ng-container *ngIf="state.profilesLoaded() as pct">
           <mat-progress-bar mode="determinate" [value]="pct*100"></mat-progress-bar>
         </ng-container>
       </ng-container>

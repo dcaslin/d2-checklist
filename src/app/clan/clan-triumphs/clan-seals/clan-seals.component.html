@@ -1,4 +1,4 @@
-<ng-container *ngIf="state.seals|async as seals">
+<ng-container *ngIf="state.seals() as seals">
     <mat-accordion>
         <ng-container *ngFor="let s of seals">
             <mat-expansion-panel  (opened)="opened($any(s).hash)">

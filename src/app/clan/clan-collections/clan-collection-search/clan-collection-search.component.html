@@ -1,4 +1,4 @@
-<div *ngIf="filteredCollection|async as c" class="clan-collection-search">
+<div *ngIf="filteredCollection() as c" class="clan-collection-search">
         <div class="left" class="medium-margin">
             <mat-form-field class="searchField">
                 <mat-label>Wildcard Search Collections</mat-label>
