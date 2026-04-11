@@ -1,11 +1,11 @@
-<div class="body" *ngIf="state.info|async as info">
+<div class="body" *ngIf="state.info() as info">
 
     <h3>Progress</h3>
     <div class="section" *ngIf="info.primaryProgression!=null">
 
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <div class="clan-progress-row" *ngIf="state.modelPlayer|async as modelPlayer ; else loadingModel">
+                <div class="clan-progress-row" *ngIf="state.modelPlayer() as modelPlayer ; else loadingModel">
                     <span style="margin-right: 0.5em" *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
                         {{clanMs.name}}
                         <fa-icon *ngIf="clanMs.earned==true" class="accent-text mat-option.mat-selected" [icon]="iconService.fasCheckSquare"></fa-icon>
@@ -20,8 +20,8 @@
             </div>
             <div class="col-sm-12 col-md-6">
                 <div class="clan-progress-row">
-                    <button mat-stroked-button [disabled]="(state.allLoaded|async) === false" (click)="state.downloadCsvReport()">
-                        <fa-icon [hidden]="state.allLoaded|async" [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon>
+                    <button mat-stroked-button [disabled]="state.allLoaded() === false" (click)="state.downloadCsvReport()">
+                        <fa-icon [hidden]="state.allLoaded()" [icon]="iconService.farSpinner" animation="spin-pulse" [fixedWidth]="true"></fa-icon>
                         <fa-icon [icon]="iconService.falDownload"></fa-icon> Download CSV Report</button>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 </th>
             </thead>
             <tbody>
-                <tr *ngFor="let member of members|async">
+                <tr *ngFor="let member of members()">
                     <td>
                         <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                             {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}

@@ -31,7 +31,7 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <span class="filter-count">{{(state.sortedMembers|async)!.length}} / {{state.members.length}}</span>
+        <span class="filter-count">{{state.sortedMembers()!.length}} / {{state.members.length}}</span>
 
     </div>
 

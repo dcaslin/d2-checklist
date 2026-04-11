@@ -1,12 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { BungieGroupMember, Sort } from '@app/service/model';
 import { ChildComponent } from '@app/shared/child.component';
-import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -18,7 +15,7 @@ import { AgoHumanizedPipe, DateFormatPipe } from '../../shared/pipe/timing.pipe'
     selector: 'd2c-clan-info',
     templateUrl: './clan-info.component.html',
     styleUrls: ['./clan-info.component.scss'],
-    imports: [NgIf, NgFor, FaIconComponent, MatButton, RouterLink, MatTooltip, AgoHumanizedPipe, DateFormatPipe, AsyncPipe, DecimalPipe, DatePipe]
+    imports: [NgIf, NgFor, FaIconComponent, MatButton, RouterLink, MatTooltip, AgoHumanizedPipe, DateFormatPipe, DecimalPipe, DatePipe]
 })
 export class ClanInfoComponent extends ChildComponent {
   sort: Sort = {
@@ -26,7 +23,7 @@ export class ClanInfoComponent extends ChildComponent {
     ascending: true
   };
 
-  public members: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
+  public members = signal<BungieGroupMember[]>([]);
 
   private static sortMembers(members: BungieGroupMember[], sort: Sort) {
     const modifier = sort.ascending ? 1 : -1;
@@ -74,24 +71,22 @@ export class ClanInfoComponent extends ChildComponent {
       this.sort.ascending = true;
       this.sort.name = field;
     }
-    this.applySort(this.members.getValue());
-
+    this.applySort(this.members().slice(0));
   }
 
 
   private applySort(m: BungieGroupMember[]) {
     ClanInfoComponent.sortMembers(m, this.sort);
-    this.members.next(m);
+    this.members.set(m);
   }
 
   constructor(public iconService: IconService,
     public state: ClanStateService) {
     super();
-    this.state.rawMembers.pipe(
-      takeUntilDestroyed(this.destroyRef))
-      .subscribe((rawMembers) => {
-        this.applySort(rawMembers.slice(0));
-      });
+    effect(() => {
+      const rawMembers = this.state.rawMembers();
+      this.applySort(rawMembers.slice(0));
+    });
   }
 
 }

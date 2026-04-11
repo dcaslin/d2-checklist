@@ -1,4 +1,4 @@
-<div *ngIf="state.trackedTriumphs|async as t" class="clan-triumph-search">
+<div *ngIf="state.trackedTriumphs() as t" class="clan-triumph-search">
     
     <div *ngIf="t.length==0" class="left" class="medium-margin">        
             Click a star on a triumph on another tab to track it here

@@ -5,14 +5,14 @@ import { ClanStateService } from '../clan-state.service';
 import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { NgIf } from '@angular/common';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'd2c-clan-triumphs',
     templateUrl: './clan-triumphs.component.html',
     styleUrls: ['./clan-triumphs.component.scss'],
-    imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, NgIf, RouterOutlet, AsyncPipe]
+    imports: [MatTabNav, MatTabLink, RouterLink, RouterLinkActive, FaIconComponent, MatTabNavPanel, NgIf, RouterOutlet]
 })
 export class ClanTriumphsComponent extends ChildComponent {
 

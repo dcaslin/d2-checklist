@@ -1,11 +1,10 @@
-import { Injectable, signal} from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { parseISO } from 'date-fns';
 import { differenceInDays } from 'date-fns/esm';
-import { BehaviorSubject } from 'rxjs';
 import { AggHistoryEntry, Badge, BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphCollectibleNode, TriumphRecordNode } from '../service/model';
 
 export interface ClanUserList {
@@ -100,29 +99,29 @@ export interface ClanSearchableCollection extends ClanAggregate {
 })
 export class ClanStateService {
   public loading = signal<boolean>(false);
-  public notFound: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public notFound = signal<boolean>(false);
   public inactiveMembers: BungieGroupMember[] = [];
   public defunctMembers: BungieGroupMember[] = [];
   public id!: string;
 
-  public rawMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
-  public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject<BungieGroupMember[]>([]);
-  public seals: BehaviorSubject<ClanSeal[]> = new BehaviorSubject<ClanSeal[]>([]);
-  public searchableTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject<ClanSearchableTriumph[]>([]);
+  public rawMembers = signal<BungieGroupMember[]>([]);
+  public sortedMembers = signal<BungieGroupMember[]>([]);
+  public seals = signal<ClanSeal[]>([]);
+  public searchableTriumphs = signal<ClanSearchableTriumph[]>([]);
 
-  public badges: BehaviorSubject<ClanBadge[]> = new BehaviorSubject<ClanBadge[]>([]);
-  public searchableCollection: BehaviorSubject<ClanSearchableCollection[]> = new BehaviorSubject<ClanSearchableCollection[]>([]);
+  public badges = signal<ClanBadge[]>([]);
+  public searchableCollection = signal<ClanSearchableCollection[]>([]);
 
-  public trackedTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject<ClanSearchableTriumph[]>([]);
-  public aggHistory: BehaviorSubject<ClanAggHistoryEntry[]> = new BehaviorSubject<ClanAggHistoryEntry[]>([]);
-  public sweepMsg: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
-  public info: BehaviorSubject<ClanInfo | null> = new BehaviorSubject<ClanInfo | null>(null);
-  public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public profilesLoaded: BehaviorSubject<number> = new BehaviorSubject(0.01);
-  public aggHistoryLoaded: BehaviorSubject<number> = new BehaviorSubject(0);
-  public aggHistoryLoadCount: BehaviorSubject<number> = new BehaviorSubject(0);
-  public aggHistoryAllLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public modelPlayer: BehaviorSubject<Player | null> = new BehaviorSubject<Player | null>(null);
+  public trackedTriumphs = signal<ClanSearchableTriumph[]>([]);
+  public aggHistory = signal<ClanAggHistoryEntry[]>([]);
+  public sweepMsg = signal<string | null>(null);
+  public info = signal<ClanInfo | null>(null);
+  public allLoaded = signal<boolean>(false);
+  public profilesLoaded = signal<number>(0.01);
+  public aggHistoryLoaded = signal<number>(0);
+  public aggHistoryLoadCount = signal<number>(0);
+  public aggHistoryAllLoaded = signal<boolean>(false);
+  public modelPlayer = signal<Player | null>(null);
   public dTrackedTriumphIds: Record<string, boolean> = {};
   public inactivityMonthThreshold = 6;
   public inactivityMonthOptions = [1, 3, 6, 12, 48];
@@ -390,7 +389,7 @@ export class ClanStateService {
     const clanSealsDict: any = {};
 
     const clanSearchableTriumphsDict: any = {};
-    for (const m of this.sortedMembers.getValue()) {
+    for (const m of this.sortedMembers()) {
       if (!m.currentPlayer()) {
         continue;
       }
@@ -470,8 +469,8 @@ export class ClanStateService {
 
       clanSeals.push(seal);
     }
-    this.seals.next(clanSeals);
-    this.searchableTriumphs.next(clanSearchableTriumphs);
+    this.seals.set(clanSeals);
+    this.searchableTriumphs.set(clanSearchableTriumphs);
     this.applyTrackedTriumphs();
   }
 
@@ -504,7 +503,7 @@ export class ClanStateService {
     const clanSearchableCollectionsDict: any = {};
 
     // loop through all clan-members to gather badges and collectibles
-    for (const m of this.sortedMembers.getValue()) {
+    for (const m of this.sortedMembers()) {
       if (!m.currentPlayer()) {
         continue;
       }
@@ -580,7 +579,7 @@ export class ClanStateService {
     // convert our dicts into arrays
     const clanBadges: ClanBadge[] = [];
     const clanSearchableCollection: ClanSearchableCollection[] = [];
-    const allMembers = this.sortedMembers.getValue();
+    const allMembers = this.sortedMembers();
     for (const key of Object.keys(clanSearchableCollectionsDict)) {
       const pushMe: ClanSearchableCollection = clanSearchableCollectionsDict[key];
       // handle secret collections
@@ -629,8 +628,8 @@ export class ClanStateService {
       }
       return 0;
     });
-    this.badges.next(clanBadges);
-    this.searchableCollection.next(clanSearchableCollection);
+    this.badges.set(clanBadges);
+    this.searchableCollection.set(clanSearchableCollection);
   }
 
 
@@ -675,7 +674,7 @@ export class ClanStateService {
   }
 
   private applyTrackedTriumphs() {
-    const triumphs = this.searchableTriumphs.getValue();
+    const triumphs = this.searchableTriumphs();
     const tempTriumphs: ClanSearchableTriumph[] = [];
     if (Object.keys(this.dTrackedTriumphIds).length > 0) {
       for (const t of triumphs) {
@@ -684,15 +683,15 @@ export class ClanStateService {
         }
       }
     }
-    this.trackedTriumphs.next(tempTriumphs);
+    this.trackedTriumphs.set(tempTriumphs);
   }
 
   private async loadClanInfo() {
     try {
       const i = await this.bungieService.getClanInfo(this.id);
-      this.info.next(i);
+      this.info.set(i);
     } catch {
-      this.notFound.next(true);
+      this.notFound.set(true);
     }
   }
 
@@ -701,26 +700,26 @@ export class ClanStateService {
       return;
     }
     this.id = id;
-    this.allLoaded.next(false);
-    this.aggHistoryAllLoaded.next(false);
-    this.aggHistory.next([]);
-    this.notFound.next(false);
+    this.allLoaded.set(false);
+    this.aggHistoryAllLoaded.set(false);
+    this.aggHistory.set([]);
+    this.notFound.set(false);
     this.loading.set(true);
     this.members = [];
 
     this.defunctMembers = [];
     this.inactiveMembers = [];
-    this.modelPlayer.next(null);
-    this.profilesLoaded.next(0.01);
-    this.aggHistoryLoaded.next(0);
-    this.aggHistoryLoadCount.next(0);
+    this.modelPlayer.set(null);
+    this.profilesLoaded.set(0.01);
+    this.aggHistoryLoaded.set(0);
+    this.aggHistoryLoadCount.set(0);
 
     try {
       // async load clan progressions etc
       this.loadClanInfo();
       // load the clan members
       const allMembers = await this.bungieService.getClanMembers(this.id);
-      this.rawMembers.next(allMembers);
+      this.rawMembers.set(allMembers);
       const functMembers = allMembers.filter(x => {
         if (x.isDefunct()) {
           this.defunctMembers.push(x);
@@ -751,11 +750,11 @@ export class ClanStateService {
       this.members = members;
       // this will filter members by platform as well
       this.sortData();
-      const operateOnMe = this.sortedMembers.getValue();
+      const operateOnMe = this.sortedMembers();
       console.log(`Active ${operateOnMe.length} / ${functMembers.length}`);
       this.loading.set(false);
       for (const t of operateOnMe) {
-        if (this.modelPlayer.getValue() == null) {
+        if (this.modelPlayer() == null) {
           await this.loadSpecificPlayer(t, false);
         } else {
           this.loadSpecificPlayer(t, false);
@@ -779,7 +778,7 @@ export class ClanStateService {
   public downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
     let sCsv = 'member,platform,chars,lastPlayed days ago,Artifact,Season Rank,Triumph Score,Trials,Glory,Gambit,Crucible,Vanguard,Weekly XP,max LL,';
-    this.modelPlayer.getValue()!.milestoneList.forEach(m => {
+    this.modelPlayer()!.milestoneList.forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
       sCsv += tempName + ',';
@@ -787,7 +786,7 @@ export class ClanStateService {
     });
     sCsv += '\n';
 
-    this.sortedMembers.getValue().forEach(member => {
+    this.sortedMembers().forEach(member => {
       if (member.destinyUserInfo == null) { return; }
       if (member.currentPlayer() == null) { return; }
 
@@ -839,7 +838,7 @@ export class ClanStateService {
       sCsv += member!.currentPlayer()!.maxLL + ',';
 
       if (member!.currentPlayer()!.characters != null) {
-        this.modelPlayer.getValue()!.milestoneList.forEach(mileStoneName => {
+        this.modelPlayer()!.milestoneList.forEach(mileStoneName => {
           let total = 0;
           let pctTotal = 0;
           let possible = 0;
@@ -911,9 +910,9 @@ export class ClanStateService {
       });
     }
     temp.sort(ClanStateService.generateComparator(this.sort));
-    this.sortedMembers.next(temp);
+    this.sortedMembers.set(temp);
 
-    if (this.allLoaded.getValue()) {
+    if (this.allLoaded()) {
       this.handleTriumphs();
       this.handleCollections();
     }
@@ -1090,11 +1089,11 @@ export class ClanStateService {
   // dialog
   // graph
   private async sweepAggHistory(type: string, msg: string) {
-    console.log(`Sweep agg history ${type} - ${msg}: ${this.sortedMembers.getValue().length}`);
-    this.sweepMsg.next(msg);
-    const loadAggDenom = this.sortedMembers.getValue().length;
+    console.log(`Sweep agg history ${type} - ${msg}: ${this.sortedMembers().length}`);
+    this.sweepMsg.set(msg);
+    const loadAggDenom = this.sortedMembers().length;
     let loadAggNum = 0;
-    for (const m of this.sortedMembers.getValue()) {
+    for (const m of this.sortedMembers()) {
       try {
         if (!m.currentPlayer()) {
           console.log(`    Skipping ${m.destinyUserInfo.displayName}`);
@@ -1112,22 +1111,22 @@ export class ClanStateService {
       finally {
         loadAggNum++;
         const pct = loadAggNum / loadAggDenom;
-        this.aggHistoryLoadCount.next(loadAggNum);
-        this.aggHistoryLoaded.next(pct);
+        this.aggHistoryLoadCount.set(loadAggNum);
+        this.aggHistoryLoaded.set(pct);
       }
     }
   }
 
   public async loadAggHistory() {
     // don't reload unless clan is reloaded
-    if (this.aggHistoryAllLoaded.getValue()) {
+    if (this.aggHistoryAllLoaded()) {
       return;
     }
     console.log(`Load agg history`);
     await this.sweepAggHistory('cache', 'Checking cached history info: ');
     await this.sweepAggHistory('best', 'Loading latest history info: ');
     await this.sweepAggHistory('nf', 'Checking NF high scores: ');
-    this.aggHistoryAllLoaded.next(true);
+    this.aggHistoryAllLoaded.set(true);
   }
 
   private static removePrefix(s: string, preFix: string, ignoreCase: true): string {
@@ -1143,7 +1142,7 @@ export class ClanStateService {
 
   private handleAggHistory(): void {
     const clanAggHistoryDict: { [key: string]: ClanAggHistoryEntry } = {};
-    const sortedMembers = this.sortedMembers.getValue();
+    const sortedMembers = this.sortedMembers();
     for (const m of sortedMembers) {
       if (!m.currentPlayer()) {
         continue;
@@ -1214,7 +1213,7 @@ export class ClanStateService {
       //   }
       //   return 0;
     });
-    this.aggHistory.next(clanAggHistoryEntrys);
+    this.aggHistory.set(clanAggHistoryEntrys);
   }
 
   public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {
@@ -1226,7 +1225,7 @@ export class ClanStateService {
         'CharacterEquipment', 'ItemInstances', 'CharacterInventories', 'ProfileInventories',
         'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true, true);
       target.player$.next(x);
-      if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
+      if (this.modelPlayer() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
         x.milestoneList.sort((a, b) => {
           if (a.boost.sortVal < b.boost.sortVal) { return 1; }
           if (a.boost.sortVal > b.boost.sortVal) { return -1; }
@@ -1236,7 +1235,7 @@ export class ClanStateService {
           if (a.name < b.name) { return -1; }
           return 0;
         });
-        this.modelPlayer.next(x);
+        this.modelPlayer.set(x);
       }
       if (x != null && x.characters != null) {
         // in case this is a retry
@@ -1250,12 +1249,12 @@ export class ClanStateService {
       target.errorMsg = 'Unable to load player data';
     }
 
-    const loaded = this.sortedMembers.getValue().filter(x => (x.errorMsg != null || x.currentPlayer() != null)).length;
-    const total = this.sortedMembers.getValue().length;
-    this.profilesLoaded.next(loaded / total);
+    const loaded = this.sortedMembers().filter(x => (x.errorMsg != null || x.currentPlayer() != null)).length;
+    const total = this.sortedMembers().length;
+    this.profilesLoaded.set(loaded / total);
     if (loaded >= total && total > 0) {
       console.log(`All players loaded`);
-      this.allLoaded.next(true);
+      this.allLoaded.set(true);
     }
     this.sortData();
   }

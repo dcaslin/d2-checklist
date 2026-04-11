@@ -108,14 +108,19 @@ Remaining:
 
 ## Phase 6: Further Signal Adoption
 
-274 `BehaviorSubject` instances across 52 files. Some already converted to signals.
+Started at 177 `BehaviorSubject` instances across 52 files.
 
-Priority conversions:
-- [ ] `gear-filter-state.service.ts` (45 BehaviorSubjects)
-- [ ] `uber-list-state.service.ts` (28 BehaviorSubjects)
-- [ ] `clan-state.service.ts` (18 BehaviorSubjects)
-- [ ] Evaluate Angular 19 signal APIs (`resource()`, `linkedSignal()`) after Phase 2
-- [ ] Convert incrementally, one service per PR
+Completed (PR #1):
+- [x] `clan-state.service.ts` — converted 17 BehaviorSubjects to signals, updated 16 consumer components/templates
+  - Service: `.next()` → `.set()`, `.getValue()` → `()`
+  - Templates: removed `| async` pipe, use direct signal call `()`
+  - Components: replaced `.subscribe()` with `effect()`, converted local BehaviorSubjects to signals
+
+Remaining:
+- [ ] `gear-filter-state.service.ts` (23 BehaviorSubjects)
+- [ ] `uber-list-state.service.ts` (17 BehaviorSubjects)
+- [ ] Evaluate Angular 19 signal APIs (`resource()`, `linkedSignal()`)
+- [ ] Convert remaining services incrementally, one per PR
 
 **Done when:** BehaviorSubject count under 150. The three largest files are converted.
 

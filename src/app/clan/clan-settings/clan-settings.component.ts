@@ -8,7 +8,7 @@ import { MatButton } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { MatOption } from '@angular/material/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
@@ -17,7 +17,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     selector: 'd2c-clan-settings',
     templateUrl: './clan-settings.component.html',
     styleUrls: ['./clan-settings.component.scss'],
-    imports: [MatButton, MatFormField, MatSelect, FormsModule, NgFor, MatOption, MatSelectTrigger, FaIconComponent, AsyncPipe]
+    imports: [MatButton, MatFormField, MatSelect, FormsModule, NgFor, MatOption, MatSelectTrigger, FaIconComponent]
 })
 export class ClanSettingsComponent extends ChildComponent {
 

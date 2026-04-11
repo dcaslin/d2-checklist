@@ -1,8 +1,8 @@
-<ng-container *ngIf="(state.aggHistoryAllLoaded|async) === false">
-    <p>Loading lifetime data for clan members. <ng-container *ngIf="state.sweepMsg|async as msg">{{msg}}</ng-container>
-        <span *ngIf="state.aggHistoryLoadCount|async as cnt">{{cnt}} / {{(state.sortedMembers|async)!.length}}</span>
+<ng-container *ngIf="state.aggHistoryAllLoaded() === false">
+    <p>Loading lifetime data for clan members. <ng-container *ngIf="state.sweepMsg() as msg">{{msg}}</ng-container>
+        <span *ngIf="state.aggHistoryLoadCount() as cnt">{{cnt}} / {{state.sortedMembers()!.length}}</span>
     </p>
-    <mat-progress-bar mode="determinate" [value]="(state.aggHistoryLoaded|async)!*100"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" [value]="state.aggHistoryLoaded()!*100"></mat-progress-bar>
     <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading())===true">
         </mat-spinner>
@@ -10,7 +10,7 @@
 </ng-container>
 
 
-<div class="body" *ngIf="state.aggHistory|async as history">
+<div class="body" *ngIf="state.aggHistory() as history">
     <mat-tab-group>
         <mat-tab label="Raids">
             <ng-container *ngTemplateOutlet="aggTable; context: {type: 'raid', history: history}">

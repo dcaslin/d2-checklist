@@ -7,7 +7,7 @@
     </a>
 </nav>
 <mat-tab-nav-panel #tabPanel>
-  <ng-container *ngIf="state.allLoaded|async; else notLoaded">
+  <ng-container *ngIf="state.allLoaded(); else notLoaded">
       <router-outlet></router-outlet>
   </ng-container>
 </mat-tab-nav-panel>

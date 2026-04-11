@@ -1,4 +1,4 @@
-<ng-container *ngIf="state.modelPlayer|async as modelPlayer; else loadingModel">
+<ng-container *ngIf="state.modelPlayer() as modelPlayer; else loadingModel">
 
     <div class="mobile-button-row">
         <button mat-button (click)="showAllClanMilestones()" *ngIf="hiddenClanMilestones()!.length>0">
@@ -42,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let member of filteredMembers|async">
+            <tr *ngFor="let member of filteredMembers()">
                 <td class="lead">
                     <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
