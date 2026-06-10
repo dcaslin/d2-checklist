@@ -63,6 +63,56 @@ describe('MilestoneParserService', () => {
         });
     });
 
+    describe('parsePublicMilestones with missing manifest entries', () => {
+        function makeMilestoneDesc(hash: number): any {
+            return {
+                hash,
+                milestoneType: 3,
+                displayProperties: { name: 'Test Milestone', description: 'desc', icon: 'icon.png' }
+            };
+        }
+
+        function makePublicMs(milestoneHash: number, activityHash: number): any {
+            return {
+                milestoneHash,
+                order: 1,
+                startDate: '2026-06-09T17:00:00Z',
+                endDate: '2026-06-16T17:00:00Z',
+                activities: [{ activityHash, challengeObjectiveHashes: [], modifierHashes: [] }]
+            };
+        }
+
+        it('should skip activities whose hash is missing from the manifest', async () => {
+            const mockCache: any = {
+                getMilestone: (hash: any) => Promise.resolve(makeMilestoneDesc(hash)),
+                getActivity: () => Promise.resolve(undefined) // hash dropped by manifest update
+            };
+            const svc = new MilestoneParserService(mockCache);
+            const result = await svc.parsePublicMilestones({ '1': makePublicMs(1, 555) });
+            expect(result.publicMilestones.length).toBe(1);
+            expect(result.publicMilestones[0].activities.length).toBe(0);
+        });
+
+        it('should tolerate a missing activity mode when falling back for icons', async () => {
+            const aDesc = {
+                displayProperties: { name: 'Test Activity', description: 'd', icon: 'missing_icon.png' },
+                activityLightLevel: 100,
+                tier: 1,
+                activityModeHashes: [999]
+            };
+            const mockCache: any = {
+                getMilestone: (hash: any) => Promise.resolve(makeMilestoneDesc(hash)),
+                getActivity: () => Promise.resolve(aDesc),
+                getActivityMode: () => Promise.resolve(undefined) // hash dropped by manifest update
+            };
+            const svc = new MilestoneParserService(mockCache);
+            const result = await svc.parsePublicMilestones({ '1': makePublicMs(1, 555) });
+            expect(result.publicMilestones.length).toBe(1);
+            expect(result.publicMilestones[0].activities.length).toBe(1);
+            expect(result.publicMilestones[0].activities[0].name).toBe('Test Activity');
+        });
+    });
+
     describe('hasChallenge (static)', () => {
         it('should return true when challenge with matching hash exists', () => {
             const act = {

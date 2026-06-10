@@ -18,6 +18,12 @@ npm run lint         # eslint
 
 ALWAYS bump the version in package.json for each new PR. If the bungie manifest version changes, also bump package.json's "manifest" value. These two values are used to bust caches on browser clients, if not bumped the clients won't see the new values.
 
+New workspaces/worktrees are missing the gitignored `src/environments/keys.ts` and `keys-prod.ts` (Bungie API credentials), so builds and tests fail with "Cannot find module './keys'". Copy them from the base checkout:
+
+```bash
+cp ~/projects/d2-checklist/src/environments/keys.ts ~/projects/d2-checklist/src/environments/keys-prod.ts src/environments/
+```
+
 ## Project structure
 
 - `src/app/` - Angular application source
