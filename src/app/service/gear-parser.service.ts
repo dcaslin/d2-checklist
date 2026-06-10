@@ -164,6 +164,9 @@ export class GearParserService {
     }
 
     public static getPlugName(plugDesc: any): string {
+        // manifest updates can leave plug hashes that no longer resolve, so guard against missing descriptions
+        if (plugDesc == null) { return null!; }
+        if (plugDesc.displayProperties == null) { return null!; }
         const name = plugDesc.displayProperties.name;
         if (name == null) { return null!; }
         if (name.trim().length == 0) { return null!; }

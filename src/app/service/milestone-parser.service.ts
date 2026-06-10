@@ -368,7 +368,11 @@ export class MilestoneParserService {
             if (ms.activities != null) {
                 for (const act of ms.activities) {
                     const aDesc = await this.destinyCacheService.getActivity(act.activityHash);
-                    
+                    // manifest updates can leave activity hashes that no longer resolve
+                    if (aDesc == null) {
+                        continue;
+                    }
+
                     if (act.challengeObjectiveHashes) {
                         // skip weekly dungeons that aren't active
                         // Grasp of Avarice 1092691445 does not show up in the weekly public profile if active
@@ -411,7 +415,9 @@ export class MilestoneParserService {
                         if (aDesc.activityModeHashes && aDesc.activityModeHashes.length > 0) {
                             const amHash = aDesc.activityModeHashes[0];
                             const amDesc = await this.destinyCacheService.getActivityMode(amHash);
-                            activityIcon = amDesc.displayProperties.icon;
+                            if (amDesc != null) {
+                                activityIcon = amDesc.displayProperties.icon;
+                            }
                         }
                     }                    
                     activities.push({
@@ -520,34 +526,37 @@ export class MilestoneParserService {
                 const GOA_ACT_HASH = 3774021532;
                 const desc = await this.destinyCacheService.getMilestone(GOA_HASH);
                 const aDesc = await this.destinyCacheService.getActivity(GOA_ACT_HASH);
-                const pushMe: PublicMilestone = {
-                    hash: GOA_HASH + '',
-                    name: `Weekly Dungeon Challenge: ${desc.displayProperties.name}`,
-                    desc: desc.displayProperties.description,
-                    start: raid.start,
-                    end: raid.end,
-                    order: 31,
-                    icon: desc.displayProperties.icon,
-                    activities: [
-                        {
-                            hash: GOA_ACT_HASH+'',
-                            name: aDesc.displayProperties.name,
-                            desc: aDesc.displayProperties.description,
-                            ll: aDesc.activityLightLevel,
-                            tier: aDesc.tier,
-                            icon: aDesc.displayProperties.icon,
-                            modifiers: []
-                        }
-                    ],
-                    rewards: 'Pinnacle Gear',
-                    boost: this.parseMilestonePl('Pinnacle Gear'),
-                    milestoneType: desc.milestoneType,
-                    dependsOn: [],
-                    doubled: false,
-                    weeklyDungeon: true,
-                    weeklyRaid: false
-                };
-                returnMe.push(pushMe);
+                // manifest updates can drop these hashes, in which case just skip the GoA workaround
+                if (desc != null && aDesc != null) {
+                    const pushMe: PublicMilestone = {
+                        hash: GOA_HASH + '',
+                        name: `Weekly Dungeon Challenge: ${desc.displayProperties.name}`,
+                        desc: desc.displayProperties.description,
+                        start: raid.start,
+                        end: raid.end,
+                        order: 31,
+                        icon: desc.displayProperties.icon,
+                        activities: [
+                            {
+                                hash: GOA_ACT_HASH+'',
+                                name: aDesc.displayProperties.name,
+                                desc: aDesc.displayProperties.description,
+                                ll: aDesc.activityLightLevel,
+                                tier: aDesc.tier,
+                                icon: aDesc.displayProperties.icon,
+                                modifiers: []
+                            }
+                        ],
+                        rewards: 'Pinnacle Gear',
+                        boost: this.parseMilestonePl('Pinnacle Gear'),
+                        milestoneType: desc.milestoneType,
+                        dependsOn: [],
+                        doubled: false,
+                        weeklyDungeon: true,
+                        weeklyRaid: false
+                    };
+                    returnMe.push(pushMe);
+                }
             }
         }
             

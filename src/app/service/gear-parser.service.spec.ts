@@ -120,5 +120,17 @@ describe('GearParserService', () => {
     it('should return null for tracker plugs (hash 2947756142)', () => {
       expect(GearParserService.getPlugName(makePlugDesc('Kill Tracker', 'tracker', 2947756142))).toBeFalsy();
     });
+
+    it('should return null when plugDesc is undefined (hash missing from manifest)', () => {
+      expect(GearParserService.getPlugName(undefined)).toBeFalsy();
+    });
+
+    it('should return null when plugDesc is null', () => {
+      expect(GearParserService.getPlugName(null)).toBeFalsy();
+    });
+
+    it('should return null when displayProperties is missing', () => {
+      expect(GearParserService.getPlugName({ plug: {} })).toBeFalsy();
+    });
   });
 });
