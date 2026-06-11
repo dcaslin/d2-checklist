@@ -24,6 +24,15 @@ New workspaces/worktrees are missing the gitignored `src/environments/keys.ts` a
 cp ~/projects/d2-checklist/src/environments/keys.ts ~/projects/d2-checklist/src/environments/keys-prod.ts src/environments/
 ```
 
+New workspaces are also missing node_modules and the gitignored manifest JSON in `src/assets/` (`destiny2-*.json`), so after copying the keys run:
+
+```bash
+npm install
+npm run manifest:fetch   # downloads the Bungie manifest and generates src/assets/destiny2-*.json
+```
+
+Note: when `manifest:fetch` downloads a new manifest it rewrites package.json's "manifest" value to the raw Bungie version string, which will clobber any cache-busting suffix (e.g. `-r2`) that was added intentionally — re-check package.json after running it.
+
 ## Project structure
 
 - `src/app/` - Angular application source
