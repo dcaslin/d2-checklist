@@ -43,6 +43,12 @@ jobs:
         mkdir -p ~/.ssh
         echo "$SSH_KEY" > ~/.ssh/deploy_key
         chmod 600 ~/.ssh/deploy_key
+        # Two-phase deploy, same as deploy.yml: upload assets first so clients
+        # never see the new index.html before the files it references exist.
+        rsync -avz --exclude=index.html \
+          -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.BETA_PORT }}" \
+          ./dist/browser/ \
+          ${{ secrets.BETA_UID }}@${{ secrets.BETA_HOST }}:/home/${{ secrets.BETA_UID }}/d2checklist-beta/
         rsync -avz --delete \
           -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.BETA_PORT }}" \
           ./dist/browser/ \

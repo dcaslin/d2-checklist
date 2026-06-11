@@ -44,6 +44,15 @@ jobs:
         mkdir -p ~/.ssh
         echo "$SSH_KEY" > ~/.ssh/deploy_key
         chmod 600 ~/.ssh/deploy_key
+        # Two-phase deploy so clients never load the new index.html (and the new
+        # ?v= asset URLs baked into it) before every asset it references is fully
+        # uploaded. A request for a new-versioned URL mid-upload returns the OLD
+        # file, which Cloudflare then caches for 30 days under the NEW cache key,
+        # poisoning the manifest for every client (see missing-guns bug, Jun 2026).
+        rsync -avz --exclude=index.html \
+          -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.PORT }}" \
+          ./dist/browser/ \
+          ${{ secrets.UID }}@${{ secrets.HOST }}:/home/${{ secrets.UID }}/d2checklist/
         rsync -avz --delete \
           -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p ${{ secrets.PORT }}" \
           ./dist/browser/ \
