@@ -93,6 +93,7 @@
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.owners$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.equipped$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.rarities$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.gearTiers$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.postmaster$"> </d2c-gear-toggle>
     </div>
     <div [hidden]="selectedUser==null" class="filter-container">
@@ -429,6 +430,8 @@
                 </ng-container>
                 <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
                 </div>
+                <div *ngIf="option.type == ItemType.Armor && i.archetype" class="simple-caption">{{i.archetype}}
+                </div>
                 <ng-container *ngIf="debugmode()"><br>[{{i.inventoryBucket.displayProperties.name}}]
                 </ng-container>
                 <div class="vertical-pad">
@@ -615,6 +618,9 @@
               </button>
               <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
                 By slot
+              </button>
+              <button *ngIf="option.type==ItemType.Armor && i.archetype" mat-menu-item (click)="showSimilarArmorByArchetype(i)">
+                By slot &amp; Archetype ({{i.archetype}})
               </button>
             </mat-menu>
           </ng-container>

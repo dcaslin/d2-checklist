@@ -641,6 +641,10 @@ export class GearService {
         return copies;
     }
 
+    public findSimilarArmorByArchetype(i: InventoryItem, player: Player): InventoryItem[] {
+        return this.findSimilarArmor(i, player).filter(g => g.archetype == i.archetype);
+    }
+
     public static findCopies(i: InventoryItem, player: Player): InventoryItem[] {
         const copies = [i];
         for (const g of player.gear) {

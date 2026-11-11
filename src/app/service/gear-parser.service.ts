@@ -454,6 +454,7 @@ export class GearParserService {
             let capacityUsed: number | null = null;
             let totalStatPoints: number | null = null;
             let gearTier: number | null = null;
+            let archetype: string | null = null;
             let equipped = false;
             let canEquip = false;
             let searchText = '';
@@ -637,6 +638,15 @@ export class GearParserService {
                                     } 
                                 }
                                 const socketVal = socketArray[index];
+                                // armor archetype (Gunner, Brawler, etc) lives in the armor stats category; match on the plug itself
+                                // since exotics don't use the shared archetype plug set
+                                if (type === ItemType.Armor && archetype == null && jCat.socketCategoryHash == 3154740035 && socketVal?.plugHash != null) {
+                                    const archetypeDesc: any = await this.destinyCacheService.getInventoryItem(socketVal.plugHash);
+                                    if (archetypeDesc?.plug?.plugCategoryIdentifier == 'armor_archetypes' && archetypeDesc.displayProperties?.name) {
+                                        archetype = archetypeDesc.displayProperties.name;
+                                        searchText += ' archetype:' + archetype;
+                                    }
+                                }
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
@@ -974,7 +984,7 @@ export class GearParserService {
                 desc.classType, bucketOrder!, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw!, tracked, questline!, searchText, inventoryBucket!, tier, options.slice(),
                 isRandomRoll, ammoType!, postmaster, capacityUsed!, armorCapacity!, totalStatPoints!, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted, gearTier
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted, gearTier, archetype
             );
         } catch (exc) {
             console.dir(itemComp);

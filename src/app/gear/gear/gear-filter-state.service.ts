@@ -201,6 +201,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:fixme', desc: 'Best perk unselected' },
   { value: 'is:power>=', desc: 'Filter by PL' },
   { value: 'is:tier>=', desc: 'Filter by gear tier 1-5' },
+  { value: 'archetype:', desc: 'Armor archetype, e.g. archetype:gunner' },
   { value: 'has:capacity>=', desc: 'Filter by armor mod capacity pts 1-10' },
   { value: 'is:prefpoints>=', desc: 'Total of ALL stat pts' },
   { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },

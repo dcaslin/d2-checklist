@@ -368,6 +368,11 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.openGearDialog(i, copies, true);
   }
 
+  showSimilarArmorByArchetype(i: InventoryItem) {
+    const copies = this.gearService.findSimilarArmorByArchetype(i, this.player$.getValue()!);
+    this.openGearDialog(i, copies, true);
+  }
+
   showSimilarWeaponsByFrame(i: InventoryItem) {
     const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue()!, false, false);
     this.openGearDialog(i, copies, true);
