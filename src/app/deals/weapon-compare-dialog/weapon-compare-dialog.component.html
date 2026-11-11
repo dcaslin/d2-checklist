@@ -111,17 +111,12 @@
         </tr>
           <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
             <th>
-              <d2c-horizontal-sort field="powerCap" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Cap
+              <d2c-horizontal-sort field="gearTier" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Tier
               </d2c-horizontal-sort>
             </th>
             <ng-container *ngFor="let i of sortedItems|async">
               <td [class.owned]="i.vendorItemInfo==null">
-                <ng-container *ngIf="i.powerCap<10000; else highCap">
-                  <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
-                </ng-container>
-                <ng-template #highCap>
-                  <span class="simple-darker-caption-no-margin">None</span>
-                </ng-template>
+                <span class="simple-darker-caption-no-margin" *ngIf="i.gearTier">{{i.gearTier}}</span>
               </td>
             </ng-container>
           </tr>

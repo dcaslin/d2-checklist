@@ -453,6 +453,7 @@ export class GearParserService {
             let armorCapacity: number | null = null;
             let capacityUsed: number | null = null;
             let totalStatPoints: number | null = null;
+            let gearTier: number | null = null;
             let equipped = false;
             let canEquip = false;
             let searchText = '';
@@ -488,6 +489,9 @@ export class GearParserService {
                         damageType = instanceData.damageType;
                         equipped = instanceData.isEquipped;
                         canEquip = instanceData.canEquip;
+                        if (instanceData.gearTier > 0) {
+                            gearTier = instanceData.gearTier;
+                        }
                         if (instanceData.energy != null) {
                             const itmEnergy: PrivItemEnergy = instanceData.energy;
                             armorCapacity = itmEnergy.energyCapacity;
@@ -970,7 +974,7 @@ export class GearParserService {
                 desc.classType, bucketOrder!, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw!, tracked, questline!, searchText, inventoryBucket!, tier, options.slice(),
                 isRandomRoll, ammoType!, postmaster, capacityUsed!, armorCapacity!, totalStatPoints!, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted, gearTier
             );
         } catch (exc) {
             console.dir(itemComp);

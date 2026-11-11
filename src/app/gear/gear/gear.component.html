@@ -250,9 +250,9 @@
                 <d2c-sort-indicator field="id" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!"></d2c-sort-indicator>
               </span>
             </th>
-            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-              <span class="fake-link gear-sort" (click)="sort('powerCap')">Cap
-                <d2c-sort-indicator field="powerCap" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
+            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+              <span class="fake-link gear-sort" (click)="sort('gearTier')">Tier
+                <d2c-sort-indicator field="gearTier" [currVal]="(gearFilterStateService.sortBy$|async)!" [descending]="(gearFilterStateService.sortDesc$|async)!">
                 </d2c-sort-indicator>
               </span>
             </th>
@@ -417,10 +417,8 @@
                 </ng-container>
 
               </td>
-              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-                <ng-container *ngIf="i.powerCap<9999; else highCap">
-                  <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
-                </ng-container>
+              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <span class="simple-darker-caption-no-margin" *ngIf="i.gearTier">{{i.gearTier}}</span>
               </td>
               <td class="limited-gear-width">
                 {{i.typeName}}
@@ -634,9 +632,6 @@
   </ng-container>
 </div>
 
-<ng-template #highCap>
-  <span class="simple-darker-caption-no-margin">None</span>
-</ng-template>
 
 <ng-template #upperPaging let-paginator="paginator">
 
