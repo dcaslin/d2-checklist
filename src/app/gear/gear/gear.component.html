@@ -430,6 +430,8 @@
                 </ng-container>
                 <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
                 </div>
+                <div *ngIf="option.type == ItemType.Armor && i.archetype" class="simple-caption">{{i.archetype}}
+                </div>
                 <ng-container *ngIf="debugmode()"><br>[{{i.inventoryBucket.displayProperties.name}}]
                 </ng-container>
                 <div class="vertical-pad">
@@ -616,6 +618,9 @@
               </button>
               <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
                 By slot
+              </button>
+              <button *ngIf="option.type==ItemType.Armor && i.archetype" mat-menu-item (click)="showSimilarArmorByArchetype(i)">
+                By slot &amp; Archetype ({{i.archetype}})
               </button>
             </mat-menu>
           </ng-container>

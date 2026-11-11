@@ -454,6 +454,7 @@ export class GearParserService {
             let capacityUsed: number | null = null;
             let totalStatPoints: number | null = null;
             let gearTier: number | null = null;
+            let archetype: string | null = null;
             let equipped = false;
             let canEquip = false;
             let searchText = '';
@@ -637,6 +638,14 @@ export class GearParserService {
                                     } 
                                 }
                                 const socketVal = socketArray[index];
+                                if (type === ItemType.Armor && socketVal?.plugHash != null
+                                    && socketDesc.randomizedPlugSetHash == this.destinyCacheService.cacheLite.destiny2CoreSettings?.armorArchetypePlugSetHash) {
+                                    const archetypeDesc: any = await this.destinyCacheService.getInventoryItem(socketVal.plugHash);
+                                    if (archetypeDesc?.displayProperties?.name) {
+                                        archetype = archetypeDesc.displayProperties.name;
+                                        searchText += ' archetype:' + archetype;
+                                    }
+                                }
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
@@ -974,7 +983,7 @@ export class GearParserService {
                 desc.classType, bucketOrder!, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw!, tracked, questline!, searchText, inventoryBucket!, tier, options.slice(),
                 isRandomRoll, ammoType!, postmaster, capacityUsed!, armorCapacity!, totalStatPoints!, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted, gearTier
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber!, crafted, deepsight, craftProgress!, notCrafted, gearTier, archetype
             );
         } catch (exc) {
             console.dir(itemComp);

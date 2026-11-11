@@ -241,6 +241,17 @@
                         </td>
                     </ng-container>
                 </tr>
+                <tr *ngIf="model.type==ItemType.Armor">
+                    <th>
+                        <d2c-horizontal-sort field="archetype" [currVal]="sortBy" [descending]="sortDesc"
+                            (sort)="sort($event)">Archetype</d2c-horizontal-sort>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
+                            <span class="simple-darker-caption-no-margin" *ngIf="i.archetype">{{i.archetype}}</span>
+                        </td>
+                    </ng-container>
+                </tr>
                 <ng-container
                     *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
                     <tr *ngFor="let mp of maxPlugs; index as i1">
