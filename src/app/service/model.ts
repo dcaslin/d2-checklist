@@ -825,6 +825,7 @@ export class InventoryItem {
     public preferredStatPoints!: number;
     public readonly seasonalModSlot: number;
     public readonly powerCap: number;
+    public readonly gearTier: number | null;
     public dupesByArmorSlot?: number;
     public dupesTaggedToKeep?: number;
     public dupesByFrameSlotAndEnergy?: number;
@@ -890,7 +891,7 @@ export class InventoryItem {
         armorCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
         specialModSockets: string[], collectibleHash: string, versionNumber: number,
         crafted: boolean, deepsight: boolean, craftProgress: WeaponShapeLevelObjective,
-        notCrafted: boolean
+        notCrafted: boolean, gearTier: number | null
     ) {
         this.id = id;
         this.hash = hash;
@@ -941,6 +942,7 @@ export class InventoryItem {
         this.seasonalModSlot = seasonalModSlot;
         this.coveredSeasons = coveredSeasons;
         this.powerCap = powerCap;
+        this.gearTier = gearTier;
         this.redacted = redacted;
         this.specialModSockets = specialModSockets;
         this.collectibleHash = collectibleHash;

@@ -164,6 +164,10 @@ function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<
   if (compResult != null) {
     return compResult;
   }
+  compResult = _processComparison('is:tier', actual, i.gearTier ?? 0);
+  if (compResult != null) {
+    return compResult;
+  }
   if (actual.startsWith('stat:')) {
     compResult = _processStats(actual, i.stats, statChoiceMap);
     if (compResult != null) {
@@ -196,6 +200,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:godroll', desc: 'A god roll in EVERY slot' },
   { value: 'is:fixme', desc: 'Best perk unselected' },
   { value: 'is:power>=', desc: 'Filter by PL' },
+  { value: 'is:tier>=', desc: 'Filter by gear tier 1-5' },
   { value: 'has:capacity>=', desc: 'Filter by armor mod capacity pts 1-10' },
   { value: 'is:prefpoints>=', desc: 'Total of ALL stat pts' },
   { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },
@@ -223,6 +228,8 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:similar>=' },
   { value: 'is:similar<' },
   { value: 'is:similar<=' },
+  { value: 'is:tier<=' },
+  { value: 'is:tier=' },
   { value: 'is:cap<=', desc: 'PL cap' },
   { value: 'is:cap>=' },
   { value: 'is:cap<' },
@@ -667,29 +674,11 @@ export class GearFilterStateService {
     // enumerate the actual types of gear, since we'll want that for guns and exchange
     // actually sift through the gear to find only the ones we need
     const temp: any = {};
-    const dPowerCaps: any = {};
     for (const i of player.gear) {
       if (temp[i.type + ''] == null) {
         temp[i.type + ''] = [];
       }
       temp[i.type + ''][i.typeName] = true;
-      if (i.powerCap) {
-        dPowerCaps[i.powerCap] = true;
-      }
-    }
-    const aPowerCaps = [];
-    for (const key of Object.keys(dPowerCaps)) {
-      aPowerCaps.push(key);
-    }
-    aPowerCaps.sort();
-    aPowerCaps.reverse();
-    const aPowerCapChoices = [];
-    for (const pc of aPowerCaps) {
-      if (pc as any == 9999) {
-        aPowerCapChoices.push(new Choice(pc, 'None'));
-      } else {
-        aPowerCapChoices.push(new Choice(pc, `${pc}`));
-      }
     }
     const arrays: any = {};
     for (const key of Object.keys(temp)) {
@@ -716,10 +705,6 @@ export class GearFilterStateService {
     toggleData.weaponTypes$.next({
       ...toggleData.weaponTypes$.getValue(),
       choices: arrays[ItemType.Weapon + '']
-    });
-    toggleData.powerCaps$.next({
-      ...toggleData.powerCaps$.getValue(),
-      choices: aPowerCapChoices
     });
   }
 
@@ -809,12 +794,12 @@ export class GearFilterStateService {
       displayTabs: null!,
       grabValue: (x: InventoryItem) => x.owner.getValue().id
     };
-    const powerCapsConfig: ToggleConfig = {
-      title: 'Cap',
-      debugKey: 'Cap',
+    const gearTiersConfig: ToggleConfig = {
+      title: 'Tier',
+      debugKey: 'Gear Tier',
       icon: iconService.fasLevelUpAlt,
       displayTabs: [ItemType.Weapon, ItemType.Armor],
-      grabValue: (x: InventoryItem) => x.powerCap
+      grabValue: (x: InventoryItem) => x.gearTier
     };
     const raritiesConfig: ToggleConfig = {
       title: 'Rarity',
@@ -928,7 +913,14 @@ export class GearFilterStateService {
       weaponTypes$: new BehaviorSubject(generateState(weaponTypesConfig, [], currentTab.type)),
       exchangeType$: new BehaviorSubject(generateState(exchangeTypesConfig, [], currentTab.type)),
       owners$: new BehaviorSubject(generateState(ownerConfig, [], currentTab.type)),
-      powerCaps$: new BehaviorSubject(generateState(powerCapsConfig, [], currentTab.type))
+      gearTiers$: new BehaviorSubject(generateState(gearTiersConfig, [
+        new Choice(5, 'Tier 5'),
+        new Choice(4, 'Tier 4'),
+        new Choice(3, 'Tier 3'),
+        new Choice(2, 'Tier 2'),
+        new Choice(1, 'Tier 1'),
+        new Choice(null, 'None')
+      ], currentTab.type))
     };
     return returnMe;
   }
@@ -1044,7 +1036,7 @@ export interface ToggleData {
   equipped$: BehaviorSubject<ToggleState>;
   classType$: BehaviorSubject<ToggleState>;
   postmaster$: BehaviorSubject<ToggleState>;
-  powerCaps$: BehaviorSubject<ToggleState>;
+  gearTiers$: BehaviorSubject<ToggleState>;
 }
 
 export interface ShortcutInfo {
