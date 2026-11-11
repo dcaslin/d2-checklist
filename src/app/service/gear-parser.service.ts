@@ -957,7 +957,7 @@ export class GearParserService {
                 searchText += 'has:modnone';
                 seasonalModSlot = -1;
                 coveredSeasons.push(-1);
-            } else if (specialModSockets.length > 1) {
+            } else {
                 specialModSockets.push('special');
                 searchText += 'has:modspecial';
             }

@@ -150,4 +150,24 @@ describe('TriumphParserService', () => {
             expect(service['getBestCol'](nodes, 'item')).toEqual({ state: 3 });
         });
     });
+
+    describe('handleRecordNode (private)', () => {
+        // Regression for #580: record definition has intervalInfo but the profile record only has plain objectives
+        it('should not throw when definition has intervals but profile record has no intervalObjectives', async () => {
+            const cache = TestBed.inject(DestinyCacheService) as any;
+            cache.getRecord = async () => ({
+                displayProperties: { name: 'Rec', description: 'Desc', icon: '' },
+                intervalInfo: { intervalObjectives: [{ intervalScoreValue: 5 }, { intervalScoreValue: 10 }] }
+            });
+            cache.getObjective = async () => ({ completionValue: 10, progressDescription: 'Do it' });
+            const records = [{ '123': { state: 4, objectives: [{ objectiveHash: 1, progress: 5, completionValue: 10, complete: false }] } }];
+
+            const node = await service['handleRecordNode']([], '123', records, true, true);
+
+            expect(node).not.toBeNull();
+            expect(node.score).toBe(15);
+            expect(node.earned).toBe(0);
+            expect(node.interval).toBe(false);
+        });
+    });
 });
