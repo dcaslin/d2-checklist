@@ -5,6 +5,7 @@
             [loading]="(signedOnUserService.playerLoading$|async)!"
             [vendorsLoading]="(signedOnUserService.vendorsLoading$|async)!"
             [vendorDeals]="(signedOnUserService.vendorDeals$|async)!"
+            [player]="player"
             (refresh)="signedOnUserService.refreshPlayerAndVendors()"
         ></d2c-deals>
     </ng-container>

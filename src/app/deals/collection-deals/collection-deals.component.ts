@@ -14,6 +14,7 @@ import { ItemIconComponent } from '../../shared/item-icon/item-icon.component';
 })
 export class CollectionDealsComponent {
   @Input() vendorDeals!: VendorDeals;
+  @Input() classEmblems: Record<number, string> = {};
 
   public DestinyClasses = DestinyClasses;
 

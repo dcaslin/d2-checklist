@@ -12,6 +12,11 @@
 @include mat.app-background();
 @include mat.all-component-densities(-2);
 
+// stop horizontal overscroll (e.g. the end of a wide table) from triggering browser swipe back/forward
+html, body {
+  overscroll-behavior-x: none;
+}
+
 
 .upgrade-color {
   color: hsl(200, 65%, 45%);
@@ -647,6 +652,16 @@ mat-form-field button[matSuffix].mat-mdc-icon-button {
   display: inline-block;
   vertical-align: middle;
   margin-right: 5px;
+}
+
+// character emblem used as a class icon on deals
+.class-emblem {
+  width: 16px;
+  height: 16px;
+  background-size: cover;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 3px;
 }
 
 .currency-text {
