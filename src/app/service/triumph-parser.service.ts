@@ -180,7 +180,7 @@ export class TriumphParserService {
                 if (intervalObj.intervalScoreValue) {
                     totalPts += intervalObj.intervalScoreValue;
                 }
-                if (val.intervalObjectives.length > intervalIndex) {
+                if (val.intervalObjectives?.length > intervalIndex) {
                     const intervalVal = val.intervalObjectives[intervalIndex];
                     if (intervalVal.complete) {
                         earnedPts += intervalObj.intervalScoreValue;
