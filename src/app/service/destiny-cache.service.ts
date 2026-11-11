@@ -290,7 +290,6 @@ export interface Destiny2CoreSettings {
   seasonalChallengesPresentationNodeHash: number;
   futureSeasonHashes: number[];
   pastSeasonHashes: number[];
-  armorArchetypePlugSetHash: number;
 }
 
 

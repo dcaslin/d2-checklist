@@ -638,10 +638,11 @@ export class GearParserService {
                                     } 
                                 }
                                 const socketVal = socketArray[index];
-                                if (type === ItemType.Armor && socketVal?.plugHash != null
-                                    && socketDesc.randomizedPlugSetHash == this.destinyCacheService.cacheLite.destiny2CoreSettings?.armorArchetypePlugSetHash) {
+                                // armor archetype (Gunner, Brawler, etc) lives in the armor stats category; match on the plug itself
+                                // since exotics don't use the shared archetype plug set
+                                if (type === ItemType.Armor && archetype == null && jCat.socketCategoryHash == 3154740035 && socketVal?.plugHash != null) {
                                     const archetypeDesc: any = await this.destinyCacheService.getInventoryItem(socketVal.plugHash);
-                                    if (archetypeDesc?.displayProperties?.name) {
+                                    if (archetypeDesc?.plug?.plugCategoryIdentifier == 'armor_archetypes' && archetypeDesc.displayProperties?.name) {
                                         archetype = archetypeDesc.displayProperties.name;
                                         searchText += ' archetype:' + archetype;
                                     }
