@@ -7,3 +7,10 @@
 .flex-row > * {
 margin: 15px;
 }
+.class-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0px 15px;
+}

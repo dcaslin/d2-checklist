@@ -1,6 +1,15 @@
 
-<div class="flex-row">
-    <d2c-collection-deals *ngIf="vendorDeals" [vendorDeals]="vendorDeals"></d2c-collection-deals>
-    <d2c-weapon-deals  *ngIf="vendorDeals" [vendorDeals]="vendorDeals"></d2c-weapon-deals>
-    <d2c-armor-deals  *ngIf="vendorDeals" [vendorDeals]="vendorDeals"></d2c-armor-deals>
+<div class="class-filter" *ngIf="classes().length > 1">
+    <span class="simple-darker-caption-no-margin">Show deals for:</span>
+    <mat-checkbox *ngFor="let c of classes()" [checked]="isShown(c.classType)"
+        (change)="toggleClass(c.classType, $event.checked)">
+        <span *ngIf="c.emblemPath" class="class-emblem"
+            [style.background-image]="'url(//www.bungie.net' + c.emblemPath + ')'"></span>
+        {{c.name}}
+    </mat-checkbox>
+</div>
+<div class="flex-row" *ngIf="filteredDeals() as deals">
+    <d2c-collection-deals [vendorDeals]="deals" [classEmblems]="classEmblems()"></d2c-collection-deals>
+    <d2c-weapon-deals [vendorDeals]="deals"></d2c-weapon-deals>
+    <d2c-armor-deals [vendorDeals]="deals" [classEmblems]="classEmblems()"></d2c-armor-deals>
 </div>
